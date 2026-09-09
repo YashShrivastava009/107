@@ -4,7 +4,7 @@ import google.generativeai as genai
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="BIS AI Portal | SIH 2026", layout="wide", page_icon="🏛️")
 
-# --- CUSTOM CSS (IMAGE AESTHETICS) ---
+# --- CUSTOM CSS ---
 st.markdown("""
 <style>
     [data-testid="stAppViewContainer"] {
@@ -38,17 +38,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- GEMINI SETUP (SECURITY FIRST) ---
-# API Key Streamlit secrets se aayegi, yahan hardcode mat karna
+# --- GEMINI SETUP ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
     model = genai.GenerativeModel('gemini-1.5-flash')
 except Exception as e:
-    st.warning("⚠️ Backend connection waiting for API Key in Streamlit Secrets.")
+    st.warning("⚠️ API Key not found in Streamlit Secrets.")
 
 # --- MAIN UI ---
-st.markdown("<div style='text-align: center; margin-top: 10vh;'><h1 style='font-size: 28px; font-weight: 500;'>Good afternoon</h1><h2 style='font-size: 32px; font-weight: 600; margin-bottom: 40px;'>What can I help you with today?</h2></div>", unsafe_allow_escaping=True)
+st.markdown("<div style='text-align: center; margin-top: 10vh;'><h1 style='font-size: 28px; font-weight: 500;'>Good afternoon</h1><h2 style='font-size: 32px; font-weight: 600; margin-bottom: 40px;'>What can I help you with today?</h2></div>", unsafe_allow_html=True)
 
 user_query = st.text_input("Ask anything", placeholder="Type your query...")
 
@@ -68,4 +67,4 @@ if user_query:
         response = model.generate_content(full_prompt)
         st.markdown(response.text)
     except Exception as e:
-        st.error(f"**Backend Error:** API request failed. Please check Streamlit Secrets. Details: {str(e)}")
+        st.error(f"**Backend Error:** API request failed. Details: {str(e)}")
