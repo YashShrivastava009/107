@@ -4,7 +4,7 @@ import google.generativeai as genai
 # --- PAGE CONFIG ---
 st.set_page_config(page_title="BIS AI Portal | SIH 2026", layout="wide", page_icon="🏛️")
 
-# --- CUSTOM CSS ---
+# --- CUSTOM GLASSMORPHISM CSS (Exact Matching UI) ---
 st.markdown("""
 <style>
     [data-testid="stAppViewContainer"] {
@@ -38,11 +38,12 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# --- GEMINI SETUP ---
+# --- GEMINI SETUP (FIXED TO GEMINI-3.6-FLASH) ---
 try:
     API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # Correct model name locked back to your original choice
+    model = genai.GenerativeModel('gemini-3.6-flash')
 except Exception as e:
     st.warning("⚠️ API Key not found in Streamlit Secrets.")
 
