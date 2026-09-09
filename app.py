@@ -36,7 +36,7 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
 </style>
-""", unsafe_allow_escaping=True)
+""", unsafe_allow_html=True)
 
 # --- GEMINI SETUP (SECURITY FIRST) ---
 # API Key Streamlit secrets se aayegi, yahan hardcode mat karna
