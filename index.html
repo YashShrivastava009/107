@@ -98,19 +98,29 @@
         .bot-message { background: rgba(30, 34, 43, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
         .user-message { background: rgba(45, 50, 62, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); }
 
-        /* --- MODERN SPINNING LOADER ANIMATION --- */
-        .typing-bubble { display: flex; align-items: center; gap: 12px; padding: 16px 20px !important; }
-        .spinner {
-            width: 22px;
-            height: 22px;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: #00d4ff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+        /* --- UNIQUE FUTURISTIC SCANNING / PULSE LOADER --- */
+        .typing-bubble { display: flex; align-items: center; gap: 14px; padding: 16px 20px !important; }
+        
+        .pulse-scanner {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            height: 20px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .pulse-bar {
+            width: 4px;
+            height: 100%;
+            background: #00d4ff;
+            border-radius: 2px;
+            animation: pulseWave 1.2s ease-in-out infinite;
+        }
+        .pulse-bar:nth-child(2) { animation-delay: 0.2s; background: #10a37f; }
+        .pulse-bar:nth-child(3) { animation-delay: 0.4s; background: #00d4ff; }
+        .pulse-bar:nth-child(4) { animation-delay: 0.6s; background: #ffffff; }
+
+        @keyframes pulseWave {
+            0%, 100% { transform: scaleY(0.4); opacity: 0.3; }
+            50% { transform: scaleY(1.2); opacity: 1; box-shadow: 0 0 10px rgba(0,212,255,0.6); }
         }
     </style>
 </head>
@@ -193,8 +203,8 @@
             const row = document.createElement('div');
             row.id = 'typingBubble';
             row.className = `message-row bot`;
-            // Replaced the bouncing dots with the requested circular spinning loader
-            row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="spinner"></div><span style="font-size: 13px; color: #a1a6b0;">Verifying BIS Standards...</span></div>`;
+            // Unique High-Tech Pulse Scanner Wave Animation
+            row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards Matrix...</span></div>`;
             box.appendChild(row);
             box.scrollTop = box.scrollHeight;
         }
