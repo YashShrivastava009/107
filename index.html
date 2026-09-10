@@ -53,13 +53,44 @@
         .recent-list::-webkit-scrollbar { width: 4px; }
         .recent-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 
+        /* --- UPDATED RECENT CHAT ITEMS FOR 3 DOTS --- */
         .recent-item {
-            padding: 10px 15px; margin-bottom: 2px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 8px 10px 8px 15px; margin-bottom: 2px; border-radius: 20px;
             font-size: 13px; color: #c3c8d4; cursor: pointer; transition: 0.2s;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
         .recent-item:hover { background: rgba(255,255,255,0.05); }
         .recent-item.active { background: rgba(255,255,255,0.08); font-weight: 500; color: white;}
+        
+        .recent-item-title {
+            flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            pointer-events: none; /* Ensures click goes to the parent div */
+        }
+
+        .options-btn {
+            background: transparent; border: none; color: #a1a6b0; cursor: pointer;
+            padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.2s;
+        }
+        .recent-item:hover .options-btn { opacity: 1; }
+        .options-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+
+        /* --- FLOATING 3-DOT OPTIONS MENU --- */
+        #options-dropdown {
+            position: fixed; background: rgba(25, 28, 36, 0.98); backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 6px;
+            display: none; flex-direction: column; z-index: 2000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); min-width: 140px;
+        }
+        #options-dropdown.show { display: flex; }
+        
+        .dropdown-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+            font-size: 13px; color: #e2e4e9; cursor: pointer; border-radius: 8px; transition: 0.2s;
+        }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.08); }
+        .dropdown-item.delete { color: #ff5c5c; }
+        .dropdown-item.delete:hover { background: rgba(255, 92, 92, 0.15); }
 
         /* --- HOME SCREEN ELEMENTS --- */
         #home-screen {
@@ -163,6 +194,19 @@
         <svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
 
+    <!-- GLOBAL OPTIONS MENU (Hidden by default) -->
+    <div id="options-dropdown">
+        <div class="dropdown-item" onclick="actionPin()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin
+        </div>
+        <div class="dropdown-item" onclick="actionShare()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share
+        </div>
+        <div class="dropdown-item delete" onclick="actionDelete()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete
+        </div>
+    </div>
+
     <!-- SIDEBAR (SLIDER) -->
     <div id="sidebar">
         <div class="sidebar-header">
@@ -174,7 +218,6 @@
             </button>
         </div>
         
-        <!-- NEW CHAT TRIGGER -->
         <div class="menu-item" onclick="startNewChat()">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
             New chat
@@ -185,7 +228,6 @@
             Search chats
         </div>
 
-        <!-- NEW LIBRARY OPTION -->
         <div class="menu-item">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>
             Library
@@ -263,52 +305,54 @@
         let chatSessions = {};
         let currentSessionId = null;
         let isFirstMessage = true;
+        let targetOptionsSessionId = null; // Stores which chat's 3 dots were clicked
 
-        // Start a brand new, clean chat instantly
         function startNewChat() {
             const newId = 'session_' + Date.now();
             chatSessions[newId] = { title: "New Chat", messages: [] };
             currentSessionId = newId;
 
-            // Reset UI instantly to Home Screen
             isFirstMessage = true;
             document.getElementById('chat-area').innerHTML = '';
             resetToHomeScreen();
             renderSidebar();
             
-            // Auto-close sidebar on mobile after clicking
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        // Sidebar Render Logic - Only shows chats with messages
         function renderSidebar() {
             const list = document.getElementById('sidebar-history-list');
             list.innerHTML = '';
             let hasVisibleChats = false;
 
-            // Sort newest first based on timestamp ID
             const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
 
             for (const id of sortedIds) {
                 const session = chatSessions[id];
-                // Hide empty chats from sidebar
                 if (session.messages.length > 0) {
                     hasVisibleChats = true;
                     const isActive = id === currentSessionId ? 'active' : '';
-                    list.innerHTML += `<div class="recent-item ${isActive}" onclick="loadSession('${id}')">${session.title}</div>`;
+                    
+                    // Added 3-dots SVG button inside the recent item
+                    list.innerHTML += `
+                        <div class="recent-item ${isActive}" onclick="loadSession('${id}')">
+                            <span class="recent-item-title">${session.title}</span>
+                            <button class="options-btn" onclick="openOptions(event, '${id}')">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                            </button>
+                        </div>
+                    `;
                 }
             }
 
-            // Show "Recent" heading only if there is history
             document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
         }
 
-        // Switch to an existing chat history
         function loadSession(id) {
             currentSessionId = id;
             const session = chatSessions[id];
             
-            document.getElementById('chat-area').innerHTML = ''; // Clear chat area
+            document.getElementById('chat-area').innerHTML = ''; 
 
             if (session.messages.length > 0) {
                 forceChatMode();
@@ -320,15 +364,58 @@
             }
             
             renderSidebar();
-            
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
+        // --- OPTIONS MENU LOGIC (3 DOTS) ---
+        function openOptions(e, id) {
+            e.stopPropagation(); // Prevents loadSession from firing
+            targetOptionsSessionId = id;
+            
+            const menu = document.getElementById('options-dropdown');
+            const rect = e.currentTarget.getBoundingClientRect();
+            
+            // Position the menu slightly right and below the clicked dot icon
+            menu.style.top = `${rect.bottom + 5}px`;
+            menu.style.left = `${rect.left}px`;
+            
+            menu.classList.add('show');
         }
 
-        // --- UI TRANSITION LOGIC ---
+        // Close menu if clicked anywhere outside
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('options-dropdown');
+            if(!menu.contains(e.target) && !e.target.closest('.options-btn')) {
+                menu.classList.remove('show');
+            }
+        });
+
+        function actionPin() {
+            alert("Pin feature reserved for later upgrade!");
+            document.getElementById('options-dropdown').classList.remove('show');
+        }
+
+        function actionShare() {
+            alert("Share feature reserved for later upgrade!");
+            document.getElementById('options-dropdown').classList.remove('show');
+        }
+
+        function actionDelete() {
+            if(targetOptionsSessionId) {
+                delete chatSessions[targetOptionsSessionId];
+                document.getElementById('options-dropdown').classList.remove('show');
+                
+                // If user deleted the chat they are currently viewing, create a new one
+                if(currentSessionId === targetOptionsSessionId) {
+                    startNewChat();
+                } else {
+                    renderSidebar();
+                }
+            }
+        }
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
         function forceChatMode() {
             isFirstMessage = false;
             document.getElementById('home-screen').classList.add('hidden');
@@ -375,11 +462,8 @@
             if(!text) return;
 
             forceChatMode();
-            
-            // Save User Message to Memory
             chatSessions[currentSessionId].messages.push({ role: "user", text: text });
             
-            // Auto-generate title on FIRST message of a new session
             if (chatSessions[currentSessionId].messages.length === 1) {
                 chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
             }
@@ -398,8 +482,6 @@
                 const data = await res.json();
 
                 removeTypingIndicator();
-                
-                // Save Bot Message to Memory
                 chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply });
                 appendMsgDOM(marked.parse(data.reply), 'bot');
 
@@ -416,7 +498,6 @@
 
         function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
 
-        // Start first empty chat when page loads
         window.onload = startNewChat;
 
     </script>
