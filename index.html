@@ -67,8 +67,8 @@
         .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
         /* --- SCREENS --- */
-        #home-screen, #library-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
-        #home-screen.hidden, #library-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
+        #home-screen, #library-screen, #calculator-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
+        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
         
         .greeting { margin-top: 15vh; text-align: center; }
         .greeting h1 { font-size: 28px; font-weight: 500; margin-bottom: 5px; }
@@ -101,6 +101,37 @@
         .lib-action-btn { flex: 1; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.2); color: #00d4ff; padding: 8px 5px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: center; font-family: 'Poppins', sans-serif; }
         .lib-action-btn:hover { background: rgba(0, 212, 255, 0.25); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,212,255,0.2); }
 
+        /* --- NEW CALCULATOR UI --- */
+        #calculator-screen { justify-content: center; }
+        .calc-wrapper {
+            background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px; padding: 30px; width: 100%; max-width: 500px; box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        .calc-group { margin-bottom: 20px; }
+        .calc-group label { display: block; font-size: 13px; color: #a1a6b0; margin-bottom: 8px; }
+        .calc-select { 
+            width: 100%; padding: 12px 15px; border-radius: 12px; background: rgba(0,0,0,0.2); 
+            border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Poppins', sans-serif; 
+            font-size: 14px; outline: none; transition: 0.3s;
+        }
+        .calc-select:focus { border-color: #00d4ff; background: rgba(0,0,0,0.3); }
+        .calc-select option { background: #1e222b; color: white; }
+        .calc-btn {
+            width: 100%; background: linear-gradient(135deg, #10a37f, #00d4ff); color: white;
+            border: none; padding: 12px; border-radius: 12px; font-weight: 500; cursor: pointer;
+            transition: 0.3s; font-family: 'Poppins', sans-serif; margin-top: 10px;
+        }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3); }
+        
+        .receipt-card {
+            background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin-top: 25px;
+            display: none; border: 1px dashed rgba(255,255,255,0.2);
+        }
+        .receipt-card.show { display: block; animation: popIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        .receipt-row { display: flex; justify-content: space-between; font-size: 13px; color: #e2e4e9; margin-bottom: 10px; }
+        .receipt-row.total { font-weight: 600; font-size: 16px; color: #00d4ff; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px; }
+        .receipt-row.concession { color: #10a37f; }
+
         #pdf-viewer-screen { background: #1e222b; z-index: 500; }
         .pdf-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pdf-header .back-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 16px; border-radius: 20px; transition: 0.2s; }
@@ -109,7 +140,6 @@
         .pdf-container { flex: 1; width: 100%; height: 100%; background: #2d323e; }
         .pdf-container iframe { width: 100%; height: 100%; border: none; }
 
-        /* --- MAGIC INPUT CONTAINER (UPDATED WITH MIC & CAM) --- */
         #input-container { position: absolute; left: 50%; transform: translateX(-50%); width: 750px; background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 15px 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 100; transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); top: 35vh; }
         #input-container.chat-mode { top: calc(100vh - 100px); width: 850px; border-radius: 30px;}
         .input-top-bar { display: flex; justify-content: space-between; font-size: 12px; color: #a1a6b0; margin-bottom: 10px; padding: 0 5px;}
@@ -118,7 +148,6 @@
         input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 15px; font-family: 'Segoe UI', sans-serif; padding: 5px;}
         input::placeholder { color: #888; }
         
-        /* New Mic and Cam Buttons */
         .action-icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; color: #a1a6b0; transition: 0.2s; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
         .action-icon-btn:hover { background: rgba(255,255,255,0.1); }
         .action-icon-btn.listening { animation: pulseRed 1.5s infinite; }
@@ -178,11 +207,9 @@
         body.light-mode .model-badge { background: rgba(0,0,0,0.05); color: #1e293b; }
         body.light-mode input { color: #0f172a; }
         body.light-mode input::placeholder { color: #64748b; }
-        
         body.light-mode .action-icon-btn:hover { background: rgba(0,0,0,0.05); }
         body.light-mode .send-btn { background: rgba(0,0,0,0.05); color: #0f172a; }
         body.light-mode .send-btn:hover { background: rgba(0,0,0,0.1); }
-        
         body.light-mode .bot-message { background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
         body.light-mode .user-message { background: rgba(226, 232, 240, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
         body.light-mode .message h1, body.light-mode .message h2, body.light-mode .message h3 { color: #0f172a; }
@@ -211,6 +238,15 @@
         body.light-mode .pdf-header .back-btn { background: rgba(0,0,0,0.05); color: #0f172a; }
         body.light-mode .pdf-header .back-btn:hover { background: rgba(0,0,0,0.1); }
         body.light-mode .sidebar-bottom { border-top: 1px solid rgba(0,0,0,0.05); }
+
+        /* Calculator Light Mode Additions */
+        body.light-mode .calc-wrapper { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+        body.light-mode .calc-group label { color: #475569; font-weight: 500;}
+        body.light-mode .calc-select { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.1); color: #0f172a; }
+        body.light-mode .calc-select option { background: #fff; color: #0f172a; }
+        body.light-mode .receipt-card { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.1); }
+        body.light-mode .receipt-row { color: #475569; }
+        body.light-mode .receipt-row.total { color: #0284c7; border-color: rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -229,7 +265,6 @@
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
                 </button>
             </div>
-            
             <div class="setting-row">
                 <div class="setting-label">
                     <span>Clear all chats</span>
@@ -237,7 +272,6 @@
                 </div>
                 <button class="setting-btn danger" onclick="clearAllChats()">Clear All</button>
             </div>
-            
             <div class="setting-row">
                 <div class="setting-label">
                     <span>Theme</span>
@@ -245,7 +279,6 @@
                 </div>
                 <button id="theme-toggle-btn" class="setting-btn" onclick="toggleTheme()">Light Mode</button>
             </div>
-            
             <div class="setting-row">
                 <div class="setting-label">
                     <span>Feedback</span>
@@ -253,7 +286,6 @@
                 </div>
                 <button class="setting-btn" onclick="sendFeedback()">Write Feedback</button>
             </div>
-            
             <div class="setting-row">
                 <div class="setting-label">
                     <span>Contact Us</span>
@@ -266,39 +298,31 @@
 
     <!-- GLOBAL OPTIONS MENU (3-dots dropdown) -->
     <div id="options-dropdown">
-        <div class="dropdown-item" onclick="actionPin()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin
-        </div>
-        <div class="dropdown-item" onclick="actionShare()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share
-        </div>
-        <div class="dropdown-item delete" onclick="actionDelete()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete
-        </div>
+        <div class="dropdown-item" onclick="actionPin()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin</div>
+        <div class="dropdown-item" onclick="actionShare()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share</div>
+        <div class="dropdown-item delete" onclick="actionDelete()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete</div>
     </div>
 
     <!-- SIDEBAR (SLIDER) -->
     <div id="sidebar">
         <div class="sidebar-header">
-            <span class="title">
-                <span style="font-size:18px;">✨</span> BIS AI Portal
-            </span>
-            <button class="close-btn" onclick="toggleSidebar()">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
+            <span class="title"><span style="font-size:18px;">✨</span> BIS AI Portal</span>
+            <button class="close-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
         </div>
         
         <div class="menu-item" onclick="startNewChat()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            New chat
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> New chat
         </div>
         <div class="menu-item">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Search chats
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Search chats
         </div>
         <div class="menu-item" onclick="openLibraryPage()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>
-            Library
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg> Library
+        </div>
+        
+        <!-- NEW: FEE CALCULATOR MENU OPTION -->
+        <div class="menu-item" onclick="openCalculatorPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6.25 15.5l-1.41-1.41L13.17 15H11v-2h2.17l-1.83-1.83 1.41-1.41L15.66 12l-2.91 2.91zM18 9h-2V7h-2v2h-2v2h2v2h2v-2h2V9zM5 5h14v3H5V5z"/></svg> Fee Calculator
         </div>
 
         <div class="recent-heading" id="recent-heading">Recent</div>
@@ -306,8 +330,7 @@
 
         <div class="sidebar-bottom">
             <div class="menu-item" onclick="openSettingsModal()">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
-                Settings
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg> Settings
             </div>
         </div>
     </div>
@@ -316,7 +339,6 @@
     <div id="library-screen" class="hidden">
         <h2 class="library-title">Compliance Standard Library</h2>
         <div class="library-list">
-            
             <div class="lib-card" style="cursor: default;">
                 <div style="display: flex; align-items: center; gap: 18px; width: 100%;">
                     <div class="lib-icon icon-blue">💧</div>
@@ -331,7 +353,6 @@
                     <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/15IORFKOM0ZHgae2mPs6IRfd9P-L7-xX6/preview', 'Manual Lab Test - Steel Bottle')">Manual lab test</button>
                 </div>
             </div>
-            
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1D7hPesm_d_ynfskIPesN0KLuNxqNWEjk/preview', 'IS 269: Ordinary Portland Cement')">
                 <div class="lib-icon icon-green">🏗️</div>
                 <div class="lib-content">
@@ -339,7 +360,6 @@
                     <div class="lib-desc">IS 269 quality rules and packaging standards.</div>
                 </div>
             </div>
-            
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1VzdIMPoc_IFHCect1kIf04lVi6aN--m6/preview', 'IS 374: Electric Ceiling Fans')">
                 <div class="lib-icon icon-yellow">🌀</div>
                 <div class="lib-content">
@@ -347,23 +367,56 @@
                     <div class="lib-desc">IS 374 safety and performance specifications.</div>
                 </div>
             </div>
-            
+        </div>
+    </div>
+
+    <!-- NEW: FEE CALCULATOR SCREEN -->
+    <div id="calculator-screen" class="hidden">
+        <h2 class="library-title">BIS Fee Estimator</h2>
+        <div class="calc-wrapper">
+            <div class="calc-group">
+                <label>Select Scale of Industry</label>
+                <select id="biz-scale" class="calc-select">
+                    <option value="micro">Micro Enterprise / Women Entrepreneur</option>
+                    <option value="small">Small Enterprise</option>
+                    <option value="medium">Medium / Large Industry</option>
+                </select>
+            </div>
+            <div class="calc-group">
+                <label>Select Product Category</label>
+                <select id="prod-cat" class="calc-select">
+                    <option value="general">General Standard (e.g., Cement, Steel Bottles)</option>
+                    <option value="electronics">Electronics & IT Goods</option>
+                    <option value="toys">Toys & Safety Equipments</option>
+                </select>
+            </div>
+            <button class="calc-btn" onclick="calculateFees()">Calculate Estimate</button>
+
+            <!-- Receipt Card -->
+            <div id="receipt" class="receipt-card">
+                <div class="receipt-row"><span>Application Fee:</span> <span id="r-app">₹ 0</span></div>
+                <div class="receipt-row"><span>Annual License Fee:</span> <span id="r-lic">₹ 0</span></div>
+                <div class="receipt-row"><span>Inspection Fee (Per Manday):</span> <span id="r-insp">₹ 0</span></div>
+                <div class="receipt-row"><span>Advance Minimum Marking Fee:</span> <span id="r-mark">₹ 0</span></div>
+                
+                <div id="concession-row" class="receipt-row concession" style="display:none;">
+                    <span>MSME/Women Concession (50% on Marking):</span> <span id="r-con">- ₹ 0</span>
+                </div>
+                
+                <div class="receipt-row total"><span>Estimated Total (Excl. Tax):</span> <span id="r-total">₹ 0</span></div>
+                <div style="font-size: 10px; color: #888; margin-top: 15px; text-align: center;">*This is a provisional estimate based on BIS Scheme-I guidelines. Actual testing charges by laboratories are extra.</div>
+            </div>
         </div>
     </div>
 
     <!-- FULL-SCREEN PDF VIEWER -->
     <div id="pdf-viewer-screen" class="hidden">
         <div class="pdf-header">
-            <button class="back-btn" onclick="closePDFViewer()">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                Back to Library
-            </button>
+            <button class="back-btn" onclick="closePDFViewer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
             <div class="pdf-title" id="pdf-viewer-title">Document</div>
             <div style="width: 120px;"></div>
         </div>
-        <div class="pdf-container">
-            <iframe id="pdf-iframe" src=""></iframe>
-        </div>
+        <div class="pdf-container"><iframe id="pdf-iframe" src=""></iframe></div>
     </div>
 
     <!-- HOME SCREEN -->
@@ -411,245 +464,157 @@
     <div id="input-container">
         <div class="input-top-bar" id="input-top-bar">
             <span>Ask anything</span>
-            <span class="model-badge">
-                <span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄
-            </span>
+            <span class="model-badge"><span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄</span>
             <span style="color: transparent;">-</span>
         </div>
         <div class="input-row">
             <input type="text" id="userInput" placeholder="Type your query..." onkeypress="handleKey(event)">
-            
-            <!-- NEW: Mic & Camera Buttons -->
             <button class="action-icon-btn" id="mic-btn" onclick="startDictation()" title="Voice Input">🎙️</button>
             <button class="action-icon-btn" onclick="alert('Document upload feature coming next!')" title="Upload Report">📸</button>
-            
-            <button class="send-btn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
+            <button class="send-btn" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg></button>
         </div>
     </div>
 
     <script>
         marked.setOptions({ breaks: true });
-        
-        let chatSessions = {};
-        let currentSessionId = null;
-        let isFirstMessage = true;
-        let targetOptionsSessionId = null;
-        let isListening = false; // For Voice Input
+        let chatSessions = {}; let currentSessionId = null; let isFirstMessage = true; let targetOptionsSessionId = null; let isListening = false;
 
         function startNewChat() {
             const newId = 'session_' + Date.now();
             chatSessions[newId] = { title: "New Chat", messages: [] };
             currentSessionId = newId;
-
             isFirstMessage = true;
             document.getElementById('chat-area').innerHTML = '';
             resetToHomeScreen();
             renderSidebar();
-            
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        // --- NEW VOICE INPUT LOGIC (WEB SPEECH API) ---
         function startDictation() {
             if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 const recognition = new SpeechRecognition();
-
-                recognition.continuous = false;
-                recognition.interimResults = false;
-                recognition.lang = 'en-IN'; // Works for Hindi and English mix
-
-                recognition.onstart = function() {
-                    isListening = true;
-                    document.getElementById('mic-btn').classList.add('listening');
-                    document.getElementById('userInput').placeholder = "Listening... Speak now";
-                };
-
-                recognition.onresult = function(e) {
-                    document.getElementById('userInput').value = e.results[0][0].transcript;
-                    resetMic();
-                };
-
-                recognition.onerror = function(e) {
-                    resetMic();
-                };
-
-                recognition.onend = function() {
-                    resetMic();
-                };
-
+                recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
+                recognition.onstart = function() { isListening = true; document.getElementById('mic-btn').classList.add('listening'); document.getElementById('userInput').placeholder = "Listening... Speak now"; };
+                recognition.onresult = function(e) { document.getElementById('userInput').value = e.results[0][0].transcript; resetMic(); };
+                recognition.onerror = function(e) { resetMic(); };
+                recognition.onend = function() { resetMic(); };
                 if(!isListening) recognition.start();
-            } else {
-                alert("Your browser does not support Voice Input. Please use Google Chrome or Edge.");
-            }
+            } else { alert("Your browser does not support Voice Input. Please use Google Chrome or Edge."); }
         }
-
-        function resetMic() {
-            isListening = false;
-            document.getElementById('mic-btn').classList.remove('listening');
-            document.getElementById('userInput').placeholder = "Type your query...";
-        }
+        function resetMic() { isListening = false; document.getElementById('mic-btn').classList.remove('listening'); document.getElementById('userInput').placeholder = "Type your query..."; }
 
         function openPDFViewer(pdfUrl, title) {
-            document.getElementById('library-screen').classList.add('hidden');
-            document.getElementById('library-screen').style.display = 'none';
+            hideAllScreens();
             document.getElementById('pdf-viewer-title').innerText = title;
-            
-            if (pdfUrl.startsWith('http')) {
-                document.getElementById('pdf-iframe').src = pdfUrl;
-            } else {
-                document.getElementById('pdf-iframe').src = '/pdf/' + pdfUrl;
-            }
-            
+            document.getElementById('pdf-iframe').src = pdfUrl.startsWith('http') ? pdfUrl : '/pdf/' + pdfUrl;
             document.getElementById('pdf-viewer-screen').classList.remove('hidden');
             document.getElementById('pdf-viewer-screen').style.display = 'flex';
         }
-
-        function closePDFViewer() {
-            document.getElementById('pdf-iframe').src = ''; 
-            document.getElementById('pdf-viewer-screen').classList.add('hidden');
-            document.getElementById('pdf-viewer-screen').style.display = 'none';
-            openLibraryPage();
-        }
+        function closePDFViewer() { document.getElementById('pdf-iframe').src = ''; openLibraryPage(); }
 
         function openLibraryPage() {
-            document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('chat-area').classList.remove('active');
-            document.getElementById('input-container').style.display = 'none';
-            document.getElementById('pdf-viewer-screen').classList.add('hidden');
-            document.getElementById('pdf-viewer-screen').style.display = 'none';
-            
+            hideAllScreens();
             document.getElementById('library-screen').classList.remove('hidden');
             document.getElementById('library-screen').style.display = 'flex';
-            
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        // --- SETTINGS MODAL LOGIC ---
+        // --- NEW: FEE CALCULATOR LOGIC ---
+        function openCalculatorPage() {
+            hideAllScreens();
+            document.getElementById('calculator-screen').classList.remove('hidden');
+            document.getElementById('calculator-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function calculateFees() {
+            const scale = document.getElementById('biz-scale').value;
+            
+            // Standard Fixed Fees
+            let appFee = 1000;
+            let licFee = 1000;
+            let inspFee = 7000;
+            let markFee = 0;
+            let concession = 0;
+
+            // Base minimum marking fee logic (Dummy figures based on real BIS structure)
+            if(scale === 'micro') markFee = 25000;
+            else if(scale === 'small') markFee = 40000;
+            else markFee = 60000;
+
+            // Apply 50% Concession for MSME/Women
+            if(scale === 'micro' || scale === 'small') {
+                concession = markFee * 0.5;
+                markFee = markFee - concession;
+                document.getElementById('concession-row').style.display = 'flex';
+                document.getElementById('r-con').innerText = `- ₹ ${concession.toLocaleString()}`;
+            } else {
+                document.getElementById('concession-row').style.display = 'none';
+            }
+
+            let total = appFee + licFee + inspFee + markFee;
+
+            // Update DOM
+            document.getElementById('r-app').innerText = `₹ ${appFee.toLocaleString()}`;
+            document.getElementById('r-lic').innerText = `₹ ${licFee.toLocaleString()}`;
+            document.getElementById('r-insp').innerText = `₹ ${inspFee.toLocaleString()}`;
+            document.getElementById('r-mark').innerText = `₹ ${markFee.toLocaleString()}`;
+            document.getElementById('r-total').innerText = `₹ ${total.toLocaleString()}`;
+
+            // Show Receipt
+            document.getElementById('receipt').classList.add('show');
+        }
+
+        function hideAllScreens() {
+            const screens = ['home-screen', 'library-screen', 'calculator-screen', 'pdf-viewer-screen'];
+            screens.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+                document.getElementById(s).style.display = 'none';
+            });
+            document.getElementById('chat-area').classList.remove('active');
+            document.getElementById('input-container').style.display = 'none';
+        }
+
         function openSettingsModal() { document.getElementById('settings-overlay').classList.add('show'); if(window.innerWidth < 800) toggleSidebar(); }
         function closeSettingsModal() { document.getElementById('settings-overlay').classList.remove('show'); }
-        
-        function clearAllChats() {
-            if(confirm("Are you sure you want to permanently delete all chat history?")) {
-                chatSessions = {};
-                currentSessionId = null; 
-                closeSettingsModal();
-                startNewChat();
-            }
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            const themeBtn = document.getElementById('theme-toggle-btn');
-            if(document.body.classList.contains('light-mode')) {
-                themeBtn.innerText = "Dark Mode";
-            } else {
-                themeBtn.innerText = "Light Mode";
-            }
-        }
-
-        function sendFeedback() {
-            let feedback = prompt("Please share your feedback or suggestions:");
-            if (feedback && feedback.trim() !== "") {
-                alert("Thank you! Your feedback has been sent successfully.");
-                closeSettingsModal();
-            }
-        }
-
-        function contactUs() {
-            alert("Contact our support team at: support@bis-ai.gov.in\nHelpline: 1800-11-2026");
-        }
-        
+        function clearAllChats() { if(confirm("Are you sure you want to permanently delete all chat history?")) { chatSessions = {}; currentSessionId = null; closeSettingsModal(); startNewChat(); } }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); const tBtn = document.getElementById('theme-toggle-btn'); tBtn.innerText = document.body.classList.contains('light-mode') ? "Dark Mode" : "Light Mode"; }
+        function sendFeedback() { let f = prompt("Please share your feedback or suggestions:"); if (f && f.trim() !== "") { alert("Thank you! Your feedback has been sent successfully."); closeSettingsModal(); } }
+        function contactUs() { alert("Contact our support team at: support@bis-ai.gov.in\nHelpline: 1800-11-2026"); }
         document.getElementById('settings-overlay').addEventListener('click', function(e) { if (e.target === this) closeSettingsModal(); });
 
         function renderSidebar() {
-            const list = document.getElementById('sidebar-history-list');
-            list.innerHTML = '';
-            let hasVisibleChats = false;
-
+            const list = document.getElementById('sidebar-history-list'); list.innerHTML = ''; let hasVisibleChats = false;
             const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
-
             for (const id of sortedIds) {
                 const session = chatSessions[id];
                 if (session.messages.length > 0) {
                     hasVisibleChats = true;
-                    const isActive = id === currentSessionId ? 'active' : '';
-                    
-                    list.innerHTML += `
-                        <div class="recent-item ${isActive}" onclick="loadSession('${id}')">
-                            <span class="recent-item-title">${session.title}</span>
-                            <button class="options-btn" onclick="openOptions(event, '${id}')">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                            </button>
-                        </div>
-                    `;
+                    list.innerHTML += `<div class="recent-item ${id === currentSessionId ? 'active' : ''}" onclick="loadSession('${id}')"><span class="recent-item-title">${session.title}</span><button class="options-btn" onclick="openOptions(event, '${id}')"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>`;
                 }
             }
-
             document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
         }
 
         function loadSession(id) {
-            currentSessionId = id;
-            const session = chatSessions[id];
-            
-            document.getElementById('chat-area').innerHTML = ''; 
-
+            currentSessionId = id; const session = chatSessions[id]; document.getElementById('chat-area').innerHTML = ''; 
             if (session.messages.length > 0) {
-                forceChatMode();
-                session.messages.forEach(msg => {
-                    appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role);
-                });
-            } else {
-                resetToHomeScreen();
-            }
-            
-            renderSidebar();
-            if(window.innerWidth < 800) toggleSidebar();
+                forceChatMode(); session.messages.forEach(msg => { appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role); });
+            } else { resetToHomeScreen(); }
+            renderSidebar(); if(window.innerWidth < 800) toggleSidebar();
         }
 
-        function openOptions(e, id) {
-            e.stopPropagation();
-            targetOptionsSessionId = id;
-            const menu = document.getElementById('options-dropdown');
-            const rect = e.currentTarget.getBoundingClientRect();
-            menu.style.top = `${rect.bottom + 5}px`;
-            menu.style.left = `${rect.left}px`;
-            menu.classList.add('show');
-        }
-
-        document.addEventListener('click', (e) => {
-            const menu = document.getElementById('options-dropdown');
-            if(!menu.contains(e.target) && !e.target.closest('.options-btn')) {
-                menu.classList.remove('show');
-            }
-        });
-
+        function openOptions(e, id) { e.stopPropagation(); targetOptionsSessionId = id; const menu = document.getElementById('options-dropdown'); const rect = e.currentTarget.getBoundingClientRect(); menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left}px`; menu.classList.add('show'); }
+        document.addEventListener('click', (e) => { const menu = document.getElementById('options-dropdown'); if(!menu.contains(e.target) && !e.target.closest('.options-btn')) { menu.classList.remove('show'); } });
         function actionPin() { alert("Pin feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
         function actionShare() { alert("Share feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
-        function actionDelete() {
-            if(targetOptionsSessionId) {
-                delete chatSessions[targetOptionsSessionId];
-                document.getElementById('options-dropdown').classList.remove('show');
-                if(currentSessionId === targetOptionsSessionId) startNewChat();
-                else renderSidebar();
-            }
-        }
-
+        function actionDelete() { if(targetOptionsSessionId) { delete chatSessions[targetOptionsSessionId]; document.getElementById('options-dropdown').classList.remove('show'); if(currentSessionId === targetOptionsSessionId) startNewChat(); else renderSidebar(); } }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
         function forceChatMode() {
             isFirstMessage = false;
-            document.getElementById('library-screen').classList.add('hidden');
-            document.getElementById('library-screen').style.display = 'none';
-            document.getElementById('pdf-viewer-screen').classList.add('hidden');
-            document.getElementById('pdf-viewer-screen').style.display = 'none';
-            document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('home-screen').style.display = 'none';
-            
+            hideAllScreens();
             document.getElementById('input-container').style.display = 'block';
             document.getElementById('input-top-bar').style.display = 'none';
             document.getElementById('input-container').classList.add('chat-mode');
@@ -658,12 +623,7 @@
 
         function resetToHomeScreen() {
             isFirstMessage = true;
-            document.getElementById('library-screen').classList.add('hidden');
-            document.getElementById('library-screen').style.display = 'none';
-            document.getElementById('pdf-viewer-screen').classList.add('hidden');
-            document.getElementById('pdf-viewer-screen').style.display = 'none';
-            document.getElementById('chat-area').classList.remove('active');
-            
+            hideAllScreens();
             document.getElementById('home-screen').classList.remove('hidden');
             document.getElementById('home-screen').style.display = 'flex';
             document.getElementById('input-container').style.display = 'block';
@@ -672,80 +632,32 @@
         }
 
         function showTypingIndicator() {
-            const box = document.getElementById('chat-area');
-            const row = document.createElement('div');
-            row.id = 'typingBubble';
-            row.className = `message-row bot`;
+            const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.id = 'typingBubble'; row.className = `message-row bot`;
             row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards Matrix...</span></div>`;
-            box.appendChild(row);
-            box.scrollTop = box.scrollHeight;
+            box.appendChild(row); box.scrollTop = box.scrollHeight;
         }
-
-        function removeTypingIndicator() {
-            const bubble = document.getElementById('typingBubble');
-            if(bubble) bubble.remove();
-        }
-
-        function appendMsgDOM(content, sender) {
-            const box = document.getElementById('chat-area');
-            const row = document.createElement('div');
-            row.className = `message-row ${sender}`;
-            row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`;
-            box.appendChild(row);
-            box.scrollTop = box.scrollHeight;
-        }
+        function removeTypingIndicator() { const bubble = document.getElementById('typingBubble'); if(bubble) bubble.remove(); }
+        function appendMsgDOM(content, sender) { const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.className = `message-row ${sender}`; row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`; box.appendChild(row); box.scrollTop = box.scrollHeight; }
 
         async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if(!text) return;
-
+            const input = document.getElementById('userInput'); const text = input.value.trim(); if(!text) return;
             if(isFirstMessage === true && chatSessions[currentSessionId].messages.length > 0) {
-                 const newId = 'session_' + Date.now();
-                 chatSessions[newId] = { title: "New Chat", messages: [] };
-                 currentSessionId = newId;
+                 const newId = 'session_' + Date.now(); chatSessions[newId] = { title: "New Chat", messages: [] }; currentSessionId = newId;
             }
-
-            forceChatMode();
-            chatSessions[currentSessionId].messages.push({ role: "user", text: text });
-            
-            if (chatSessions[currentSessionId].messages.length === 1) {
-                chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
-            }
-            renderSidebar();
-
-            appendMsgDOM(text, 'user');
-            input.value = '';
-            showTypingIndicator();
-
+            forceChatMode(); chatSessions[currentSessionId].messages.push({ role: "user", text: text });
+            if (chatSessions[currentSessionId].messages.length === 1) chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
+            renderSidebar(); appendMsgDOM(text, 'user'); input.value = ''; showTypingIndicator();
             try {
-                const res = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: text})
-                });
-                const data = await res.json();
-
-                removeTypingIndicator();
-                chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply });
-                appendMsgDOM(marked.parse(data.reply), 'bot');
-
-            } catch(e) {
-                removeTypingIndicator();
-                appendMsgDOM("Network error: Please verify your connection to the Render backend.", 'bot');
-            }
+                const res = await fetch('/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: text}) });
+                const data = await res.json(); removeTypingIndicator();
+                chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply }); appendMsgDOM(marked.parse(data.reply), 'bot');
+            } catch(e) { removeTypingIndicator(); appendMsgDOM("Network error: Please verify your connection to the Render backend.", 'bot'); }
         }
 
-        function sendPreset(text) {
-            startNewChat();
-            document.getElementById('userInput').value = text;
-            sendMessage();
-        }
-
+        function sendPreset(text) { startNewChat(); document.getElementById('userInput').value = text; sendMessage(); }
         function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
 
         window.onload = startNewChat;
-
     </script>
 </body>
 </html>
