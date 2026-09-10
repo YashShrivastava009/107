@@ -9,7 +9,7 @@ GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Tera exact model locked
-MODEL_NAME = 'gemini-1.5-flash'
+MODEL_NAME = 'gemini-3.6-flash'
 model = genai.GenerativeModel(MODEL_NAME)
 
 app = FastAPI()
