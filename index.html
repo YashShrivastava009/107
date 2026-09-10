@@ -1,358 +1,864 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Compliance & Certification Intelligence Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            macTitle: '#eceff1',
-            dashBg: '#1e2430',
-            cardBg: '#2a3241',
-            cardHover: '#323c4e',
-            accentCyan: '#00e5ff',
-            accentOrange: '#ff7043',
-            accentGreen: '#00e676',
-            accentPurple: '#7c4dff',
-            sidebarBg: '#191e28'
-          }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIS AI - Copilot Theme</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            height: 100vh;
+            background: linear-gradient(165deg, #022a40 0%, #061c2e 30%, #161a24 60%, #4a2522 100%);
+            font-family: 'Segoe UI', 'Poppins', sans-serif;
+            display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff;
+            transition: background 0.4s, color 0.4s;
         }
-      }
-    }
-  </script>
-</head>
-<body class="min-h-screen bg-[radial-gradient(ellipse_at_bottom_right,_#ff6b6b_0%,_#3b1c32_30%,_#111827_80%)] flex items-center justify-center p-3 sm:p-6 font-sans antialiased text-slate-200">
 
-  <!-- Main Mac Window Container -->
-  <div class="w-full max-w-6xl bg-dashBg rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.65)] border border-white/10 overflow-hidden flex flex-col backdrop-blur-md">
-    
-    <!-- 1. Mac OS Window Title Bar -->
-    <header class="bg-macTitle h-11 px-4 flex items-center justify-between border-b border-gray-300 text-slate-700 select-none">
-      <!-- Traffic Light Window Controls -->
-      <div class="flex items-center gap-2">
-        <span class="w-3 h-3 rounded-full bg-[#ff5f56] border border-[#e0443e] inline-block shadow-sm cursor-pointer"></span>
-        <span class="w-3 h-3 rounded-full bg-[#ffbd2e] border border-[#dea123] inline-block shadow-sm cursor-pointer"></span>
-        <span class="w-3 h-3 rounded-full bg-[#27c93f] border border-[#1aab29] inline-block shadow-sm cursor-pointer"></span>
-        <div class="ml-4 flex items-center gap-2 text-xs font-semibold text-gray-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
-          <span class="flex items-center gap-1">⚡ 100% Certified</span>
-        </div>
-      </div>
+        /* --- SIDEBAR & MENU BUTTON --- */
+        #menu-btn { position: fixed; top: 20px; left: 20px; z-index: 990; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.05); color: white; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; transition: 0.3s ease; backdrop-filter: blur(10px); }
+        #menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+        #sidebar { position: fixed; top: 0; left: -320px; width: 280px; height: 100vh; background: rgba(18, 22, 29, 0.95); backdrop-filter: blur(25px); border-right: 1px solid rgba(255,255,255,0.05); z-index: 1000; transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; display: flex; flex-direction: column; padding: 20px 10px; box-shadow: 10px 0 40px rgba(0,0,0,0.5); }
+        #sidebar.open { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 10px; }
+        .sidebar-header .title { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px;}
+        .close-btn { cursor: pointer; background: transparent; border: none; color: #a1a6b0; padding: 5px; transition: 0.2s; border-radius: 5px;}
+        .close-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 15px; margin-bottom: 5px; border-radius: 20px; cursor: pointer; transition: 0.2s; font-size: 14px; color: #e2e4e9; }
+        .menu-item:hover { background: rgba(255,255,255,0.08); }
+        .recent-heading { margin: 25px 0 10px 15px; font-size: 12px; color: #a1a6b0; font-weight: 500; display: none; }
+        .recent-list { overflow-y: auto; flex: 1; padding: 0 5px;}
+        .recent-list::-webkit-scrollbar { width: 4px; }
+        .recent-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .recent-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 8px 15px; margin-bottom: 2px; border-radius: 20px; font-size: 13px; color: #c3c8d4; cursor: pointer; transition: 0.2s; }
+        .recent-item:hover { background: rgba(255,255,255,0.05); }
+        .recent-item.active { background: rgba(255,255,255,0.08); font-weight: 500; color: white;}
+        .recent-item-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+        .options-btn { background: transparent; border: none; color: #a1a6b0; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
+        .recent-item:hover .options-btn { opacity: 1; }
+        .options-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+        .sidebar-bottom { margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-      <!-- Center Workspace Title -->
-      <div class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-gray-700 bg-white/70 px-3 py-1 rounded-md border border-gray-200 shadow-sm cursor-pointer">
-        <span>BIS National Repository</span>
-        <span class="text-[10px] text-gray-400">▾</span>
-      </div>
+        #options-dropdown { position: fixed; background: rgba(25, 28, 36, 0.98); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 6px; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.6); min-width: 140px; }
+        #options-dropdown.show { display: flex; }
+        .dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; font-size: 13px; color: #e2e4e9; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.08); }
+        .dropdown-item.delete { color: #ff5c5c; }
+        .dropdown-item.delete:hover { background: rgba(255, 92, 92, 0.15); }
 
-      <!-- Search Input -->
-      <div class="flex items-center bg-white/90 border border-gray-300 rounded-lg px-2.5 py-1 w-44 sm:w-60 shadow-inner">
-        <svg class="w-3.5 h-3.5 text-gray-400 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" placeholder="Search standard, IS code..." class="bg-transparent text-xs w-full outline-none text-gray-800 placeholder-gray-400">
-      </div>
-    </header>
+        /* --- MODALS (SETTINGS & UPLOAD) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-box { background: rgba(30, 34, 43, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 440px; max-width: 90%; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; }
+        .modal-overlay.show .modal-box { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 18px; font-weight: 500; margin: 0;}
+        .modal-close { cursor: pointer; background: rgba(255,255,255,0.05); border: none; color: #a1a6b0; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .modal-close:hover { background: rgba(255,255,255,0.15); color: white; }
 
-    <!-- App Body (Sidebar + Content Grid) -->
-    <div class="flex flex-col md:flex-row flex-1 min-h-[640px]">
-      
-      <!-- 2. Left Sidebar -->
-      <aside class="w-full md:w-56 bg-sidebarBg p-4 border-r border-white/5 flex flex-col justify-between shrink-0">
-        <div>
-          <!-- Top Utility Nav -->
-          <div class="space-y-1 mb-5">
-            <a href="#" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-              All Standards
-            </a>
-            <a href="#" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-              Lab Protocols
-            </a>
-          </div>
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .setting-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .setting-label { font-size: 14px; color: #e2e4e9; display: flex; flex-direction: column; gap: 4px;}
+        .setting-sub { font-size: 11px; color: #888;}
+        .setting-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: 0.2s;}
+        .setting-btn:hover { background: rgba(255,255,255,0.2); }
+        .setting-btn.danger { background: rgba(255, 92, 92, 0.15); color: #ff5c5c; }
+        .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
-          <!-- Section: MENU -->
-          <div class="mb-5">
-            <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 px-3">Menu</span>
-            <div class="mt-2 space-y-1">
-              <!-- Active Nav Item (Glow Blue Pill) -->
-              <a href="#" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-[#0091ea] to-[#0288d1] shadow-md shadow-sky-500/20">
-                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                Dashboard
-              </a>
-              <a href="#" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Audit Records
-              </a>
-              <a href="#" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                Testing Activity
-              </a>
-            </div>
-          </div>
-
-          <!-- Section: ACTIVE STANDARDS LIST -->
-          <div>
-            <span class="text-[10px] uppercase font-bold tracking-widest text-slate-500 px-3">Standard Library</span>
-            <div class="mt-2 space-y-1">
-              <div class="flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-slate-300 hover:bg-white/5">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-cyan-400"></span>IS 17526 Flasks</span>
-                <span class="text-[10px] font-mono text-cyan-400">Active</span>
-              </div>
-              <div class="flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-slate-300 hover:bg-white/5">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400"></span>IS 269 Cement</span>
-                <span class="text-[10px] font-mono text-emerald-400">Pass</span>
-              </div>
-              <div class="flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-slate-300 hover:bg-white/5">
-                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-amber-400"></span>IS 374 Ceiling Fan</span>
-                <span class="text-[10px] font-mono text-amber-400">Valid</span>
-              </div>
-              <!-- 4th CERTIFICATE LIST ENTRY -->
-              <div class="flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-white bg-indigo-500/20 border border-indigo-400/30">
-                <span class="flex items-center gap-2 font-semibold"><span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>IS 303 Plywood</span>
-                <span class="text-[9px] px-1.5 py-0.5 rounded bg-purple-500 text-white font-bold">4th Cert</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <button class="mt-4 flex items-center justify-center gap-2 w-full py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-semibold text-slate-300 border border-white/5 transition">
-          <span>+ Add Custom Standard</span>
-        </button>
-      </aside>
-
-      <!-- 3. Main Dashboard Workspace -->
-      <main class="flex-1 p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-4 auto-rows-min bg-[#181e28]">
+        /* --- SCREENS --- */
+        #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
+        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
         
-        <!-- ROW 1 / COL 1: 14K Metric Card -->
-        <div class="lg:col-span-3 bg-cardBg rounded-xl p-4 border border-white/5 flex flex-col justify-between shadow-lg">
-          <div class="flex justify-between items-start">
-            <div>
-              <h3 class="text-3xl font-extrabold text-white tracking-tight">14K</h3>
-              <p class="text-[11px] font-medium text-slate-400 mt-0.5">Tests Invoiced</p>
-            </div>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">+12%</span>
-          </div>
-          <!-- Sparkline Wave SVG -->
-          <div class="my-3">
-            <svg class="w-full h-10 stroke-emerald-400 fill-none" viewBox="0 0 100 30" preserveAspectRatio="none">
-              <path d="M0,25 Q15,5 30,18 T60,8 T85,22 T100,5" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="text-[11px] text-slate-400 flex justify-between border-t border-white/5 pt-2">
-            <span>Primary Lab</span>
-            <span class="text-slate-300 font-medium">National Test House</span>
-          </div>
-        </div>
+        .greeting { margin-top: 15vh; text-align: center; }
+        .greeting h1 { font-size: 28px; font-weight: 500; margin-bottom: 5px; }
+        .greeting h2 { font-size: 32px; font-weight: 600; margin-bottom: 40px; }
+        .suggestion-pills { display: flex; gap: 12px; margin-top: 25px; transition: opacity 0.4s; }
+        .pill { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 18px; border-radius: 20px; font-size: 13px; color: #e2e4e9; cursor: pointer; transition: 0.2s; }
+        .pill:hover { background: rgba(255, 255, 255, 0.15); }
+        .bottom-widgets { position: absolute; bottom: 40px; display: flex; gap: 20px; width: 100%; max-width: 950px; justify-content: center; }
+        .widget-card { background: rgba(30, 34, 43, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; width: 300px; height: 160px; display: flex; flex-direction: column; transition: background 0.3s; }
+        .widget-header { display: flex; justify-content: space-between; font-size: 11px; color: #a1a6b0; margin-bottom: 15px;}
+        .widget-content { flex: 1; display: flex; align-items: center; gap: 15px; }
+        .widget-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.1); }
 
-        <!-- ROW 1 / COL 2: $904 Metric Card -->
-        <div class="lg:col-span-3 bg-cardBg rounded-xl p-4 border border-white/5 flex flex-col justify-between shadow-lg">
-          <div class="flex justify-between items-start">
-            <div>
-              <h3 class="text-3xl font-extrabold text-white tracking-tight">$ 904</h3>
-              <p class="text-[11px] font-medium text-slate-400 mt-0.5">Audit Tokens</p>
-            </div>
-            <span class="text-xs px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-semibold">Live</span>
-          </div>
-          <!-- Sparkline Wave SVG -->
-          <div class="my-3">
-            <svg class="w-full h-10 stroke-cyan-400 fill-none" viewBox="0 0 100 30" preserveAspectRatio="none">
-              <path d="M0,15 Q20,28 40,12 T70,24 T100,10" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="text-[11px] text-slate-400 flex justify-between border-t border-white/5 pt-2">
-            <span>Network Gateway</span>
-            <span class="text-slate-300 font-medium">BIS Cloud Sync</span>
-          </div>
-        </div>
+        #library-screen { justify-content: center; }
+        .library-title { font-size: 30px; font-weight: 600; margin-bottom: 25px; text-align: center; }
+        .library-list { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 500px; }
+        
+        .lib-card { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 16px 20px; cursor: pointer; transition: 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .lib-card:hover { background: rgba(45, 50, 62, 0.95); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .lib-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: inset 0 0 10px rgba(255,255,255,0.2); }
+        .icon-blue { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0284c7; }
+        .icon-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #16a34a; }
+        .icon-yellow { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #d97706; }
+        .lib-content { display: flex; flex-direction: column; gap: 4px; }
+        .lib-title { font-size: 16px; font-weight: 500; color: #fff; transition: 0.3s; }
+        .lib-desc { font-size: 13px; color: #a1a6b0; line-height: 1.4; }
 
-        <!-- ROW 1 & 2 / COL 3: Big Donut Chart Card (Exact 2013 / Distribution replica) -->
-        <div class="lg:col-span-6 lg:row-span-2 bg-cardBg rounded-xl p-5 border border-white/5 flex flex-col justify-between shadow-lg relative">
-          <div class="flex justify-between items-center mb-2">
-            <div>
-              <h4 class="text-sm font-bold text-white uppercase tracking-wider">Compliance Distribution</h4>
-              <p class="text-xs text-slate-400">Total verified standards breakdown</p>
-            </div>
-            <span class="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2 py-1 rounded border border-cyan-500/20">Audit 2026</span>
-          </div>
+        .lib-actions { width: 100%; display: flex; gap: 10px; max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: all 0.3s ease; }
+        .lib-card:hover .lib-actions { max-height: 50px; opacity: 1; margin-top: 12px; }
+        .lib-action-btn { flex: 1; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.2); color: #00d4ff; padding: 8px 5px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: center; font-family: 'Poppins', sans-serif; }
+        .lib-action-btn:hover { background: rgba(0, 212, 255, 0.25); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,212,255,0.2); }
 
-          <!-- Donut Graphic -->
-          <div class="relative flex items-center justify-center my-4">
-            <svg class="w-48 h-48 transform -rotate-90" viewBox="0 0 120 120">
-              <!-- Track background -->
-              <circle cx="60" cy="60" r="45" stroke="#1e2430" stroke-width="15" fill="none"/>
-              <!-- Segment 1: Cyan (38%) -->
-              <circle cx="60" cy="60" r="45" stroke="#00e5ff" stroke-width="15" fill="none"
-                stroke-dasharray="282.7" stroke-dashoffset="175" stroke-linecap="round"/>
-              <!-- Segment 2: Orange (26%) -->
-              <circle cx="60" cy="60" r="45" stroke="#ff7043" stroke-width="15" fill="none"
-                stroke-dasharray="282.7" stroke-dashoffset="209" class="origin-center rotate-[137deg]"/>
-              <!-- Segment 3: Purple (13%) -->
-              <circle cx="60" cy="60" r="45" stroke="#7c4dff" stroke-width="15" fill="none"
-                stroke-dasharray="282.7" stroke-dashoffset="246" class="origin-center rotate-[230deg]"/>
-              <!-- Segment 4: Emerald (9%) -->
-              <circle cx="60" cy="60" r="45" stroke="#00e676" stroke-width="15" fill="none"
-                stroke-dasharray="282.7" stroke-dashoffset="257" class="origin-center rotate-[280deg]"/>
-            </svg>
-            <!-- Donut Center Label -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-              <span class="text-3xl font-black tracking-wider text-white">IS</span>
-              <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400">Certified</span>
-            </div>
-          </div>
+        /* --- CALCULATOR UI --- */
+        #calculator-screen { justify-content: center; }
+        .calc-wrapper { background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 30px; width: 100%; max-width: 500px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .calc-group { margin-bottom: 20px; }
+        .calc-group label { display: block; font-size: 13px; color: #a1a6b0; margin-bottom: 8px; }
+        .calc-select { width: 100%; padding: 12px 15px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: 0.3s; }
+        .calc-select:focus { border-color: #00d4ff; background: rgba(0,0,0,0.3); }
+        .calc-select option { background: #1e222b; color: white; }
+        .calc-btn { width: 100%; background: linear-gradient(135deg, #10a37f, #00d4ff); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 500; cursor: pointer; transition: 0.3s; font-family: 'Poppins', sans-serif; margin-top: 10px; }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3); }
+        
+        .receipt-card { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin-top: 25px; display: none; border: 1px dashed rgba(255,255,255,0.2); }
+        .receipt-card.show { display: block; animation: popIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        .receipt-row { display: flex; justify-content: space-between; font-size: 13px; color: #e2e4e9; margin-bottom: 10px; }
+        .receipt-row.total { font-weight: 600; font-size: 16px; color: #00d4ff; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px; }
+        .receipt-row.concession { color: #10a37f; }
 
-          <!-- Bottom Metric Row -->
-          <div class="grid grid-cols-4 gap-2 pt-3 border-t border-white/5 text-center">
-            <div>
-              <p class="text-[10px] text-slate-400">Bottles</p>
-              <p class="text-base font-bold text-cyan-400 mt-0.5">38%</p>
-            </div>
-            <div>
-              <p class="text-[10px] text-slate-400">Cement</p>
-              <p class="text-base font-bold text-[#ff7043] mt-0.5">26%</p>
-            </div>
-            <div>
-              <p class="text-[10px] text-slate-400">Fans</p>
-              <p class="text-base font-bold text-purple-400 mt-0.5">13%</p>
-            </div>
-            <div>
-              <p class="text-[10px] text-slate-400">4th Cert</p>
-              <p class="text-base font-bold text-emerald-400 mt-0.5">23%</p>
-            </div>
-          </div>
-        </div>
+        /* --- NEW: DASHBOARD ROADMAP UI (FEATURE 4 REDESIGNED) --- */
+        #roadmap-screen { align-items: center; overflow-y: auto; padding: 60px 0 30px 0; }
+        .dash-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+            width: 100%; max-width: 950px; margin: 0 auto; padding: 0 20px;
+        }
+        .dash-card {
+            background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border-radius: 16px;
+            padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        
+        /* Top Headers spanning */
+        .progress-widget { grid-column: span 1; align-items: center; justify-content: center; }
+        .info-widget { grid-column: span 2; justify-content: center; }
+        
+        /* Donut Chart CSS */
+        .donut-wrapper {
+            position: relative; width: 110px; height: 110px; border-radius: 50%;
+            background: conic-gradient(#00d4ff var(--pct, 0%), rgba(255,255,255,0.05) 0);
+            display: flex; align-items: center; justify-content: center; margin: 15px 0;
+            transition: background 0.5s ease;
+        }
+        .donut-inner {
+            width: 86px; height: 86px; background: #1e222b; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 600; color: #fff;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .dash-stat-label { font-size: 12px; color: #a1a6b0; text-align: center;}
 
-        <!-- ROW 2 / COL 1: +18% Card -->
-        <div class="lg:col-span-3 bg-cardBg rounded-xl p-4 border border-white/5 flex flex-col justify-between shadow-lg">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="text-2xl font-black text-white">+18% ↗</span>
-              <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff]"></span>
-            </div>
-            <div class="w-12 h-1 bg-white/20 rounded mt-2"></div>
-            <h5 class="text-sm font-semibold text-slate-200 mt-3">$ 200 Left</h5>
-            <p class="text-[11px] text-slate-400">Testing budget balance</p>
-          </div>
-          <div class="text-[10px] text-slate-400 pt-2 border-t border-white/5">
-            Auto-renew: <span class="text-slate-200">Active</span>
-          </div>
-        </div>
+        /* Info Widget Stats */
+        .info-stats { display: flex; gap: 30px; margin-top: 15px; width: 100%; }
+        .stat-box { flex: 1; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02); }
+        .stat-val { display: block; font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .stat-name { font-size: 12px; color: #a1a6b0; text-transform: uppercase; letter-spacing: 1px;}
 
-        <!-- ROW 2 / COL 2: 65% Semi Circular Arc Gauge -->
-        <div class="lg:col-span-3 bg-cardBg rounded-xl p-4 border border-white/5 flex flex-col items-center justify-center shadow-lg relative">
-          <div class="relative w-28 h-28 flex items-center justify-center">
-            <svg class="w-28 h-28 transform -rotate-90" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="40" stroke="#1e2430" stroke-width="8" fill="none"/>
-              <circle cx="50" cy="50" r="40" stroke="#00e5ff" stroke-width="8" fill="none"
-                stroke-dasharray="251.2" stroke-dashoffset="88" stroke-linecap="round"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="text-2xl font-black text-white">65%</span>
-              <span class="text-[9px] uppercase tracking-wider text-slate-400">Accuracy</span>
-            </div>
-          </div>
-          <p class="text-xs font-semibold text-slate-300 mt-1">Audit Clearance</p>
-          <span class="text-[10px] text-slate-500">Dropbox Synced</span>
-        </div>
+        /* Stage Cards Grid (Bottom) */
+        .stage-card { grid-column: span 1; position: relative; overflow: hidden; }
+        .stage-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--accent);
+        }
+        .stage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .stage-num { font-size: 28px; font-weight: 600; color: rgba(255,255,255,0.2); }
+        .stage-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+        .stage-desc { font-size: 12px; color: #888; line-height: 1.5; flex: 1; }
 
-        <!-- ================================================================= -->
-        <!-- ROW 3: FEATURED CERTIFICATES & ACTIONS (JUDGES SPOTLIGHT SECTION) -->
-        <!-- ================================================================= -->
+        /* Custom Dashboard Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #a1a6b0; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
-        <!-- 4th CERTIFICATE PERFECT SPOTLIGHT (High Attractiveness for Judges) -->
-        <div class="lg:col-span-7 bg-gradient-to-br from-[#2a3241] via-[#242b38] to-[#1c222d] rounded-xl p-5 border-2 border-purple-500/40 shadow-xl relative overflow-hidden group">
-          <!-- Background Glow Accent -->
-          <div class="absolute -right-10 -bottom-10 w-44 h-44 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all duration-500"></div>
-          
-          <div class="flex items-center justify-between mb-3 relative z-10">
-            <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-purple-500/30 text-white font-black text-lg">
-                ★
-              </div>
-              <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="text-base font-bold text-white tracking-wide">4th Certificate Standard</h3>
-                  <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-500 text-white uppercase shadow-sm">Featured</span>
-                </div>
-                <p class="text-xs text-slate-300">IS 303 / Premium Structural Grade Certification</p>
-              </div>
-            </div>
-            <div class="text-right">
-              <span class="text-xs font-mono text-emerald-400 font-bold">100% Passed</span>
-              <p class="text-[10px] text-slate-400">Zero non-conformities</p>
-            </div>
-          </div>
+        /* Media Query for Dashboard Responsiveness */
+        @media (max-width: 900px) {
+            .dash-grid { grid-template-columns: repeat(2, 1fr); }
+            .info-widget { grid-column: span 1; }
+        }
+        @media (max-width: 600px) {
+            .dash-grid { grid-template-columns: 1fr; }
+            .progress-widget, .info-widget, .stage-card { grid-column: span 1; }
+            .info-stats { flex-direction: column; gap: 10px; }
+        }
 
-          <!-- 3 Embedded Action Links (Drive PDFs) -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mt-4 relative z-10">
-            <!-- 1. Print Book -->
-            <a href="https://drive.google.com/file/d/1yfr9iWu2B-by5vYJOKoE0XavkErtigu2/view?usp=drive_link" target="_blank"
-              class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/5 hover:bg-purple-600/30 border border-white/10 hover:border-purple-400 transition-all group/btn shadow-md">
-              <div class="w-7 h-7 rounded-md bg-purple-500/20 flex items-center justify-center text-purple-300 group-hover/btn:scale-110 transition">📄</div>
-              <div>
-                <span class="text-xs font-bold text-slate-200 block group-hover/btn:text-white">Print Book</span>
-                <span class="text-[9px] text-slate-400">Official Specification</span>
-              </div>
-            </a>
+        /* --- LAB REPORT ANALYZER MODAL UI --- */
+        .drop-zone { border: 2px dashed rgba(0, 212, 255, 0.3); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.15); margin-bottom: 15px; }
+        .drop-zone:hover { border-color: #00d4ff; background: rgba(0, 212, 255, 0.05); }
+        .report-result-box { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 15px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.08); display: none; }
+        .report-result-box.show { display: block; animation: popIn 0.3s ease; }
+        .param-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500; }
+        .badge-pass { background: rgba(16, 163, 127, 0.15); color: #10a37f; }
 
-            <!-- 2. Lab Suggestion -->
-            <a href="https://drive.google.com/file/d/14s3wMetvYckrgzytB4QdLfGh58q1WWdJ/view?usp=drive_link" target="_blank"
-              class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/5 hover:bg-cyan-600/30 border border-white/10 hover:border-cyan-400 transition-all group/btn shadow-md">
-              <div class="w-7 h-7 rounded-md bg-cyan-500/20 flex items-center justify-center text-cyan-300 group-hover/btn:scale-110 transition">🧪</div>
-              <div>
-                <span class="text-xs font-bold text-slate-200 block group-hover/btn:text-white">Lab Suggestion</span>
-                <span class="text-[9px] text-slate-400">Accredited testing labs</span>
-              </div>
-            </a>
+        #pdf-viewer-screen { background: #1e222b; z-index: 500; }
+        .pdf-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pdf-header .back-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 16px; border-radius: 20px; transition: 0.2s; }
+        .pdf-header .back-btn:hover { background: rgba(255,255,255,0.2); }
+        .pdf-title { font-size: 16px; font-weight: 500; color: #fff; }
+        .pdf-container { flex: 1; width: 100%; height: 100%; background: #2d323e; }
+        .pdf-container iframe { width: 100%; height: 100%; border: none; }
 
-            <!-- 3. Manual Lab Test -->
-            <a href="https://drive.google.com/file/d/15IORFKOM0ZHgae2mPs6IRfd9P-L7-xX6/view?usp=drive_link" target="_blank"
-              class="flex items-center gap-2.5 p-2.5 rounded-lg bg-white/5 hover:bg-emerald-600/30 border border-white/10 hover:border-emerald-400 transition-all group/btn shadow-md">
-              <div class="w-7 h-7 rounded-md bg-emerald-500/20 flex items-center justify-center text-emerald-300 group-hover/btn:scale-110 transition">📋</div>
-              <div>
-                <span class="text-xs font-bold text-slate-200 block group-hover/btn:text-white">Manual Lab Test</span>
-                <span class="text-[9px] text-slate-400">Standard operating test</span>
-              </div>
-            </a>
-          </div>
-        </div>
+        #input-container { position: absolute; left: 50%; transform: translateX(-50%); width: 750px; background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 15px 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 100; transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); top: 35vh; }
+        #input-container.chat-mode { top: calc(100vh - 100px); width: 850px; border-radius: 30px;}
+        .input-top-bar { display: flex; justify-content: space-between; font-size: 12px; color: #a1a6b0; margin-bottom: 10px; padding: 0 5px;}
+        .model-badge { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 12px; cursor: pointer;}
+        .input-row { display: flex; align-items: center; gap: 8px; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 15px; font-family: 'Segoe UI', sans-serif; padding: 5px;}
+        input::placeholder { color: #888; }
+        
+        .action-icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; color: #a1a6b0; transition: 0.2s; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+        .action-icon-btn:hover { background: rgba(255,255,255,0.1); }
+        .action-icon-btn.listening { animation: pulseRed 1.5s infinite; }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(255, 92, 92, 0.4); background: rgba(255, 92, 92, 0.2); } 70% { box-shadow: 0 0 0 8px rgba(255, 92, 92, 0); background: transparent; } 100% { box-shadow: 0 0 0 0 rgba(255, 92, 92, 0); background: transparent; } }
 
-        <!-- BOTTOM RIGHT: EQUALIZER / STATUS BARS (Matching Screenshot Bottom Row) -->
-        <div class="lg:col-span-5 bg-cardBg rounded-xl p-5 border border-white/5 flex flex-col justify-between shadow-lg">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <span class="text-xs uppercase tracking-wider text-slate-400 font-bold">Standard Performance</span>
-              <p class="text-xl font-bold text-white">$ 214 000 <span class="text-xs text-slate-400 font-normal">revenues</span></p>
-            </div>
-            <span class="text-xs font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/20">-28% ↘</span>
-          </div>
+        .send-btn { background: rgba(255,255,255,0.1); border: none; width: 36px; height: 36px; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; margin-left: 5px;}
+        .send-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05);}
+        .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
-          <!-- Color Bar Graph Equalizer (Coral, Cyan, Green Bars) -->
-          <div class="flex items-end gap-1.5 h-14 my-2 px-1">
-            <div class="w-full bg-[#ff7043] rounded-t h-[80%]"></div>
-            <div class="w-full bg-[#ff7043] rounded-t h-[60%]"></div>
-            <div class="w-full bg-[#ff7043] rounded-t h-[95%]"></div>
-            <div class="w-full bg-[#00e5ff] rounded-t h-[75%]"></div>
-            <div class="w-full bg-[#00e5ff] rounded-t h-[40%]"></div>
-            <div class="w-full bg-[#00e5ff] rounded-t h-[65%]"></div>
-            <div class="w-full bg-[#00e676] rounded-t h-[85%]"></div>
-            <div class="w-full bg-[#00e676] rounded-t h-[50%]"></div>
-            <div class="w-full bg-[#7c4dff] rounded-t h-[90%]"></div>
-            <div class="w-full bg-[#7c4dff] rounded-t h-[30%]"></div>
-          </div>
+        #chat-area { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 850px; height: calc(100vh - 120px); padding: 40px 20px 20px 20px; overflow-y: auto; scroll-behavior: smooth; opacity: 0; pointer-events: none; transition: opacity 0.6s ease 0.3s; display: flex; flex-direction: column; gap: 24px; }
+        #chat-area.active { opacity: 1; pointer-events: auto; }
+        #chat-area::-webkit-scrollbar { width: 6px; }
+        #chat-area::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        @keyframes popIn { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .message-row { display: flex; gap: 15px; width: 100%; animation: popIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        .message-row.user { flex-direction: row-reverse; }
+        .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .bot-avatar { background: linear-gradient(135deg, #10a37f, #00d4ff); }
+        .user-avatar { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .message { max-width: 80%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; word-wrap: break-word; color: #e2e4e9; transition: 0.3s;}
+        .message h1, .message h2, .message h3 { margin-top: 5px; margin-bottom: 8px; color: #fff; font-size: 15px; }
+        .message p { margin: 0 0 10px 0; }
+        .message p:last-child { margin: 0; }
+        .bot-message { background: rgba(30, 34, 43, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .user-message { background: rgba(45, 50, 62, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .typing-bubble { display: flex; align-items: center; gap: 14px; padding: 16px 20px !important; }
+        .pulse-scanner { display: flex; align-items: center; gap: 4px; height: 20px; }
+        .pulse-bar { width: 4px; height: 100%; background: #00d4ff; border-radius: 2px; animation: pulseWave 1.2s ease-in-out infinite; }
+        .pulse-bar:nth-child(2) { animation-delay: 0.2s; background: #10a37f; }
+        .pulse-bar:nth-child(3) { animation-delay: 0.4s; background: #00d4ff; }
+        .pulse-bar:nth-child(4) { animation-delay: 0.6s; background: #ffffff; }
+        @keyframes pulseWave { 0%, 100% { transform: scaleY(0.4); opacity: 0.3; } 50% { transform: scaleY(1.2); opacity: 1; box-shadow: 0 0 10px rgba(0,212,255,0.6); } }
 
-          <div class="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-white/5">
-            <span>56 Files Synchronized</span>
-            <span class="text-slate-200 font-mono">Folder: /Compliance/BIS/IS303</span>
-          </div>
-        </div>
+        /* --- LIGHT MODE --- */
+        body.light-mode { background: linear-gradient(165deg, #e2e8f0 0%, #f8fafc 30%, #f1f5f9 60%, #e2e8f0 100%); color: #0f172a; }
+        body.light-mode #sidebar { background: rgba(255, 255, 255, 0.95); border-right: 1px solid rgba(0,0,0,0.1); box-shadow: 10px 0 40px rgba(0,0,0,0.05); }
+        body.light-mode .menu-item { color: #334155; }
+        body.light-mode .menu-item:hover { background: rgba(0,0,0,0.05); }
+        body.light-mode .recent-item { color: #475569; }
+        body.light-mode .recent-item.active { background: rgba(0,0,0,0.08); color: #0f172a; }
+        body.light-mode .sidebar-header .title { color: #0f172a; }
+        body.light-mode #menu-btn { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0,0,0,0.1); color: #0f172a;}
+        body.light-mode .widget-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .pill { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1); color: #334155; }
+        body.light-mode #input-container { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+        body.light-mode input { color: #0f172a; }
+        body.light-mode .bot-message { background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .user-message { background: rgba(226, 232, 240, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .modal-box { background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .modal-header h3, body.light-mode .setting-label { color: #0f172a; }
+        body.light-mode .lib-card, body.light-mode .calc-wrapper { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); }
+        body.light-mode .lib-title, body.light-mode .library-title { color: #0f172a; }
+        body.light-mode .calc-select { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.1); color: #0f172a; }
+        body.light-mode .calc-select option { background: #fff; color: #0f172a; }
+        body.light-mode .receipt-card, body.light-mode .drop-zone, body.light-mode .report-result-box { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.1); }
+        body.light-mode .receipt-row, body.light-mode .calc-group label { color: #475569; }
+        
+        /* Dashboard Light Mode Overrides */
+        body.light-mode .dash-card { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        body.light-mode .dash-card h4, body.light-mode .stage-title, body.light-mode .stat-val { color: #0f172a; }
+        body.light-mode .stage-num { color: rgba(0,0,0,0.1); }
+        body.light-mode .stage-desc, body.light-mode .stat-name, body.light-mode .dash-stat-label { color: #64748b; }
+        body.light-mode .donut-inner { background: #fff; color: #0f172a; box-shadow: inset 0 4px 10px rgba(0,0,0,0.1); }
+        body.light-mode .stat-box { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.05); }
+        body.light-mode .slider { background-color: rgba(0,0,0,0.1); }
+        body.light-mode .slider:before { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
 
-      </main>
+    <!-- HAMBURGER MENU BUTTON -->
+    <div id="menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
-  </div>
 
+    <!-- SETTINGS MODAL -->
+    <div id="settings-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" onclick="closeSettingsModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label"><span>Clear all chats</span><span class="setting-sub">Permanently delete local chat history</span></div>
+                <button class="setting-btn danger" onclick="clearAllChats()">Clear All</button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label"><span>Theme</span><span class="setting-sub">Switch interface appearance</span></div>
+                <button id="theme-toggle-btn" class="setting-btn" onclick="toggleTheme()">Light Mode</button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label"><span>Feedback</span><span class="setting-sub">Help us improve the portal</span></div>
+                <button class="setting-btn" onclick="sendFeedback()">Write Feedback</button>
+            </div>
+            <div class="setting-row">
+                <div class="setting-label"><span>Contact Us</span><span class="setting-sub">Get technical support</span></div>
+                <button class="setting-btn" onclick="contactUs()">Contact</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- UPLOAD LAB TEST REPORT MODAL -->
+    <div id="upload-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Lab Test Report Analyzer</h3>
+                <button class="modal-close" onclick="closeUploadModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            </div>
+            
+            <div class="drop-zone" onclick="document.getElementById('report-file-input').click()">
+                <div style="font-size: 32px; margin-bottom: 8px;">📄</div>
+                <div style="font-size: 14px; font-weight: 500; color: #00d4ff;">Click to Upload Factory Test Report</div>
+                <div style="font-size: 11px; color: #888; margin-top: 4px;">Supports PDF or Scanned PNG/JPG files</div>
+                <input type="file" id="report-file-input" style="display: none;" onchange="handleFileUpload(event)">
+            </div>
+
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span style="font-size: 12px; color: #888;">— OR TEST DEMO SAMPLE —</span><br>
+                <button class="setting-btn" style="margin-top: 8px; font-size: 12px;" onclick="loadSampleReport()">Load Sample Cement Report (IS 269)</button>
+            </div>
+
+            <button id="run-audit-btn" class="calc-btn" style="display:none;" onclick="runReportAudit()">Run AI Compliance Audit</button>
+
+            <!-- Results Card -->
+            <div id="report-result" class="report-result-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-weight:600; font-size:14px; color:#00d4ff;">Audit Findings</span>
+                    <span class="param-badge badge-pass">✓ PASSED IS 269</span>
+                </div>
+                <div style="font-size: 12px; line-height: 1.6; color: #e2e4e9;">
+                    • <b>Compressive Strength (28-day):</b> 46.5 MPa (Required: ≥ 43 MPa) <span style="color:#10a37f;">[PASS]</span><br>
+                    • <b>Initial Setting Time:</b> 75 mins (Required: ≥ 30 mins) <span style="color:#10a37f;">[PASS]</span><br>
+                    • <b>Le-Chatelier Soundness:</b> 2.0 mm (Required: ≤ 10 mm) <span style="color:#10a37f;">[PASS]</span><br>
+                    • <b>Chemical Insoluble Residue:</b> 1.8% (Required: ≤ 5.0%) <span style="color:#10a37f;">[PASS]</span>
+                </div>
+                <div style="font-size:11px; color:#10a37f; font-weight:500; margin-top:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                    Verdict: Conforming to BIS requirements. Product is eligible for Standard Mark certification.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL OPTIONS MENU (3-dots dropdown) -->
+    <div id="options-dropdown">
+        <div class="dropdown-item" onclick="actionPin()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin</div>
+        <div class="dropdown-item" onclick="actionShare()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share</div>
+        <div class="dropdown-item delete" onclick="actionDelete()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete</div>
+    </div>
+
+    <!-- SIDEBAR (SLIDER) -->
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <span class="title"><span style="font-size:18px;">✨</span> BIS AI Portal</span>
+            <button class="close-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+        </div>
+        
+        <div class="menu-item" onclick="startNewChat()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> New chat
+        </div>
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Search chats
+        </div>
+        <div class="menu-item" onclick="openLibraryPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg> Library
+        </div>
+        <div class="menu-item" onclick="openCalculatorPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6.25 15.5l-1.41-1.41L13.17 15H11v-2h2.17l-1.83-1.83 1.41-1.41L15.66 12l-2.91 2.91zM18 9h-2V7h-2v2h-2v2h2v2h2v-2h2V9zM5 5h14v3H5V5z"/></svg> Fee Calculator
+        </div>
+        <div class="menu-item" onclick="openRoadmapPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Certification Dashboard
+        </div>
+
+        <div class="recent-heading" id="recent-heading">Recent</div>
+        <div class="recent-list" id="sidebar-history-list"></div>
+
+        <div class="sidebar-bottom">
+            <div class="menu-item" onclick="openSettingsModal()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg> Settings
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRARY SCREEN -->
+    <div id="library-screen" class="hidden">
+        <h2 class="library-title" style="margin-bottom: 25px;">Compliance Standard Library</h2>
+        <div class="library-list">
+            <div class="lib-card" style="cursor: default;">
+                <div style="display: flex; align-items: center; gap: 18px; width: 100%;">
+                    <div class="lib-icon icon-blue">💧</div>
+                    <div class="lib-content" style="flex: 1;">
+                        <div class="lib-title">Steel Bottle</div>
+                        <div class="lib-desc">IS 17526 standards for stainless steel vacuum flasks.</div>
+                    </div>
+                </div>
+                <div class="lib-actions">
+                    <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/1yfr9iWu2B-by5vYJOKoE0XavkErtigu2/preview', 'Print Book - Steel Bottle')">Print book</button>
+                    <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/14s3wMetvYckrgzytB4QdLfGh58q1WWdJ/preview', 'Lab Suggestion - Steel Bottle')">Lab suggestion</button>
+                    <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/15IORFKOM0ZHgae2mPs6IRfd9P-L7-xX6/preview', 'Manual Lab Test - Steel Bottle')">Manual lab test</button>
+                </div>
+            </div>
+            <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1D7hPesm_d_ynfskIPesN0KLuNxqNWEjk/preview', 'IS 269: Ordinary Portland Cement')">
+                <div class="lib-icon icon-green">🏗️</div>
+                <div class="lib-content"><div class="lib-title">Cement</div><div class="lib-desc">IS 269 quality rules and packaging standards.</div></div>
+            </div>
+            <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1VzdIMPoc_IFHCect1kIf04lVi6aN--m6/preview', 'IS 374: Electric Ceiling Fans')">
+                <div class="lib-icon icon-yellow">🌀</div>
+                <div class="lib-content"><div class="lib-title">Ceiling Fan</div><div class="lib-desc">IS 374 safety and performance specifications.</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEE CALCULATOR SCREEN -->
+    <div id="calculator-screen" class="hidden">
+        <h2 class="library-title" style="margin-bottom: 25px;">BIS Fee Estimator</h2>
+        <div class="calc-wrapper">
+            <div class="calc-group">
+                <label>Select Scale of Industry</label>
+                <select id="biz-scale" class="calc-select">
+                    <option value="micro">Micro Enterprise / Women Entrepreneur</option>
+                    <option value="small">Small Enterprise</option>
+                    <option value="medium">Medium / Large Industry</option>
+                </select>
+            </div>
+            <div class="calc-group">
+                <label>Select Product Category</label>
+                <select id="prod-cat" class="calc-select">
+                    <option value="general">General Standard (e.g., Cement, Steel Bottles)</option>
+                    <option value="electronics">Electronics & IT Goods</option>
+                    <option value="toys">Toys & Safety Equipments</option>
+                </select>
+            </div>
+            <button class="calc-btn" onclick="calculateFees()">Calculate Estimate</button>
+
+            <div id="receipt" class="receipt-card">
+                <div class="receipt-row"><span>Application Fee:</span> <span id="r-app">₹ 0</span></div>
+                <div class="receipt-row"><span>Annual License Fee:</span> <span id="r-lic">₹ 0</span></div>
+                <div class="receipt-row"><span>Inspection Fee (Per Manday):</span> <span id="r-insp">₹ 0</span></div>
+                <div class="receipt-row"><span>Advance Minimum Marking Fee:</span> <span id="r-mark">₹ 0</span></div>
+                <div id="concession-row" class="receipt-row concession" style="display:none;">
+                    <span>MSME/Women Concession (50% on Marking):</span> <span id="r-con">- ₹ 0</span>
+                </div>
+                <div class="receipt-row total"><span>Estimated Total (Excl. Tax):</span> <span id="r-total">₹ 0</span></div>
+                <div style="font-size: 10px; color: #888; margin-top: 15px; text-align: center;">*This is a provisional estimate based on BIS Scheme-I guidelines. Actual testing charges by laboratories are extra.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: DASHBOARD ROADMAP SCREEN -->
+    <div id="roadmap-screen" class="hidden">
+        <h2 class="library-title" style="margin-bottom: 20px;">Certification Dashboard</h2>
+        
+        <div class="dash-grid">
+            
+            <!-- Top Donut Widget -->
+            <div class="dash-card progress-widget">
+                <h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">OVERALL COMPLIANCE</h4>
+                <div class="donut-wrapper" style="--pct: 0%;">
+                    <div class="donut-inner" id="dash-pct-text">0%</div>
+                </div>
+                <div class="dash-stat-label" id="dash-stages-text">0 of 5 Stages Completed</div>
+            </div>
+
+            <!-- Top Info Widget -->
+            <div class="dash-card info-widget">
+                <h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">BIS SCHEME-1 STATUS</h4>
+                <div class="info-stats">
+                    <div class="stat-box">
+                        <span class="stat-val" id="current-phase-status" style="color: #00d4ff;">Not Started</span>
+                        <span class="stat-name">Current Phase</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-val" style="color: #10a37f;">IS 17526</span>
+                        <span class="stat-name">Target Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 1 -->
+            <div class="dash-card stage-card" style="--accent: #00d4ff;">
+                <div class="stage-header">
+                    <span class="stage-num">01</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Testing Setup</div>
+                <div class="stage-desc">Establish required in-house equipment or cluster tie-ups.[cite: 2]</div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="dash-card stage-card" style="--accent: #10a37f;">
+                <div class="stage-header">
+                    <span class="stage-num">02</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Online Application</div>
+                <div class="stage-desc">Submit Form V on e-BIS with factory layout and test reports.</div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="dash-card stage-card" style="--accent: #f59e0b;">
+                <div class="stage-header">
+                    <span class="stage-num">03</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Factory Inspection</div>
+                <div class="stage-desc">BIS officer verifies SIT, raw material quality, and calibration records.[cite: 2]</div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="dash-card stage-card" style="--accent: #ec4899;">
+                <div class="stage-header">
+                    <span class="stage-num">04</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Lab Testing</div>
+                <div class="stage-desc">Independent sample sent to NABL lab for complete verification.[cite: 2]</div>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="dash-card stage-card" style="--accent: #8b5cf6;">
+                <div class="stage-header">
+                    <span class="stage-num">05</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Grant of License</div>
+                <div class="stage-desc">Scrutiny clearance and issuance of BIS Mark with CM/L code.[cite: 2]</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FULL-SCREEN PDF VIEWER -->
+    <div id="pdf-viewer-screen" class="hidden">
+        <div class="pdf-header">
+            <button class="back-btn" onclick="closePDFViewer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
+            <div class="pdf-title" id="pdf-viewer-title">Document</div>
+            <div style="width: 120px;"></div>
+        </div>
+        <div class="pdf-container"><iframe id="pdf-iframe" src=""></iframe></div>
+    </div>
+
+    <!-- HOME SCREEN -->
+    <div id="home-screen">
+        <div class="greeting">
+            <h1>Good afternoon</h1>
+            <h2>What can I help you with today?</h2>
+        </div>
+        <div class="suggestion-pills">
+            <button class="pill" onclick="sendPreset('Write a summary of BIS Mark')">Write a summary</button>
+            <button class="pill" onclick="sendPreset('Get advice on MSME compliance')">Get advice</button>
+            <button class="pill" onclick="sendPreset('Learn something new about ISI standards')">Learn something new</button>
+            <button class="pill" onclick="sendPreset('Make a plan for factory testing')">Make a plan</button>
+        </div>
+        <div class="bottom-widgets">
+            <div class="widget-card">
+                <div class="widget-header"><span>🔗 Jump back in to your files</span><span>ⓘ</span></div>
+                <div class="widget-content">
+                    <div class="widget-icon" style="background: url('https://img.icons8.com/color/48/000000/pdf.png') center/cover;"></div>
+                    <div style="font-size:13px;">BIS_Standards.pdf<br><span style="font-size:11px; color:#888;">2h ago</span></div>
+                </div>
+            </div>
+            <div class="widget-card">
+                <div class="widget-header"><span>👓 Get guided help with your apps</span><span>ⓘ</span></div>
+                <div class="widget-content">
+                    <div style="display:flex; gap:10px;">
+                        <img src="https://img.icons8.com/color/48/000000/microsoft-word-2019--v2.png" width="24">
+                        <img src="https://img.icons8.com/color/48/000000/microsoft-excel-2019--v1.png" width="24">
+                        <img src="https://img.icons8.com/color/48/000000/microsoft-powerpoint-2019--v1.png" width="24">
+                    </div>
+                </div>
+            </div>
+            <div class="widget-card">
+                <div class="widget-header"><span>💬 Keep talking to AI Engine</span></div>
+                <div class="widget-content">
+                    <div class="widget-icon" style="background: #2d323e; display:flex; align-items:center; justify-content:center; font-size:18px;">🏛️</div>
+                    <div style="font-size:13px;">How can AI help me?<br><span style="font-size:11px; color:#888;">Just now</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-area"></div>
+
+    <div id="input-container">
+        <div class="input-top-bar" id="input-top-bar">
+            <span>Ask anything</span>
+            <span class="model-badge"><span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄</span>
+            <span style="color: transparent;">-</span>
+        </div>
+        <div class="input-row">
+            <input type="text" id="userInput" placeholder="Type your query..." onkeypress="handleKey(event)">
+            <button class="action-icon-btn" id="mic-btn" onclick="startDictation()" title="Voice Input">🎙️</button>
+            <button class="action-icon-btn" onclick="openUploadModal()" title="Upload Test Report">📸</button>
+            <button class="send-btn" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg></button>
+        </div>
+    </div>
+
+    <script>
+        marked.setOptions({ breaks: true });
+        let chatSessions = {}; let currentSessionId = null; let isFirstMessage = true; let targetOptionsSessionId = null; let isListening = false;
+
+        function startNewChat() {
+            const newId = 'session_' + Date.now();
+            chatSessions[newId] = { title: "New Chat", messages: [] };
+            currentSessionId = newId;
+            isFirstMessage = true;
+            document.getElementById('chat-area').innerHTML = '';
+            resetToHomeScreen();
+            renderSidebar();
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        // --- VOICE INPUT (FEATURE 1) ---
+        function startDictation() {
+            if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
+                recognition.onstart = function() { isListening = true; document.getElementById('mic-btn').classList.add('listening'); document.getElementById('userInput').placeholder = "Listening... Speak now"; };
+                recognition.onresult = function(e) { document.getElementById('userInput').value = e.results[0][0].transcript; resetMic(); };
+                recognition.onerror = function(e) { resetMic(); };
+                recognition.onend = function() { resetMic(); };
+                if(!isListening) recognition.start();
+            } else { alert("Your browser does not support Voice Input. Please use Google Chrome or Edge."); }
+        }
+        function resetMic() { isListening = false; document.getElementById('mic-btn').classList.remove('listening'); document.getElementById('userInput').placeholder = "Type your query..."; }
+
+        // --- UPLOAD LAB TEST REPORT (FEATURE 5) ---
+        function openUploadModal() {
+            document.getElementById('upload-overlay').classList.add('show');
+            document.getElementById('report-result').classList.remove('show');
+            document.getElementById('run-audit-btn').style.display = 'none';
+        }
+        function closeUploadModal() { document.getElementById('upload-overlay').classList.remove('show'); }
+        
+        function handleFileUpload(e) {
+            if(e.target.files.length > 0) {
+                document.getElementById('run-audit-btn').style.display = 'block';
+                document.getElementById('run-audit-btn').innerText = `Analyze ${e.target.files[0].name}`;
+            }
+        }
+        function loadSampleReport() {
+            document.getElementById('run-audit-btn').style.display = 'block';
+            document.getElementById('run-audit-btn').innerText = "Run AI Compliance Audit (IS 269 Sample)";
+        }
+        function runReportAudit() {
+            const btn = document.getElementById('run-audit-btn');
+            btn.innerText = "Auditing parameters against Indian Standards...";
+            btn.disabled = true;
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerText = "Audit Completed";
+                document.getElementById('report-result').classList.add('show');
+            }, 1200);
+        }
+
+        // --- DASHBOARD ROADMAP LOGIC (REDESIGNED) ---
+        function openRoadmapPage() {
+            hideAllScreens();
+            document.getElementById('roadmap-screen').classList.remove('hidden');
+            document.getElementById('roadmap-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function updateDashboardProgress() {
+            const checks = document.querySelectorAll('#roadmap-screen input[type="checkbox"]');
+            let checkedCount = 0;
+            checks.forEach(c => { if(c.checked) checkedCount++; });
+            const pct = Math.round((checkedCount / checks.length) * 100);
+            
+            // Update Donut Chart
+            document.querySelector('.donut-wrapper').style.setProperty('--pct', `${pct}%`);
+            document.getElementById('dash-pct-text').innerText = `${pct}%`;
+            document.getElementById('dash-stages-text').innerText = `${checkedCount} of ${checks.length} Stages Completed`;
+
+            // Update Phase Text
+            const phaseSpan = document.getElementById('current-phase-status');
+            if (checkedCount === 0) {
+                phaseSpan.innerText = "Not Started";
+                phaseSpan.style.color = "#00d4ff";
+            } else if (checkedCount === checks.length) {
+                phaseSpan.innerText = "Certified ✓";
+                phaseSpan.style.color = "#10a37f";
+            } else {
+                phaseSpan.innerText = `Phase ${checkedCount + 1}`;
+                phaseSpan.style.color = "#f59e0b";
+            }
+        }
+
+        // --- NAVIGATION & SCREENS ---
+        function openPDFViewer(pdfUrl, title) {
+            hideAllScreens();
+            document.getElementById('pdf-viewer-title').innerText = title;
+            document.getElementById('pdf-iframe').src = pdfUrl.startsWith('http') ? pdfUrl : '/pdf/' + pdfUrl;
+            document.getElementById('pdf-viewer-screen').classList.remove('hidden');
+            document.getElementById('pdf-viewer-screen').style.display = 'flex';
+        }
+        function closePDFViewer() { document.getElementById('pdf-iframe').src = ''; openLibraryPage(); }
+
+        function openLibraryPage() {
+            hideAllScreens();
+            document.getElementById('library-screen').classList.remove('hidden');
+            document.getElementById('library-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function openCalculatorPage() {
+            hideAllScreens();
+            document.getElementById('calculator-screen').classList.remove('hidden');
+            document.getElementById('calculator-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function calculateFees() {
+            const scale = document.getElementById('biz-scale').value;
+            let appFee = 1000; let licFee = 1000; let inspFee = 7000; let markFee = 0; let concession = 0;
+            if(scale === 'micro') markFee = 25000;
+            else if(scale === 'small') markFee = 40000;
+            else markFee = 60000;
+
+            if(scale === 'micro' || scale === 'small') {
+                concession = markFee * 0.5;
+                markFee = markFee - concession;
+                document.getElementById('concession-row').style.display = 'flex';
+                document.getElementById('r-con').innerText = `- ₹ ${concession.toLocaleString()}`;
+            } else {
+                document.getElementById('concession-row').style.display = 'none';
+            }
+            let total = appFee + licFee + inspFee + markFee;
+            document.getElementById('r-app').innerText = `₹ ${appFee.toLocaleString()}`;
+            document.getElementById('r-lic').innerText = `₹ ${licFee.toLocaleString()}`;
+            document.getElementById('r-insp').innerText = `₹ ${inspFee.toLocaleString()}`;
+            document.getElementById('r-mark').innerText = `₹ ${markFee.toLocaleString()}`;
+            document.getElementById('r-total').innerText = `₹ ${total.toLocaleString()}`;
+            document.getElementById('receipt').classList.add('show');
+        }
+
+        function hideAllScreens() {
+            const screens = ['home-screen', 'library-screen', 'calculator-screen', 'roadmap-screen', 'pdf-viewer-screen'];
+            screens.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+                document.getElementById(s).style.display = 'none';
+            });
+            document.getElementById('chat-area').classList.remove('active');
+            document.getElementById('input-container').style.display = 'none';
+        }
+
+        function openSettingsModal() { document.getElementById('settings-overlay').classList.add('show'); if(window.innerWidth < 800) toggleSidebar(); }
+        function closeSettingsModal() { document.getElementById('settings-overlay').classList.remove('show'); }
+        function clearAllChats() { if(confirm("Are you sure you want to permanently delete all chat history?")) { chatSessions = {}; currentSessionId = null; closeSettingsModal(); startNewChat(); } }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); const tBtn = document.getElementById('theme-toggle-btn'); tBtn.innerText = document.body.classList.contains('light-mode') ? "Dark Mode" : "Light Mode"; }
+        function sendFeedback() { let f = prompt("Please share your feedback or suggestions:"); if (f && f.trim() !== "") { alert("Thank you! Your feedback has been sent successfully."); closeSettingsModal(); } }
+        function contactUs() { alert("Contact our support team at: support@bis-ai.gov.in\nHelpline: 1800-11-2026"); }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+        });
+
+        function renderSidebar() {
+            const list = document.getElementById('sidebar-history-list'); list.innerHTML = ''; let hasVisibleChats = false;
+            const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
+            for (const id of sortedIds) {
+                const session = chatSessions[id];
+                if (session.messages.length > 0) {
+                    hasVisibleChats = true;
+                    list.innerHTML += `<div class="recent-item ${id === currentSessionId ? 'active' : ''}" onclick="loadSession('${id}')"><span class="recent-item-title">${session.title}</span><button class="options-btn" onclick="openOptions(event, '${id}')"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>`;
+                }
+            }
+            document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
+        }
+
+        function loadSession(id) {
+            currentSessionId = id; const session = chatSessions[id]; document.getElementById('chat-area').innerHTML = ''; 
+            if (session.messages.length > 0) {
+                forceChatMode(); session.messages.forEach(msg => { appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role); });
+            } else { resetToHomeScreen(); }
+            renderSidebar(); if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function openOptions(e, id) { e.stopPropagation(); targetOptionsSessionId = id; const menu = document.getElementById('options-dropdown'); const rect = e.currentTarget.getBoundingClientRect(); menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left}px`; menu.classList.add('show'); }
+        document.addEventListener('click', (e) => { const menu = document.getElementById('options-dropdown'); if(!menu.contains(e.target) && !e.target.closest('.options-btn')) { menu.classList.remove('show'); } });
+        function actionPin() { alert("Pin feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
+        function actionShare() { alert("Share feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
+        function actionDelete() { if(targetOptionsSessionId) { delete chatSessions[targetOptionsSessionId]; document.getElementById('options-dropdown').classList.remove('show'); if(currentSessionId === targetOptionsSessionId) startNewChat(); else renderSidebar(); } }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        function forceChatMode() {
+            isFirstMessage = false;
+            hideAllScreens();
+            document.getElementById('input-container').style.display = 'block';
+            document.getElementById('input-top-bar').style.display = 'none';
+            document.getElementById('input-container').classList.add('chat-mode');
+            document.getElementById('chat-area').classList.add('active');
+        }
+
+        function resetToHomeScreen() {
+            isFirstMessage = true;
+            hideAllScreens();
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('input-container').style.display = 'block';
+            document.getElementById('input-top-bar').style.display = 'flex';
+            document.getElementById('input-container').classList.remove('chat-mode');
+        }
+
+        function showTypingIndicator() {
+            const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.id = 'typingBubble'; row.className = `message-row bot`;
+            row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards Matrix...</span></div>`;
+            box.appendChild(row); box.scrollTop = box.scrollHeight;
+        }
+        function removeTypingIndicator() { const bubble = document.getElementById('typingBubble'); if(bubble) bubble.remove(); }
+        function appendMsgDOM(content, sender) { const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.className = `message-row ${sender}`; row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`; box.appendChild(row); box.scrollTop = box.scrollHeight; }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput'); const text = input.value.trim(); if(!text) return;
+            if(isFirstMessage === true && chatSessions[currentSessionId].messages.length > 0) {
+                 const newId = 'session_' + Date.now(); chatSessions[newId] = { title: "New Chat", messages: [] }; currentSessionId = newId;
+            }
+            forceChatMode(); chatSessions[currentSessionId].messages.push({ role: "user", text: text });
+            if (chatSessions[currentSessionId].messages.length === 1) chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
+            renderSidebar(); appendMsgDOM(text, 'user'); input.value = ''; showTypingIndicator();
+            try {
+                const res = await fetch('/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: text}) });
+                const data = await res.json(); removeTypingIndicator();
+                chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply }); appendMsgDOM(marked.parse(data.reply), 'bot');
+            } catch(e) { removeTypingIndicator(); appendMsgDOM("Network error: Please verify your connection to the Render backend.", 'bot'); }
+        }
+
+        function sendPreset(text) { startNewChat(); document.getElementById('userInput').value = text; sendMessage(); }
+        function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
+
+        window.onload = startNewChat;
+    </script>
 </body>
 </html>
