@@ -15,12 +15,13 @@
             background: linear-gradient(165deg, #022a40 0%, #061c2e 30%, #161a24 60%, #4a2522 100%);
             font-family: 'Segoe UI', 'Poppins', sans-serif;
             display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff;
+            transition: background 0.4s, color 0.4s;
         }
 
         /* --- SIDEBAR & MENU BUTTON --- */
-        #menu-btn { position: fixed; top: 20px; left: 20px; z-index: 990; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; transition: 0.3s ease; backdrop-filter: blur(10px); }
+        #menu-btn { position: fixed; top: 20px; left: 20px; z-index: 990; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.05); color: white; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; transition: 0.3s ease; backdrop-filter: blur(10px); }
         #menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
-        #sidebar { position: fixed; top: 0; left: -320px; width: 280px; height: 100vh; background: rgba(18, 22, 29, 0.95); backdrop-filter: blur(25px); border-right: 1px solid rgba(255,255,255,0.05); z-index: 1000; transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; padding: 20px 10px; box-shadow: 10px 0 40px rgba(0,0,0,0.5); }
+        #sidebar { position: fixed; top: 0; left: -320px; width: 280px; height: 100vh; background: rgba(18, 22, 29, 0.95); backdrop-filter: blur(25px); border-right: 1px solid rgba(255,255,255,0.05); z-index: 1000; transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; display: flex; flex-direction: column; padding: 20px 10px; box-shadow: 10px 0 40px rgba(0,0,0,0.5); }
         #sidebar.open { left: 0; }
         .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 10px; }
         .sidebar-header .title { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px;}
@@ -50,7 +51,7 @@
 
         #settings-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
         #settings-overlay.show { display: flex; opacity: 1; }
-        .settings-modal { background: rgba(30, 34, 43, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 400px; max-width: 90%; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1); }
+        .settings-modal { background: rgba(30, 34, 43, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 400px; max-width: 90%; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; }
         #settings-overlay.show .settings-modal { transform: scale(1); }
         .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .settings-header h3 { font-size: 18px; font-weight: 500; margin: 0;}
@@ -76,7 +77,7 @@
         .pill { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 18px; border-radius: 20px; font-size: 13px; color: #e2e4e9; cursor: pointer; transition: 0.2s; }
         .pill:hover { background: rgba(255, 255, 255, 0.15); }
         .bottom-widgets { position: absolute; bottom: 40px; display: flex; gap: 20px; width: 100%; max-width: 950px; justify-content: center; }
-        .widget-card { background: rgba(30, 34, 43, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; width: 300px; height: 160px; display: flex; flex-direction: column; }
+        .widget-card { background: rgba(30, 34, 43, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; width: 300px; height: 160px; display: flex; flex-direction: column; transition: background 0.3s; }
         .widget-header { display: flex; justify-content: space-between; font-size: 11px; color: #a1a6b0; margin-bottom: 15px;}
         .widget-content { flex: 1; display: flex; align-items: center; gap: 15px; }
         .widget-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.1); }
@@ -91,10 +92,9 @@
         .icon-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #16a34a; }
         .icon-yellow { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #d97706; }
         .lib-content { display: flex; flex-direction: column; gap: 4px; }
-        .lib-title { font-size: 16px; font-weight: 500; color: #fff; }
+        .lib-title { font-size: 16px; font-weight: 500; color: #fff; transition: 0.3s; }
         .lib-desc { font-size: 13px; color: #a1a6b0; line-height: 1.4; }
 
-        /* --- NEW PDF VIEWER UI --- */
         #pdf-viewer-screen { background: #1e222b; z-index: 500; }
         .pdf-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pdf-header .back-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 16px; border-radius: 20px; transition: 0.2s; }
@@ -124,7 +124,7 @@
         .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
         .bot-avatar { background: linear-gradient(135deg, #10a37f, #00d4ff); }
         .user-avatar { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
-        .message { max-width: 80%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; word-wrap: break-word; color: #e2e4e9;}
+        .message { max-width: 80%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; word-wrap: break-word; color: #e2e4e9; transition: 0.3s;}
         .message h1, .message h2, .message h3 { margin-top: 5px; margin-bottom: 8px; color: #fff; font-size: 15px; }
         .message p { margin: 0 0 10px 0; }
         .message p:last-child { margin: 0; }
@@ -137,16 +137,83 @@
         .pulse-bar:nth-child(3) { animation-delay: 0.4s; background: #00d4ff; }
         .pulse-bar:nth-child(4) { animation-delay: 0.6s; background: #ffffff; }
         @keyframes pulseWave { 0%, 100% { transform: scaleY(0.4); opacity: 0.3; } 50% { transform: scaleY(1.2); opacity: 1; box-shadow: 0 0 10px rgba(0,212,255,0.6); } }
+
+        /* =========================================
+           LIGHT MODE OVERRIDES 
+           ========================================= */
+        body.light-mode {
+            background: linear-gradient(165deg, #e2e8f0 0%, #f8fafc 30%, #f1f5f9 60%, #e2e8f0 100%);
+            color: #0f172a;
+        }
+        body.light-mode #sidebar { background: rgba(255, 255, 255, 0.95); border-right: 1px solid rgba(0,0,0,0.1); box-shadow: 10px 0 40px rgba(0,0,0,0.05); }
+        body.light-mode .menu-item { color: #334155; }
+        body.light-mode .menu-item:hover { background: rgba(0,0,0,0.05); }
+        body.light-mode .recent-heading { color: #64748b; }
+        body.light-mode .recent-item { color: #475569; }
+        body.light-mode .recent-item:hover { background: rgba(0,0,0,0.05); }
+        body.light-mode .recent-item.active { background: rgba(0,0,0,0.08); color: #0f172a; font-weight: 600; }
+        body.light-mode .sidebar-header .title { color: #0f172a; }
+        body.light-mode .close-btn, body.light-mode .options-btn { color: #64748b; }
+        body.light-mode .close-btn:hover, body.light-mode .options-btn:hover { background: rgba(0,0,0,0.05); color: #0f172a; }
+        
+        body.light-mode #menu-btn { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0,0,0,0.1); color: #0f172a;}
+        body.light-mode #menu-btn:hover { background: rgba(255, 255, 255, 1); }
+        
+        body.light-mode .widget-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .widget-header { color: #64748b; }
+        body.light-mode .widget-icon { background: rgba(0,0,0,0.05); }
+        
+        body.light-mode .pill { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1); color: #334155; }
+        body.light-mode .pill:hover { background: rgba(255,255,255,0.9); }
+        
+        body.light-mode #input-container { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+        body.light-mode .input-top-bar { color: #64748b; }
+        body.light-mode .model-badge { background: rgba(0,0,0,0.05); color: #1e293b; }
+        body.light-mode input { color: #0f172a; }
+        body.light-mode input::placeholder { color: #64748b; }
+        body.light-mode .send-btn { background: rgba(0,0,0,0.05); color: #0f172a; }
+        body.light-mode .send-btn:hover { background: rgba(0,0,0,0.1); }
+        
+        body.light-mode .bot-message { background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .user-message { background: rgba(226, 232, 240, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .message h1, body.light-mode .message h2, body.light-mode .message h3 { color: #0f172a; }
+        
+        body.light-mode .settings-modal { background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .settings-header h3 { color: #0f172a; }
+        body.light-mode .setting-label { color: #0f172a; }
+        body.light-mode .setting-sub { color: #64748b; }
+        body.light-mode .setting-btn { background: rgba(0,0,0,0.05); color: #0f172a; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .setting-btn:hover { background: rgba(0,0,0,0.1); }
+        body.light-mode .setting-row { border-bottom: 1px solid rgba(0,0,0,0.05); }
+        body.light-mode .settings-close { color: #64748b; }
+        body.light-mode .settings-close:hover { background: rgba(0,0,0,0.05); color: #0f172a; }
+        
+        body.light-mode .lib-card { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .lib-card:hover { background: #fff; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        body.light-mode .lib-title { color: #0f172a; }
+        body.light-mode .lib-desc { color: #64748b; }
+        body.light-mode .library-title { color: #0f172a; }
+        
+        body.light-mode #options-dropdown { background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .dropdown-item { color: #334155; }
+        body.light-mode .dropdown-item:hover { background: rgba(0,0,0,0.05); }
+        
+        body.light-mode #pdf-viewer-screen { background: #f8fafc; }
+        body.light-mode .pdf-header { background: rgba(255, 255, 255, 0.9); border-bottom: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .pdf-title { color: #0f172a; }
+        body.light-mode .pdf-header .back-btn { background: rgba(0,0,0,0.05); color: #0f172a; }
+        body.light-mode .pdf-header .back-btn:hover { background: rgba(0,0,0,0.1); }
+        body.light-mode .sidebar-bottom { border-top: 1px solid rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
     <!-- HAMBURGER MENU BUTTON -->
     <div id="menu-btn" onclick="toggleSidebar()">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
 
-    <!-- SETTINGS MODAL -->
+    <!-- SETTINGS MODAL (UPDATED) -->
     <div id="settings-overlay">
         <div class="settings-modal">
             <div class="settings-header">
@@ -163,16 +230,29 @@
                 </div>
                 <button class="setting-btn danger" onclick="clearAllChats()">Clear All</button>
             </div>
-            <div class="setting-row">
-                <div class="setting-label">Theme</div>
-                <button class="setting-btn">Dark Mode</button>
-            </div>
+            
             <div class="setting-row">
                 <div class="setting-label">
-                    <span>AI Engine</span>
-                    <span class="setting-sub">Current connected model</span>
+                    <span>Theme</span>
+                    <span class="setting-sub">Switch interface appearance</span>
                 </div>
-                <div style="font-size: 13px; color: #00d4ff;">Gemini 1.5 Flash</div>
+                <button id="theme-toggle-btn" class="setting-btn" onclick="toggleTheme()">Light Mode</button>
+            </div>
+            
+            <div class="setting-row">
+                <div class="setting-label">
+                    <span>Feedback</span>
+                    <span class="setting-sub">Help us improve the portal</span>
+                </div>
+                <button class="setting-btn" onclick="sendFeedback()">Write Feedback</button>
+            </div>
+            
+            <div class="setting-row">
+                <div class="setting-label">
+                    <span>Contact Us</span>
+                    <span class="setting-sub">Get technical support</span>
+                </div>
+                <button class="setting-btn" onclick="contactUs()">Contact</button>
             </div>
         </div>
     </div>
@@ -202,15 +282,15 @@
         </div>
         
         <div class="menu-item" onclick="startNewChat()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
             New chat
         </div>
         <div class="menu-item">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             Search chats
         </div>
         <div class="menu-item" onclick="openLibraryPage()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>
             Library
         </div>
 
@@ -219,7 +299,7 @@
 
         <div class="sidebar-bottom">
             <div class="menu-item" onclick="openSettingsModal()">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
                 Settings
             </div>
         </div>
@@ -229,8 +309,6 @@
     <div id="library-screen" class="hidden">
         <h2 class="library-title">Compliance Standard Library</h2>
         <div class="library-list">
-            
-            <!-- Steel Bottle PDF Link -->
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/15IORFKOM0ZHgae2mPs6IRfd9P-L7-xX6/preview', 'Domestic Stainless Steel Vacuum Flask/Bottle')">
                 <div class="lib-icon icon-blue">💧</div>
                 <div class="lib-content">
@@ -238,8 +316,6 @@
                     <div class="lib-desc">IS 17526 standards for stainless steel vacuum flasks.</div>
                 </div>
             </div>
-            
-            <!-- Cement PDF Link -->
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1D7hPesm_d_ynfskIPesN0KLuNxqNWEjk/preview', 'IS 269: Ordinary Portland Cement')">
                 <div class="lib-icon icon-green">🏗️</div>
                 <div class="lib-content">
@@ -247,8 +323,6 @@
                     <div class="lib-desc">IS 269 quality rules and packaging standards.</div>
                 </div>
             </div>
-            
-            <!-- UPDATED: Ceiling Fan PDF Link -->
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1VzdIMPoc_IFHCect1kIf04lVi6aN--m6/preview', 'IS 374: Electric Ceiling Fans')">
                 <div class="lib-icon icon-yellow">🌀</div>
                 <div class="lib-content">
@@ -256,7 +330,6 @@
                     <div class="lib-desc">IS 374 safety and performance specifications.</div>
                 </div>
             </div>
-            
         </div>
     </div>
 
@@ -354,11 +427,9 @@
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        // --- UPDATED PDF VIEWER LOGIC ---
         function openPDFViewer(pdfUrl, title) {
             document.getElementById('library-screen').classList.add('hidden');
             document.getElementById('library-screen').style.display = 'none';
-            
             document.getElementById('pdf-viewer-title').innerText = title;
             
             if (pdfUrl.startsWith('http')) {
@@ -392,16 +463,41 @@
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        // --- SETTINGS MODAL LOGIC ---
+        // --- SETTINGS MODAL LOGIC (UPDATED) ---
         function openSettingsModal() { document.getElementById('settings-overlay').classList.add('show'); if(window.innerWidth < 800) toggleSidebar(); }
         function closeSettingsModal() { document.getElementById('settings-overlay').classList.remove('show'); }
+        
         function clearAllChats() {
             if(confirm("Are you sure you want to permanently delete all chat history?")) {
                 chatSessions = {};
+                currentSessionId = null; 
                 closeSettingsModal();
                 startNewChat();
             }
         }
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const themeBtn = document.getElementById('theme-toggle-btn');
+            if(document.body.classList.contains('light-mode')) {
+                themeBtn.innerText = "Dark Mode";
+            } else {
+                themeBtn.innerText = "Light Mode";
+            }
+        }
+
+        function sendFeedback() {
+            let feedback = prompt("Please share your feedback or suggestions:");
+            if (feedback && feedback.trim() !== "") {
+                alert("Thank you! Your feedback has been sent successfully.");
+                closeSettingsModal();
+            }
+        }
+
+        function contactUs() {
+            alert("Contact our support team at: support@bis-ai.gov.in\nHelpline: 1800-11-2026");
+        }
+        
         document.getElementById('settings-overlay').addEventListener('click', function(e) { if (e.target === this) closeSettingsModal(); });
 
         function renderSidebar() {
