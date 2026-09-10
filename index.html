@@ -230,7 +230,7 @@
         <h2 class="library-title">Compliance Standard Library</h2>
         <div class="library-list">
             
-            <!-- UPDATE: Direct Google Drive Link for Steel Bottle PDF -->
+            <!-- Steel Bottle PDF Link -->
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/15IORFKOM0ZHgae2mPs6IRfd9P-L7-xX6/preview', 'Domestic Stainless Steel Vacuum Flask/Bottle')">
                 <div class="lib-icon icon-blue">💧</div>
                 <div class="lib-content">
@@ -239,8 +239,8 @@
                 </div>
             </div>
             
-            <!-- Cement (Dummy PDF for now) -->
-            <div class="lib-card" onclick="openPDFViewer('dummy_cement.pdf', 'IS 269: Ordinary Portland Cement')">
+            <!-- UPDATED: Cement PDF Link -->
+            <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1D7hPesm_d_ynfskIPesN0KLuNxqNWEjk/preview', 'IS 269: Ordinary Portland Cement')">
                 <div class="lib-icon icon-green">🏗️</div>
                 <div class="lib-content">
                     <div class="lib-title">Cement</div>
@@ -361,7 +361,6 @@
             
             document.getElementById('pdf-viewer-title').innerText = title;
             
-            // Check if it's a web URL (like Google Drive) or a local file
             if (pdfUrl.startsWith('http')) {
                 document.getElementById('pdf-iframe').src = pdfUrl;
             } else {
