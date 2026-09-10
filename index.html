@@ -3,1446 +3,862 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIS Intelligence & Compliance Engine — SIH Prototype</title>
+    <title>BIS AI - Copilot Theme</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
-
-        :root {
-            --bg-primary: linear-gradient(165deg, #021e30 0%, #061726 35%, #0f141d 70%, #2b1412 100%);
-            --card-bg: rgba(26, 32, 44, 0.82);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --card-hover: rgba(35, 43, 58, 0.95);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --cyan-accent: #00d4ff;
-            --emerald-accent: #10b981;
-            --amber-accent: #f59e0b;
-            --rose-accent: #f43f5e;
-            --purple-accent: #8b5cf6;
-            --sidebar-width: 280px;
-        }
-
-        body.light-mode {
-            --bg-primary: linear-gradient(165deg, #e2e8f0 0%, #f1f5f9 40%, #e8edf2 75%, #fce7e7 100%);
-            --card-bg: rgba(255, 255, 255, 0.94);
-            --card-border: rgba(0, 0, 0, 0.08);
-            --card-hover: rgba(248, 250, 252, 1);
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --cyan-accent: #0284c7;
-            --emerald-accent: #059669;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             height: 100vh;
-            width: 100vw;
-            background: var(--bg-primary);
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            color: var(--text-primary);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: background 0.3s ease, color 0.3s ease;
+            background: linear-gradient(165deg, #022a40 0%, #061c2e 30%, #161a24 60%, #4a2522 100%);
+            font-family: 'Segoe UI', 'Poppins', sans-serif;
+            display: flex; justify-content: center; align-items: center; overflow: hidden; color: #fff;
+            transition: background 0.4s, color 0.4s;
         }
 
-        /* Top Notification Bar */
-        .sih-banner {
-            background: linear-gradient(90deg, rgba(0, 212, 255, 0.15), rgba(16, 185, 129, 0.15));
-            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-            padding: 6px 16px;
-            font-size: 11px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1100;
-            backdrop-filter: blur(10px);
-        }
-        .sih-badge {
-            background: #f59e0b;
-            color: #000;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 10px;
-        }
+        /* --- SIDEBAR & MENU BUTTON --- */
+        #menu-btn { position: fixed; top: 20px; left: 20px; z-index: 990; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.05); color: white; border-radius: 50%; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; transition: 0.3s ease; backdrop-filter: blur(10px); }
+        #menu-btn:hover { background: rgba(255,255,255,0.15); transform: scale(1.05); }
+        #sidebar { position: fixed; top: 0; left: -320px; width: 280px; height: 100vh; background: rgba(18, 22, 29, 0.95); backdrop-filter: blur(25px); border-right: 1px solid rgba(255,255,255,0.05); z-index: 1000; transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; display: flex; flex-direction: column; padding: 20px 10px; box-shadow: 10px 0 40px rgba(0,0,0,0.5); }
+        #sidebar.open { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding: 0 10px; }
+        .sidebar-header .title { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px;}
+        .close-btn { cursor: pointer; background: transparent; border: none; color: #a1a6b0; padding: 5px; transition: 0.2s; border-radius: 5px;}
+        .close-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+        .menu-item { display: flex; align-items: center; gap: 12px; padding: 10px 15px; margin-bottom: 5px; border-radius: 20px; cursor: pointer; transition: 0.2s; font-size: 14px; color: #e2e4e9; }
+        .menu-item:hover { background: rgba(255,255,255,0.08); }
+        .recent-heading { margin: 25px 0 10px 15px; font-size: 12px; color: #a1a6b0; font-weight: 500; display: none; }
+        .recent-list { overflow-y: auto; flex: 1; padding: 0 5px;}
+        .recent-list::-webkit-scrollbar { width: 4px; }
+        .recent-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        .recent-item { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px 8px 15px; margin-bottom: 2px; border-radius: 20px; font-size: 13px; color: #c3c8d4; cursor: pointer; transition: 0.2s; }
+        .recent-item:hover { background: rgba(255,255,255,0.05); }
+        .recent-item.active { background: rgba(255,255,255,0.08); font-weight: 500; color: white;}
+        .recent-item-title { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; pointer-events: none; }
+        .options-btn { background: transparent; border: none; color: #a1a6b0; cursor: pointer; padding: 4px; border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: 0.2s; }
+        .recent-item:hover .options-btn { opacity: 1; }
+        .options-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+        .sidebar-bottom { margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
 
-        /* Header / Nav */
-        .top-navbar {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            border-bottom: 1px solid var(--card-border);
-            background: rgba(15, 20, 29, 0.6);
-            backdrop-filter: blur(16px);
-            z-index: 900;
-        }
-        .brand-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .brand-logo {
-            font-size: 22px;
-            background: linear-gradient(135deg, #00d4ff, #10b981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        .brand-sub {
-            font-size: 11px;
-            color: var(--text-muted);
-            border-left: 1px solid var(--card-border);
-            padding-left: 10px;
-        }
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        #options-dropdown { position: fixed; background: rgba(25, 28, 36, 0.98); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 6px; display: none; flex-direction: column; z-index: 2000; box-shadow: 0 10px 30px rgba(0,0,0,0.6); min-width: 140px; }
+        #options-dropdown.show { display: flex; }
+        .dropdown-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; font-size: 13px; color: #e2e4e9; cursor: pointer; border-radius: 8px; transition: 0.2s; }
+        .dropdown-item:hover { background: rgba(255, 255, 255, 0.08); }
+        .dropdown-item.delete { color: #ff5c5c; }
+        .dropdown-item.delete:hover { background: rgba(255, 92, 92, 0.15); }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid var(--card-border);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            transition: all 0.2s ease;
-        }
-        .btn:hover { background: rgba(255, 255, 255, 0.12); transform: translateY(-1px); }
-        .btn-primary { background: linear-gradient(135deg, #0284c7, #00d4ff); color: #fff; border: none; font-weight: 600; }
-        .btn-primary:hover { box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4); }
-        .btn-demo { background: linear-gradient(135deg, #f59e0b, #d97706); color: #000; font-weight: 700; border: none; }
-        .btn-demo:hover { box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); }
+        /* --- MODALS (SETTINGS & UPLOAD) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.show { display: flex; opacity: 1; }
+        .modal-box { background: rgba(30, 34, 43, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 440px; max-width: 90%; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; }
+        .modal-overlay.show .modal-box { transform: scale(1); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header h3 { font-size: 18px; font-weight: 500; margin: 0;}
+        .modal-close { cursor: pointer; background: rgba(255,255,255,0.05); border: none; color: #a1a6b0; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .modal-close:hover { background: rgba(255,255,255,0.15); color: white; }
 
-        /* Main Workspace Layout */
-        .app-container {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - 86px);
-            overflow: hidden;
-            position: relative;
-        }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .setting-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .setting-label { font-size: 14px; color: #e2e4e9; display: flex; flex-direction: column; gap: 4px;}
+        .setting-sub { font-size: 11px; color: #888;}
+        .setting-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: 0.2s;}
+        .setting-btn:hover { background: rgba(255,255,255,0.2); }
+        .setting-btn.danger { background: rgba(255, 92, 92, 0.15); color: #ff5c5c; }
+        .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
-        /* Left Navigation Rail / Sidebar */
-        .sidebar {
-            width: 250px;
-            background: rgba(18, 24, 35, 0.95);
-            backdrop-filter: blur(20px);
-            border-right: 1px solid var(--card-border);
-            display: flex;
-            flex-direction: column;
-            padding: 16px 12px;
-            gap: 4px;
-            overflow-y: auto;
-            z-index: 800;
-        }
-        .sidebar-section-title {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin: 14px 0 6px 10px;
-            font-weight: 600;
-        }
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: 0.2s ease;
-            text-decoration: none;
-        }
-        .sidebar-item:hover { background: rgba(255, 255, 255, 0.06); color: var(--text-primary); }
-        .sidebar-item.active { background: rgba(0, 212, 255, 0.12); color: var(--cyan-accent); font-weight: 600; border-left: 3px solid var(--cyan-accent); }
+        /* --- SCREENS --- */
+        #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
+        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
+        
+        .greeting { margin-top: 15vh; text-align: center; }
+        .greeting h1 { font-size: 28px; font-weight: 500; margin-bottom: 5px; }
+        .greeting h2 { font-size: 32px; font-weight: 600; margin-bottom: 40px; }
+        .suggestion-pills { display: flex; gap: 12px; margin-top: 25px; transition: opacity 0.4s; }
+        .pill { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.05); padding: 10px 18px; border-radius: 20px; font-size: 13px; color: #e2e4e9; cursor: pointer; transition: 0.2s; }
+        .pill:hover { background: rgba(255, 255, 255, 0.15); }
+        .bottom-widgets { position: absolute; bottom: 40px; display: flex; gap: 20px; width: 100%; max-width: 950px; justify-content: center; }
+        .widget-card { background: rgba(30, 34, 43, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 20px; width: 300px; height: 160px; display: flex; flex-direction: column; transition: background 0.3s; }
+        .widget-header { display: flex; justify-content: space-between; font-size: 11px; color: #a1a6b0; margin-bottom: 15px;}
+        .widget-content { flex: 1; display: flex; align-items: center; gap: 15px; }
+        .widget-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.1); }
 
-        /* Main Content Screens */
-        .main-viewport {
-            flex: 1;
-            position: relative;
-            overflow-y: auto;
-            padding: 24px 32px 40px 32px;
-            scroll-behavior: smooth;
-        }
-        .view-screen { display: none; animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .view-screen.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        #library-screen { justify-content: center; }
+        .library-title { font-size: 30px; font-weight: 600; margin-bottom: 25px; text-align: center; }
+        .library-list { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 500px; }
+        
+        .lib-card { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 16px 20px; cursor: pointer; transition: 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .lib-card:hover { background: rgba(45, 50, 62, 0.95); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .lib-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; box-shadow: inset 0 0 10px rgba(255,255,255,0.2); }
+        .icon-blue { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0284c7; }
+        .icon-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #16a34a; }
+        .icon-yellow { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #d97706; }
+        .lib-content { display: flex; flex-direction: column; gap: 4px; }
+        .lib-title { font-size: 16px; font-weight: 500; color: #fff; transition: 0.3s; }
+        .lib-desc { font-size: 13px; color: #a1a6b0; line-height: 1.4; }
 
-        /* View Headers */
-        .view-header {
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-        .view-title { font-size: 24px; font-weight: 700; color: var(--text-primary); }
-        .view-desc { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+        .lib-actions { width: 100%; display: flex; gap: 10px; max-height: 0; opacity: 0; overflow: hidden; margin-top: 0; transition: all 0.3s ease; }
+        .lib-card:hover .lib-actions { max-height: 50px; opacity: 1; margin-top: 12px; }
+        .lib-action-btn { flex: 1; background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.2); color: #00d4ff; padding: 8px 5px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: center; font-family: 'Poppins', sans-serif; }
+        .lib-action-btn:hover { background: rgba(0, 212, 255, 0.25); color: #fff; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,212,255,0.2); }
 
-        /* Cards & Containers */
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(18px);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 16px;
-            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-        }
-        .card:hover { border-color: rgba(0, 212, 255, 0.3); }
+        /* --- CALCULATOR UI --- */
+        #calculator-screen { justify-content: center; }
+        .calc-wrapper { background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 30px; width: 100%; max-width: 500px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+        .calc-group { margin-bottom: 20px; }
+        .calc-group label { display: block; font-size: 13px; color: #a1a6b0; margin-bottom: 8px; }
+        .calc-select { width: 100%; padding: 12px 15px; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: white; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; transition: 0.3s; }
+        .calc-select:focus { border-color: #00d4ff; background: rgba(0,0,0,0.3); }
+        .calc-select option { background: #1e222b; color: white; }
+        .calc-btn { width: 100%; background: linear-gradient(135deg, #10a37f, #00d4ff); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 500; cursor: pointer; transition: 0.3s; font-family: 'Poppins', sans-serif; margin-top: 10px; }
+        .calc-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3); }
+        
+        .receipt-card { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 20px; margin-top: 25px; display: none; border: 1px dashed rgba(255,255,255,0.2); }
+        .receipt-card.show { display: block; animation: popIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        .receipt-row { display: flex; justify-content: space-between; font-size: 13px; color: #e2e4e9; margin-bottom: 10px; }
+        .receipt-row.total { font-weight: 600; font-size: 16px; color: #00d4ff; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px; }
+        .receipt-row.concession { color: #10a37f; }
 
-        /* Metadata Badges */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
+        /* --- NEW: DASHBOARD ROADMAP UI (FEATURE 4 REDESIGNED) --- */
+        #roadmap-screen { align-items: center; overflow-y: auto; padding: 60px 0 30px 0; }
+        .dash-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+            width: 100%; max-width: 950px; margin: 0 auto; padding: 0 20px;
         }
-        .badge-core { background: rgba(0, 212, 255, 0.15); color: #00d4ff; border: 1px solid rgba(0, 212, 255, 0.3); }
-        .badge-pdf { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
-        .badge-web { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge-db { background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid rgba(139, 92, 246, 0.3); }
-        .badge-current { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .badge-historical { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px dashed rgba(245, 158, 11, 0.4); }
-        .badge-kb { background: rgba(0, 212, 255, 0.1); color: #7dd3fc; }
+        .dash-card {
+            background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border-radius: 16px;
+            padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .dash-card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        
+        /* Top Headers spanning */
+        .progress-widget { grid-column: span 1; align-items: center; justify-content: center; }
+        .info-widget { grid-column: span 2; justify-content: center; }
+        
+        /* Donut Chart CSS */
+        .donut-wrapper {
+            position: relative; width: 110px; height: 110px; border-radius: 50%;
+            background: conic-gradient(#00d4ff var(--pct, 0%), rgba(255,255,255,0.05) 0);
+            display: flex; align-items: center; justify-content: center; margin: 15px 0;
+            transition: background 0.5s ease;
+        }
+        .donut-inner {
+            width: 86px; height: 86px; background: #1e222b; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; font-weight: 600; color: #fff;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .dash-stat-label { font-size: 12px; color: #a1a6b0; text-align: center;}
 
-        /* Reference & Research Accordion */
-        .ref-folder {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            transition: 0.2s ease;
-        }
-        .ref-folder-header {
-            padding: 14px 18px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.02);
-        }
-        .ref-folder-header:hover { background: rgba(255, 255, 255, 0.05); }
-        .ref-folder-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .ref-folder-count {
-            background: rgba(255, 255, 255, 0.08);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-        .ref-folder-content {
-            display: none;
-            padding: 12px 16px;
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .ref-folder.collapsed .ref-folder-content { display: none; }
-        .ref-folder:not(.collapsed) .ref-folder-content { display: flex; }
+        /* Info Widget Stats */
+        .info-stats { display: flex; gap: 30px; margin-top: 15px; width: 100%; }
+        .stat-box { flex: 1; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02); }
+        .stat-val { display: block; font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+        .stat-name { font-size: 12px; color: #a1a6b0; text-transform: uppercase; letter-spacing: 1px;}
 
-        .resource-row {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+        /* Stage Cards Grid (Bottom) */
+        .stage-card { grid-column: span 1; position: relative; overflow: hidden; }
+        .stage-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: var(--accent);
         }
-        .resource-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-        .resource-name {
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .resource-name:hover { color: var(--cyan-accent); }
-        .resource-url-box {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            color: var(--text-muted);
-            word-break: break-all;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .open-source-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            color: var(--cyan-accent);
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .open-source-link:hover { text-decoration: underline; }
+        .stage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .stage-num { font-size: 28px; font-weight: 600; color: rgba(255,255,255,0.2); }
+        .stage-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+        .stage-desc { font-size: 12px; color: #888; line-height: 1.5; flex: 1; }
 
-        /* Search & Filter Bar */
-        .filter-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .search-input {
-            flex: 1;
-            min-width: 240px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 10px 14px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-        }
-        .search-input:focus { border-color: var(--cyan-accent); }
-        .filter-select {
-            background: rgba(20, 26, 38, 0.9);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 10px 14px;
-            color: var(--text-primary);
-            font-size: 12px;
-            outline: none;
-        }
+        /* Custom Dashboard Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #a1a6b0; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
-        /* AI Ask from Documents Section */
-        .chat-layout {
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 200px);
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            overflow: hidden;
-            position: relative;
-        }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .chat-input-bar {
-            padding: 14px 20px;
-            background: rgba(10, 15, 23, 0.8);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        .chat-input {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 12px 18px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-        }
-        .chat-input:focus { border-color: var(--cyan-accent); }
-        .ai-msg {
-            background: rgba(20, 27, 39, 0.85);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 16px;
-            max-width: 85%;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-        .user-msg {
-            background: rgba(0, 132, 199, 0.2);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 12px;
-            padding: 12px 16px;
-            max-width: 75%;
-            align-self: flex-end;
-            font-size: 13px;
-        }
-        .citation-card {
-            background: rgba(0, 0, 0, 0.3);
-            border-left: 3px solid var(--cyan-accent);
-            padding: 10px 14px;
-            border-radius: 6px;
-            margin-top: 10px;
-            font-size: 12px;
-        }
-
-        /* Evidence Drawer */
-        .evidence-drawer {
-            position: fixed;
-            top: 0;
-            right: -420px;
-            width: 400px;
-            height: 100vh;
-            background: rgba(15, 21, 32, 0.98);
-            backdrop-filter: blur(25px);
-            border-left: 1px solid var(--card-border);
-            z-index: 1200;
-            padding: 24px;
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6);
-            transition: right 0.3s cubic-bezier(0.2, 1, 0.3, 1);
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        .evidence-drawer.open { right: 0; }
-        .drawer-close {
-            align-self: flex-end;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        /* Product Matrix Grid */
-        .product-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 16px;
-        }
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 16px;
-            margin-top: 12px;
-        }
-        .product-stat-box {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--card-border);
-        }
-
-        /* SIH Judge Demo Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            z-index: 1500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.show { display: flex; }
-        .demo-modal {
-            background: #111827;
-            border: 1px solid rgba(245, 158, 11, 0.4);
-            border-radius: 16px;
-            width: 600px;
-            max-width: 90%;
-            padding: 24px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-        }
-
-        /* Footer */
-        .app-footer {
-            height: 26px;
-            background: rgba(10, 14, 22, 0.9);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10.5px;
-            color: var(--text-muted);
-            padding: 0 16px;
-        }
-
-        /* Timeline Journey */
-        .journey-step {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        .step-circle {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(0, 212, 255, 0.15);
-            border: 2px solid var(--cyan-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--cyan-accent);
-            flex-shrink: 0;
-        }
-
-        /* Responsive */
+        /* Media Query for Dashboard Responsiveness */
         @media (max-width: 900px) {
-            .app-container { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--card-border); flex-direction: row; overflow-x: auto; }
-            .main-viewport { padding: 16px; }
-            .evidence-drawer { width: 100%; right: -100%; }
+            .dash-grid { grid-template-columns: repeat(2, 1fr); }
+            .info-widget { grid-column: span 1; }
         }
+        @media (max-width: 600px) {
+            .dash-grid { grid-template-columns: 1fr; }
+            .progress-widget, .info-widget, .stage-card { grid-column: span 1; }
+            .info-stats { flex-direction: column; gap: 10px; }
+        }
+
+        /* --- LAB REPORT ANALYZER MODAL UI --- */
+        .drop-zone { border: 2px dashed rgba(0, 212, 255, 0.3); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.15); margin-bottom: 15px; }
+        .drop-zone:hover { border-color: #00d4ff; background: rgba(0, 212, 255, 0.05); }
+        .report-result-box { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 15px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.08); display: none; }
+        .report-result-box.show { display: block; animation: popIn 0.3s ease; }
+        .param-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500; }
+        .badge-pass { background: rgba(16, 163, 127, 0.15); color: #10a37f; }
+
+        #pdf-viewer-screen { background: #1e222b; z-index: 500; }
+        .pdf-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .pdf-header .back-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 16px; border-radius: 20px; transition: 0.2s; }
+        .pdf-header .back-btn:hover { background: rgba(255,255,255,0.2); }
+        .pdf-title { font-size: 16px; font-weight: 500; color: #fff; }
+        .pdf-container { flex: 1; width: 100%; height: 100%; background: #2d323e; }
+        .pdf-container iframe { width: 100%; height: 100%; border: none; }
+
+        #input-container { position: absolute; left: 50%; transform: translateX(-50%); width: 750px; background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 15px 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.4); z-index: 100; transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); top: 35vh; }
+        #input-container.chat-mode { top: calc(100vh - 100px); width: 850px; border-radius: 30px;}
+        .input-top-bar { display: flex; justify-content: space-between; font-size: 12px; color: #a1a6b0; margin-bottom: 10px; padding: 0 5px;}
+        .model-badge { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 12px; cursor: pointer;}
+        .input-row { display: flex; align-items: center; gap: 8px; }
+        input { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 15px; font-family: 'Segoe UI', sans-serif; padding: 5px;}
+        input::placeholder { color: #888; }
+        
+        .action-icon-btn { background: transparent; border: none; font-size: 16px; cursor: pointer; color: #a1a6b0; transition: 0.2s; border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; }
+        .action-icon-btn:hover { background: rgba(255,255,255,0.1); }
+        .action-icon-btn.listening { animation: pulseRed 1.5s infinite; }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 0 0 rgba(255, 92, 92, 0.4); background: rgba(255, 92, 92, 0.2); } 70% { box-shadow: 0 0 0 8px rgba(255, 92, 92, 0); background: transparent; } 100% { box-shadow: 0 0 0 0 rgba(255, 92, 92, 0); background: transparent; } }
+
+        .send-btn { background: rgba(255,255,255,0.1); border: none; width: 36px; height: 36px; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; margin-left: 5px;}
+        .send-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05);}
+        .send-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        #chat-area { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 850px; height: calc(100vh - 120px); padding: 40px 20px 20px 20px; overflow-y: auto; scroll-behavior: smooth; opacity: 0; pointer-events: none; transition: opacity 0.6s ease 0.3s; display: flex; flex-direction: column; gap: 24px; }
+        #chat-area.active { opacity: 1; pointer-events: auto; }
+        #chat-area::-webkit-scrollbar { width: 6px; }
+        #chat-area::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        @keyframes popIn { 0% { opacity: 0; transform: translateY(15px) scale(0.98); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+        .message-row { display: flex; gap: 15px; width: 100%; animation: popIn 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
+        .message-row.user { flex-direction: row-reverse; }
+        .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+        .bot-avatar { background: linear-gradient(135deg, #10a37f, #00d4ff); }
+        .user-avatar { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .message { max-width: 80%; padding: 16px 20px; border-radius: 16px; font-size: 14px; line-height: 1.6; word-wrap: break-word; color: #e2e4e9; transition: 0.3s;}
+        .message h1, .message h2, .message h3 { margin-top: 5px; margin-bottom: 8px; color: #fff; font-size: 15px; }
+        .message p { margin: 0 0 10px 0; }
+        .message p:last-child { margin: 0; }
+        .bot-message { background: rgba(30, 34, 43, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .user-message { background: rgba(45, 50, 62, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .typing-bubble { display: flex; align-items: center; gap: 14px; padding: 16px 20px !important; }
+        .pulse-scanner { display: flex; align-items: center; gap: 4px; height: 20px; }
+        .pulse-bar { width: 4px; height: 100%; background: #00d4ff; border-radius: 2px; animation: pulseWave 1.2s ease-in-out infinite; }
+        .pulse-bar:nth-child(2) { animation-delay: 0.2s; background: #10a37f; }
+        .pulse-bar:nth-child(3) { animation-delay: 0.4s; background: #00d4ff; }
+        .pulse-bar:nth-child(4) { animation-delay: 0.6s; background: #ffffff; }
+        @keyframes pulseWave { 0%, 100% { transform: scaleY(0.4); opacity: 0.3; } 50% { transform: scaleY(1.2); opacity: 1; box-shadow: 0 0 10px rgba(0,212,255,0.6); } }
+
+        /* --- LIGHT MODE --- */
+        body.light-mode { background: linear-gradient(165deg, #e2e8f0 0%, #f8fafc 30%, #f1f5f9 60%, #e2e8f0 100%); color: #0f172a; }
+        body.light-mode #sidebar { background: rgba(255, 255, 255, 0.95); border-right: 1px solid rgba(0,0,0,0.1); box-shadow: 10px 0 40px rgba(0,0,0,0.05); }
+        body.light-mode .menu-item { color: #334155; }
+        body.light-mode .menu-item:hover { background: rgba(0,0,0,0.05); }
+        body.light-mode .recent-item { color: #475569; }
+        body.light-mode .recent-item.active { background: rgba(0,0,0,0.08); color: #0f172a; }
+        body.light-mode .sidebar-header .title { color: #0f172a; }
+        body.light-mode #menu-btn { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0,0,0,0.1); color: #0f172a;}
+        body.light-mode .widget-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .pill { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1); color: #334155; }
+        body.light-mode #input-container { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+        body.light-mode input { color: #0f172a; }
+        body.light-mode .bot-message { background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .user-message { background: rgba(226, 232, 240, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .modal-box { background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(0,0,0,0.1); }
+        body.light-mode .modal-header h3, body.light-mode .setting-label { color: #0f172a; }
+        body.light-mode .lib-card, body.light-mode .calc-wrapper { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); }
+        body.light-mode .lib-title, body.light-mode .library-title { color: #0f172a; }
+        body.light-mode .calc-select { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.1); color: #0f172a; }
+        body.light-mode .calc-select option { background: #fff; color: #0f172a; }
+        body.light-mode .receipt-card, body.light-mode .drop-zone, body.light-mode .report-result-box { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.1); }
+        body.light-mode .receipt-row, body.light-mode .calc-group label { color: #475569; }
+        
+        /* Dashboard Light Mode Overrides */
+        body.light-mode .dash-card { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        body.light-mode .dash-card h4, body.light-mode .stage-title, body.light-mode .stat-val { color: #0f172a; }
+        body.light-mode .stage-num { color: rgba(0,0,0,0.1); }
+        body.light-mode .stage-desc, body.light-mode .stat-name, body.light-mode .dash-stat-label { color: #64748b; }
+        body.light-mode .donut-inner { background: #fff; color: #0f172a; box-shadow: inset 0 4px 10px rgba(0,0,0,0.1); }
+        body.light-mode .stat-box { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.05); }
+        body.light-mode .slider { background-color: rgba(0,0,0,0.1); }
+        body.light-mode .slider:before { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-    <!-- Mandatory SIH Hackathon Prototype Disclaimer Banner -->
-    <div class="sih-banner">
-        <div style="display:flex; align-items:center; gap:8px;">
-            <span class="sih-badge">SIH PROTOTYPE</span>
-            <span id="banner-text">Smart India Hackathon Demonstration Mode • Grounded Strictly in Official BIS Regulations</span>
-        </div>
-        <div style="display:flex; gap:12px; align-items:center;">
-            <span style="color:var(--emerald-accent); font-weight:600;">● Live BIS Knowledge Base</span>
-            <button class="btn btn-demo" onclick="startJudgeTour()">⚡ Launch Judge Demo Tour</button>
-        </div>
+    <!-- HAMBURGER MENU BUTTON -->
+    <div id="menu-btn" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
 
-    <!-- Main Navigation Header -->
-    <header class="top-navbar">
-        <div class="brand-group">
-            <div class="brand-logo">BIS INTELLIGENCE</div>
-            <div class="brand-sub" id="brand-sub">Product Compliance & Regulatory Audit System</div>
-        </div>
-        <div class="nav-actions">
-            <button class="btn" onclick="toggleLanguage()" id="lang-btn">🌐 हिंदी (Hindi)</button>
-            <button class="btn" onclick="toggleTheme()" id="theme-btn">🌓 Toggle Theme</button>
-            <a href="https://www.manakonline.in/MANAK/login" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Open Official e-BIS Portal ↗</a>
-        </div>
-    </header>
-
-    <div class="app-container">
-
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar">
-            <div class="sidebar-section-title" id="nav-head-intel">Intelligence Modules</div>
-            <div class="sidebar-item active" onclick="switchView('view-chat')">
-                <span>🤖</span> <span class="nav-txt" data-en="Ask from Documents (AI)" data-hi="दस्तावेजों से पूछें (AI)">Ask from Documents (AI)</span>
+    <!-- SETTINGS MODAL -->
+    <div id="settings-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" onclick="closeSettingsModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
             </div>
-            <div class="sidebar-item" onclick="switchView('view-product')">
-                <span>🔍</span> <span class="nav-txt" data-en="Product & QCO Search" data-hi="उत्पाद एवं QCO खोज">Product & QCO Search</span>
+            <div class="setting-row">
+                <div class="setting-label"><span>Clear all chats</span><span class="setting-sub">Permanently delete local chat history</span></div>
+                <button class="setting-btn danger" onclick="clearAllChats()">Clear All</button>
             </div>
-            <div class="sidebar-item" onclick="switchView('view-library')">
-                <span>📚</span> <span class="nav-txt" data-en="Reference & Research (16 Folders)" data-hi="संदर्भ एवं शोध (16 फोल्डर)">Reference & Research (16 Folders)</span>
+            <div class="setting-row">
+                <div class="setting-label"><span>Theme</span><span class="setting-sub">Switch interface appearance</span></div>
+                <button id="theme-toggle-btn" class="setting-btn" onclick="toggleTheme()">Light Mode</button>
             </div>
-            <div class="sidebar-item" onclick="switchView('view-journey')">
-                <span>🗺️</span> <span class="nav-txt" data-en="Certification Journey" data-hi="प्रमाणन यात्रा">Certification Journey</span>
+            <div class="setting-row">
+                <div class="setting-label"><span>Feedback</span><span class="setting-sub">Help us improve the portal</span></div>
+                <button class="setting-btn" onclick="sendFeedback()">Write Feedback</button>
             </div>
-            <div class="sidebar-item" onclick="switchView('view-calc')">
-                <span>🧮</span> <span class="nav-txt" data-en="Marking Fee Calculator" data-hi="अंकन शुल्क कैलकुलेटर">Marking Fee Calculator</span>
-            </div>
-
-            <div class="sidebar-section-title" id="nav-head-audit">Audit & Compliance</div>
-            <div class="sidebar-item" onclick="switchView('view-analytics')">
-                <span>📊</span> <span class="nav-txt" data-en="Prototype Analytics" data-hi="प्रोटोटाइप एनालिटिक्स">Prototype Analytics</span>
-            </div>
-            <div class="sidebar-item" onclick="openOfficialSource('https://lims.bis.gov.in/home/search_is_number/')">
-                <span>🧪</span> <span class="nav-txt" data-en="Search BIS LIMS Labs ↗" data-hi="BIS LIMS प्रयोगशालाएं खोजें ↗">Search BIS LIMS Labs ↗</span>
-            </div>
-            <div class="sidebar-item" onclick="openOfficialSource('https://standardsbis.bsbedge.com/')">
-                <span>🛒</span> <span class="nav-txt" data-en="BIS Standards Portal (e-Sale) ↗" data-hi="BIS मानक पोर्टल (ई-बिक्री) ↗">BIS Standards Portal (e-Sale) ↗</span>
-            </div>
-        </nav>
-
-        <!-- Main Viewport Area -->
-        <main class="main-viewport">
-
-            <!-- 1. ASK FROM DOCUMENTS VIEW -->
-            <section id="view-chat" class="view-screen active">
-                <div class="view-header">
-                    <div>
-                        <h2 class="view-title" id="chat-title">BIS Compliance AI Assistant</h2>
-                        <p class="view-desc" id="chat-desc">Strictly answers from approved 2026/2025 guidelines, Acts, and notified Quality Control Orders.</p>
-                    </div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn" onclick="setQueryPreset('What are the latest 2026 guidelines for factory surveillance?')">Factory Surveillance 2026</button>
-                        <button class="btn" onclick="setQueryPreset('Is Stainless Steel Bottle under compulsory QCO?')">IS 17526 Steel Bottle QCO</button>
-                        <button class="btn" onclick="setQueryPreset('Can MSME units use Cluster Based Test Facility (CBTF)?')">MSME CBTF Rules</button>
-                    </div>
-                </div>
-
-                <div class="chat-layout">
-                    <div class="chat-messages" id="chat-messages">
-                        <div class="ai-msg">
-                            <b>Namaste! I am the BIS Regulatory Intelligence Assistant for SIH.</b><br>
-                            I evaluate regulatory queries against the Bureau of Indian Standards Act, 2016, Conformity Assessment Regulations 2018, and updated 2026 guidelines.<br><br>
-                            Try asking about compulsory products, QCO implementation dates, Scheme-I vs Scheme-IV, or testing lab requirements.
-                            <div class="citation-card">
-                                <b>Source Governance:</b> Grounded on 69 official BIS reference items. No hallucinated fees or invented IS codes.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-input-bar">
-                        <input type="text" id="chat-input" class="chat-input" placeholder="Ask regulatory questions (e.g., 'What are the rules for market surveillance non-conformity?')..." onkeypress="if(event.key==='Enter') executeAIChat()">
-                        <button class="btn btn-primary" onclick="executeAIChat()">Ask Document AI</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 2. PRODUCT & QCO SEARCH VIEW -->
-            <section id="view-product" class="view-screen">
-                <div class="view-header">
-                    <div>
-                        <h2 class="view-title">Product & QCO Regulatory Matrix</h2>
-                        <p class="view-desc">Verify applicable Indian Standard, compulsory certification scheme, lab readiness, and QCO status.</p>
-                    </div>
-                </div>
-
-                <div class="filter-container">
-                    <input type="text" id="prod-search" class="search-input" placeholder="Type Product name or IS Number (e.g. 17526, 269, Ceiling Fan, Cement, Medical Device)..." oninput="filterProducts()">
-                </div>
-
-                <div id="product-results-container">
-                    <!-- Dynamic Product Cards Injected Here -->
-                </div>
-            </section>
-
-            <!-- 3. REFERENCE & RESEARCH (16 FOLDERS) -->
-            <section id="view-library" class="view-screen">
-                <div class="view-header">
-                    <div>
-                        <h2 class="view-title">Reference & Research System</h2>
-                        <p class="view-desc">16 Official BIS Repository Folders. All URLs preserved exactly. No shortened or placeholder links.</p>
-                    </div>
-                    <div style="font-size:12px; color:var(--text-muted);">
-                        Total Official Items: <b style="color:#00d4ff;" id="total-ref-count">0</b>
-                    </div>
-                </div>
-
-                <div class="filter-container">
-                    <input type="text" id="ref-search" class="search-input" placeholder="Search across all 16 folders by title, IS standard, or topic..." oninput="renderReferenceSystem()">
-                    <select id="filter-type" class="filter-select" onchange="renderReferenceSystem()">
-                        <option value="ALL">All Resource Types</option>
-                        <option value="PDF">Official PDF Only</option>
-                        <option value="LIVE">Live Portals & Web</option>
-                        <option value="DB">Live Databases</option>
-                    </select>
-                    <select id="filter-status" class="filter-select" onchange="renderReferenceSystem()">
-                        <option value="ALL">All Statuses</option>
-                        <option value="CURRENT">Current Official Standards</option>
-                        <option value="HISTORICAL">Historical / Verify Status</option>
-                    </select>
-                </div>
-
-                <div id="folders-container">
-                    <!-- 16 Folders Injected by JavaScript -->
-                </div>
-            </section>
-
-            <!-- 4. CERTIFICATION JOURNEY VIEW -->
-            <section id="view-journey" class="view-screen">
-                <div class="view-header">
-                    <div>
-                        <h2 class="view-title">Standard BIS Scheme-I Certification Journey</h2>
-                        <p class="view-desc">End-to-end procedural workflow as per February 2026 Guidelines for Grant and Surveillance.</p>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="journey-step">
-                        <div class="step-circle">1</div>
-                        <div>
-                            <h4 style="font-size:15px; margin-bottom:4px;">Product Classification & QCO Verification</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Check whether the manufactured item falls under mandatory Quality Control Orders (QCO) issued by DPIIT, Ministry of Steel, or MeitY. Determine applicable Indian Standard (IS) and Scheme (Scheme-I, II, or IV).</p>
-                        </div>
-                    </div>
-                    <div class="journey-step">
-                        <div class="step-circle">2</div>
-                        <div>
-                            <h4 style="font-size:15px; margin-bottom:4px;">Factory Testing Setup & CBTF Evaluation</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Ensure mandatory in-house testing equipment (Scheme of Inspection and Testing - SIT) is calibrated. MSMEs may apply for Cluster Based Test Facility (CBTF) exemptions where applicable.</p>
-                        </div>
-                    </div>
-                    <div class="journey-step">
-                        <div class="step-circle">3</div>
-                        <div>
-                            <h4 style="font-size:15px; margin-bottom:4px;">e-BIS (ManakOnline) Application Submission</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Submit Form-V online via ManakOnline with factory layout, test reports, machinery details, and statutory application fee (₹1,000).</p>
-                        </div>
-                    </div>
-                    <div class="journey-step">
-                        <div class="step-circle">4</div>
-                        <div>
-                            <h4 style="font-size:15px; margin-bottom:4px;">Factory Verification & Sample Sealing</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">BIS inspecting officer visits premises, checks quality personnel, verifies calibration, inspects raw materials, and draws counter-samples for independent testing.</p>
-                        </div>
-                    </div>
-                    <div class="journey-step">
-                        <div class="step-circle">5</div>
-                        <div>
-                            <h4 style="font-size:15px; margin-bottom:4px;">Independent Laboratory Testing (BIS LIMS)</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Coded samples are dispatched to accredited BIS / NABL laboratories via the LIMS system for full testing against all specification parameters.</p>
-                        </div>
-                    </div>
-                    <div class="journey-step">
-                        <div class="step-circle">6</div>
-                        <div>
-                            <h4 style="font-size:15px; margin-bottom:4px;">Grant of Standard Mark (CM/L Licence)</h4>
-                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.5;">Upon passing laboratory scrutiny, a unique CM/L (Certification Marks/Licence) number is issued permitting application of the ISI mark.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- 5. MARKING FEE CALCULATOR VIEW -->
-            <section id="view-calc" class="view-screen">
-                <div class="view-header">
-                    <div>
-                        <h2 class="view-title">BIS Fee & Cost Estimator</h2>
-                        <p class="view-desc">Estimates statutory costs based on Scheme-I regulations and Gazette notification amendments.</p>
-                    </div>
-                    <div>
-                        <a href="https://www.manakonline.in/MANAK/knowfees" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Open Official Fee Portal ↗</a>
-                    </div>
-                </div>
-
-                <div class="card" style="max-width: 600px;">
-                    <div style="margin-bottom:14px;">
-                        <label style="display:block; font-size:12px; margin-bottom:6px; color:var(--text-secondary);">Enterprise Classification</label>
-                        <select id="calc-scale" class="filter-select" style="width:100%;" onchange="runFeeCalculation()">
-                            <option value="micro">Micro Enterprise / Women Entrepreneur (50% Concession on Marking Fee)</option>
-                            <option value="small">Small Enterprise (50% Concession on Marking Fee)</option>
-                            <option value="medium_large">Medium or Large Scale Manufacturer (Standard Fee)</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom:14px;">
-                        <label style="display:block; font-size:12px; margin-bottom:6px; color:var(--text-secondary);">Product Category Baseline</label>
-                        <select id="calc-product" class="filter-select" style="width:100%;" onchange="runFeeCalculation()">
-                            <option value="is17526">IS 17526 — Stainless Steel Flasks / Bottles</option>
-                            <option value="is269">IS 269 — Ordinary Portland Cement</option>
-                            <option value="is374">IS 374 — Electric Ceiling Fans</option>
-                        </select>
-                    </div>
-
-                    <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:16px; margin-top:20px; font-size:13px; line-height:1.8;">
-                        <div style="display:flex; justify-content:space-between;"><span>Application Fee:</span> <b id="fee-app">₹ 1,000</b></div>
-                        <div style="display:flex; justify-content:space-between;"><span>Annual License Fee:</span> <b id="fee-lic">₹ 1,000</b></div>
-                        <div style="display:flex; justify-content:space-between;"><span>Factory Audit (Per Manday):</span> <b id="fee-audit">₹ 7,000</b></div>
-                        <div style="display:flex; justify-content:space-between;"><span>Annual Minimum Marking Fee:</span> <b id="fee-base-marking">₹ 42,000</b></div>
-                        <div style="display:flex; justify-content:space-between; color:var(--emerald-accent);" id="concession-line"><span>MSME 50% Concession:</span> <b id="fee-concession">- ₹ 21,000</b></div>
-                        <hr style="border:none; border-top:1px solid var(--card-border); margin:10px 0;">
-                        <div style="display:flex; justify-content:space-between; font-size:16px; color:var(--cyan-accent);"><span>Total Statutory Cost:</span> <b id="fee-total">₹ 30,000</b></div>
-                    </div>
-                    <p style="font-size:10px; color:var(--text-muted); margin-top:10px;">*Note: Independent laboratory testing fees by NABL/BIS Labs are billed separately. Verify on <a href="https://www.manakonline.in/MANAK/knowfees" target="_blank" style="color:var(--cyan-accent);">ManakOnline</a>.</p>
-                </div>
-            </section>
-
-            <!-- 6. PROTOTYPE ANALYTICS VIEW -->
-            <section id="view-analytics" class="view-screen">
-                <div class="view-header">
-                    <div>
-                        <h2 class="view-title">Prototype Analytics & Knowledge Audit</h2>
-                        <p class="view-desc">Real-time statistics of indexed standards, live databases, and audit integrity.</p>
-                    </div>
-                </div>
-
-                <div class="product-grid">
-                    <div class="card product-stat-box">
-                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Official Sources Indexed</div>
-                        <div style="font-size:28px; font-weight:700; color:var(--cyan-accent); margin-top:6px;">69 Resources</div>
-                        <div style="font-size:11px; color:var(--text-secondary); margin-top:4px;">16 Strict Categorical Folders</div>
-                    </div>
-                    <div class="card product-stat-box">
-                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Core Technical Guidelines</div>
-                        <div style="font-size:28px; font-weight:700; color:var(--emerald-accent); margin-top:6px;">25 Feb 2026</div>
-                        <div style="font-size:11px; color:var(--text-secondary); margin-top:4px;">Grant, Surveillance & Non-Conformity</div>
-                    </div>
-                    <div class="card product-stat-box">
-                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Live BIS Databases Connected</div>
-                        <div style="font-size:28px; font-weight:700; color:var(--purple-accent); margin-top:6px;">5 Live Portals</div>
-                        <div style="font-size:11px; color:var(--text-secondary); margin-top:4px;">LIMS, e-Sale, ManakOnline, Standards DB</div>
-                    </div>
-                    <div class="card product-stat-box">
-                        <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Data Integrity Status</div>
-                        <div style="font-size:28px; font-weight:700; color:#38bdf8; margin-top:6px;">100% Grounded</div>
-                        <div style="font-size:11px; color:var(--text-secondary); margin-top:4px;">Zero Hallucinated URLs or IS Codes</div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-    </div>
-
-    <!-- Evidence Side-Drawer -->
-    <div id="evidence-drawer" class="evidence-drawer">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <h3 style="font-size:16px; font-weight:700; color:var(--cyan-accent);">Official Evidence Panel</h3>
-            <button class="drawer-close" onclick="closeEvidenceDrawer()">✕</button>
-        </div>
-        <div id="evidence-content" style="font-size:12.5px; line-height:1.6; color:var(--text-secondary);">
-            <!-- Dynamic citation verification injected here -->
-        </div>
-    </div>
-
-    <!-- SIH Judge Demo Walkthrough Modal -->
-    <div id="demo-modal" class="modal-overlay">
-        <div class="demo-modal">
-            <h3 style="color:#f59e0b; margin-bottom:8px; font-size:18px;">⚡ SIH Judge Demonstration Flow</h3>
-            <p style="font-size:12px; color:var(--text-secondary); margin-bottom:16px; line-height:1.5;">
-                Welcome Judges! This guided flow showcases how the prototype prevents regulatory non-compliance using strictly verified BIS data.
-            </p>
-            <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:12px; font-size:12px; line-height:1.8; margin-bottom:16px;">
-                1. <b>Instant QCO Verification:</b> Automated lookup of mandatory certification orders.<br>
-                2. <b>2026 Circular Verification:</b> Real-time grounding on February 2026 surveillance guidelines.<br>
-                3. <b>Zero-Hallucination Citations:</b> Every AI assertion links to an official `.gov.in` source.<br>
-                4. <b>Transparent MSME Concessions:</b> Accurate statutory fee calculation.
-            </div>
-            <div style="display:flex; justify-content:flex-end; gap:10px;">
-                <button class="btn" onclick="closeJudgeTour()">Close</button>
-                <button class="btn btn-demo" onclick="runDemoStepOne()">Run Demo Scenario (Steel Bottle QCO) →</button>
+            <div class="setting-row">
+                <div class="setting-label"><span>Contact Us</span><span class="setting-sub">Get technical support</span></div>
+                <button class="setting-btn" onclick="contactUs()">Contact</button>
             </div>
         </div>
     </div>
 
-    <!-- Mandatory Footer Disclaimer -->
-    <footer class="app-footer">
-        Prototype for Smart India Hackathon. Not an official BIS application. Always verify compliance requirements on the latest official BIS source.
-    </footer>
+    <!-- UPLOAD LAB TEST REPORT MODAL -->
+    <div id="upload-overlay" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Lab Test Report Analyzer</h3>
+                <button class="modal-close" onclick="closeUploadModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+            </div>
+            
+            <div class="drop-zone" onclick="document.getElementById('report-file-input').click()">
+                <div style="font-size: 32px; margin-bottom: 8px;">📄</div>
+                <div style="font-size: 14px; font-weight: 500; color: #00d4ff;">Click to Upload Factory Test Report</div>
+                <div style="font-size: 11px; color: #888; margin-top: 4px;">Supports PDF or Scanned PNG/JPG files</div>
+                <input type="file" id="report-file-input" style="display: none;" onchange="handleFileUpload(event)">
+            </div>
+
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span style="font-size: 12px; color: #888;">— OR TEST DEMO SAMPLE —</span><br>
+                <button class="setting-btn" style="margin-top: 8px; font-size: 12px;" onclick="loadSampleReport()">Load Sample Cement Report (IS 269)</button>
+            </div>
+
+            <button id="run-audit-btn" class="calc-btn" style="display:none;" onclick="runReportAudit()">Run AI Compliance Audit</button>
+
+            <!-- Results Card -->
+            <div id="report-result" class="report-result-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="font-weight:600; font-size:14px; color:#00d4ff;">Audit Findings</span>
+                    <span class="param-badge badge-pass">✓ PASSED IS 269</span>
+                </div>
+                <div style="font-size: 12px; line-height: 1.6; color: #e2e4e9;">
+                    • <b>Compressive Strength (28-day):</b> 46.5 MPa (Required: ≥ 43 MPa) <span style="color:#10a37f;">[PASS]</span><br>
+                    • <b>Initial Setting Time:</b> 75 mins (Required: ≥ 30 mins) <span style="color:#10a37f;">[PASS]</span><br>
+                    • <b>Le-Chatelier Soundness:</b> 2.0 mm (Required: ≤ 10 mm) <span style="color:#10a37f;">[PASS]</span><br>
+                    • <b>Chemical Insoluble Residue:</b> 1.8% (Required: ≤ 5.0%) <span style="color:#10a37f;">[PASS]</span>
+                </div>
+                <div style="font-size:11px; color:#10a37f; font-weight:500; margin-top:10px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px;">
+                    Verdict: Conforming to BIS requirements. Product is eligible for Standard Mark certification.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL OPTIONS MENU (3-dots dropdown) -->
+    <div id="options-dropdown">
+        <div class="dropdown-item" onclick="actionPin()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin</div>
+        <div class="dropdown-item" onclick="actionShare()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share</div>
+        <div class="dropdown-item delete" onclick="actionDelete()"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete</div>
+    </div>
+
+    <!-- SIDEBAR (SLIDER) -->
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <span class="title"><span style="font-size:18px;">✨</span> BIS AI Portal</span>
+            <button class="close-btn" onclick="toggleSidebar()"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
+        </div>
+        
+        <div class="menu-item" onclick="startNewChat()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> New chat
+        </div>
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Search chats
+        </div>
+        <div class="menu-item" onclick="openLibraryPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg> Library
+        </div>
+        <div class="menu-item" onclick="openCalculatorPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-6.25 15.5l-1.41-1.41L13.17 15H11v-2h2.17l-1.83-1.83 1.41-1.41L15.66 12l-2.91 2.91zM18 9h-2V7h-2v2h-2v2h2v2h2v-2h2V9zM5 5h14v3H5V5z"/></svg> Fee Calculator
+        </div>
+        <div class="menu-item" onclick="openRoadmapPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Certification Dashboard
+        </div>
+
+        <div class="recent-heading" id="recent-heading">Recent</div>
+        <div class="recent-list" id="sidebar-history-list"></div>
+
+        <div class="sidebar-bottom">
+            <div class="menu-item" onclick="openSettingsModal()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg> Settings
+            </div>
+        </div>
+    </div>
+
+    <!-- LIBRARY SCREEN -->
+    <div id="library-screen" class="hidden">
+        <h2 class="library-title" style="margin-bottom: 25px;">Compliance Standard Library</h2>
+        <div class="library-list">
+            <div class="lib-card" style="cursor: default;">
+                <div style="display: flex; align-items: center; gap: 18px; width: 100%;">
+                    <div class="lib-icon icon-blue">💧</div>
+                    <div class="lib-content" style="flex: 1;">
+                        <div class="lib-title">Steel Bottle</div>
+                        <div class="lib-desc">IS 17526 standards for stainless steel vacuum flasks.</div>
+                    </div>
+                </div>
+                <div class="lib-actions">
+                    <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/1yfr9iWu2B-by5vYJOKoE0XavkErtigu2/preview', 'Print Book - Steel Bottle')">Print book</button>
+                    <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/14s3wMetvYckrgzytB4QdLfGh58q1WWdJ/preview', 'Lab Suggestion - Steel Bottle')">Lab suggestion</button>
+                    <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/15IORFKOM0ZHgae2mPs6IRfd9P-L7-xX6/preview', 'Manual Lab Test - Steel Bottle')">Manual lab test</button>
+                </div>
+            </div>
+            <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1D7hPesm_d_ynfskIPesN0KLuNxqNWEjk/preview', 'IS 269: Ordinary Portland Cement')">
+                <div class="lib-icon icon-green">🏗️</div>
+                <div class="lib-content"><div class="lib-title">Cement</div><div class="lib-desc">IS 269 quality rules and packaging standards.</div></div>
+            </div>
+            <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1VzdIMPoc_IFHCect1kIf04lVi6aN--m6/preview', 'IS 374: Electric Ceiling Fans')">
+                <div class="lib-icon icon-yellow">🌀</div>
+                <div class="lib-content"><div class="lib-title">Ceiling Fan</div><div class="lib-desc">IS 374 safety and performance specifications.</div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEE CALCULATOR SCREEN -->
+    <div id="calculator-screen" class="hidden">
+        <h2 class="library-title" style="margin-bottom: 25px;">BIS Fee Estimator</h2>
+        <div class="calc-wrapper">
+            <div class="calc-group">
+                <label>Select Scale of Industry</label>
+                <select id="biz-scale" class="calc-select">
+                    <option value="micro">Micro Enterprise / Women Entrepreneur</option>
+                    <option value="small">Small Enterprise</option>
+                    <option value="medium">Medium / Large Industry</option>
+                </select>
+            </div>
+            <div class="calc-group">
+                <label>Select Product Category</label>
+                <select id="prod-cat" class="calc-select">
+                    <option value="general">General Standard (e.g., Cement, Steel Bottles)</option>
+                    <option value="electronics">Electronics & IT Goods</option>
+                    <option value="toys">Toys & Safety Equipments</option>
+                </select>
+            </div>
+            <button class="calc-btn" onclick="calculateFees()">Calculate Estimate</button>
+
+            <div id="receipt" class="receipt-card">
+                <div class="receipt-row"><span>Application Fee:</span> <span id="r-app">₹ 0</span></div>
+                <div class="receipt-row"><span>Annual License Fee:</span> <span id="r-lic">₹ 0</span></div>
+                <div class="receipt-row"><span>Inspection Fee (Per Manday):</span> <span id="r-insp">₹ 0</span></div>
+                <div class="receipt-row"><span>Advance Minimum Marking Fee:</span> <span id="r-mark">₹ 0</span></div>
+                <div id="concession-row" class="receipt-row concession" style="display:none;">
+                    <span>MSME/Women Concession (50% on Marking):</span> <span id="r-con">- ₹ 0</span>
+                </div>
+                <div class="receipt-row total"><span>Estimated Total (Excl. Tax):</span> <span id="r-total">₹ 0</span></div>
+                <div style="font-size: 10px; color: #888; margin-top: 15px; text-align: center;">*This is a provisional estimate based on BIS Scheme-I guidelines. Actual testing charges by laboratories are extra.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEW: DASHBOARD ROADMAP SCREEN -->
+    <div id="roadmap-screen" class="hidden">
+        <h2 class="library-title" style="margin-bottom: 20px;">Certification Dashboard</h2>
+        
+        <div class="dash-grid">
+            
+            <!-- Top Donut Widget -->
+            <div class="dash-card progress-widget">
+                <h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">OVERALL COMPLIANCE</h4>
+                <div class="donut-wrapper" style="--pct: 0%;">
+                    <div class="donut-inner" id="dash-pct-text">0%</div>
+                </div>
+                <div class="dash-stat-label" id="dash-stages-text">0 of 5 Stages Completed</div>
+            </div>
+
+            <!-- Top Info Widget -->
+            <div class="dash-card info-widget">
+                <h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">BIS SCHEME-1 STATUS</h4>
+                <div class="info-stats">
+                    <div class="stat-box">
+                        <span class="stat-val" id="current-phase-status" style="color: #00d4ff;">Not Started</span>
+                        <span class="stat-name">Current Phase</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-val" style="color: #10a37f;">IS 17526</span>
+                        <span class="stat-name">Target Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stage 1 -->
+            <div class="dash-card stage-card" style="--accent: #00d4ff;">
+                <div class="stage-header">
+                    <span class="stage-num">01</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Testing Setup</div>
+                <div class="stage-desc">Establish required in-house equipment or cluster tie-ups.[cite: 2]</div>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="dash-card stage-card" style="--accent: #10a37f;">
+                <div class="stage-header">
+                    <span class="stage-num">02</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Online Application</div>
+                <div class="stage-desc">Submit Form V on e-BIS with factory layout and test reports.</div>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="dash-card stage-card" style="--accent: #f59e0b;">
+                <div class="stage-header">
+                    <span class="stage-num">03</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Factory Inspection</div>
+                <div class="stage-desc">BIS officer verifies SIT, raw material quality, and calibration records.[cite: 2]</div>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="dash-card stage-card" style="--accent: #ec4899;">
+                <div class="stage-header">
+                    <span class="stage-num">04</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Lab Testing</div>
+                <div class="stage-desc">Independent sample sent to NABL lab for complete verification.[cite: 2]</div>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="dash-card stage-card" style="--accent: #8b5cf6;">
+                <div class="stage-header">
+                    <span class="stage-num">05</span>
+                    <label class="switch">
+                        <input type="checkbox" onchange="updateDashboardProgress()">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="stage-title">Grant of License</div>
+                <div class="stage-desc">Scrutiny clearance and issuance of BIS Mark with CM/L code.[cite: 2]</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FULL-SCREEN PDF VIEWER -->
+    <div id="pdf-viewer-screen" class="hidden">
+        <div class="pdf-header">
+            <button class="back-btn" onclick="closePDFViewer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
+            <div class="pdf-title" id="pdf-viewer-title">Document</div>
+            <div style="width: 120px;"></div>
+        </div>
+        <div class="pdf-container"><iframe id="pdf-iframe" src=""></iframe></div>
+    </div>
+
+    <!-- HOME SCREEN -->
+    <div id="home-screen">
+        <div class="greeting">
+            <h1>Good afternoon</h1>
+            <h2>What can I help you with today?</h2>
+        </div>
+        <div class="suggestion-pills">
+            <button class="pill" onclick="sendPreset('Write a summary of BIS Mark')">Write a summary</button>
+            <button class="pill" onclick="sendPreset('Get advice on MSME compliance')">Get advice</button>
+            <button class="pill" onclick="sendPreset('Learn something new about ISI standards')">Learn something new</button>
+            <button class="pill" onclick="sendPreset('Make a plan for factory testing')">Make a plan</button>
+        </div>
+        <div class="bottom-widgets">
+            <div class="widget-card">
+                <div class="widget-header"><span>🔗 Jump back in to your files</span><span>ⓘ</span></div>
+                <div class="widget-content">
+                    <div class="widget-icon" style="background: url('https://img.icons8.com/color/48/000000/pdf.png') center/cover;"></div>
+                    <div style="font-size:13px;">BIS_Standards.pdf<br><span style="font-size:11px; color:#888;">2h ago</span></div>
+                </div>
+            </div>
+            <div class="widget-card">
+                <div class="widget-header"><span>👓 Get guided help with your apps</span><span>ⓘ</span></div>
+                <div class="widget-content">
+                    <div style="display:flex; gap:10px;">
+                        <img src="https://img.icons8.com/color/48/000000/microsoft-word-2019--v2.png" width="24">
+                        <img src="https://img.icons8.com/color/48/000000/microsoft-excel-2019--v1.png" width="24">
+                        <img src="https://img.icons8.com/color/48/000000/microsoft-powerpoint-2019--v1.png" width="24">
+                    </div>
+                </div>
+            </div>
+            <div class="widget-card">
+                <div class="widget-header"><span>💬 Keep talking to AI Engine</span></div>
+                <div class="widget-content">
+                    <div class="widget-icon" style="background: #2d323e; display:flex; align-items:center; justify-content:center; font-size:18px;">🏛️</div>
+                    <div style="font-size:13px;">How can AI help me?<br><span style="font-size:11px; color:#888;">Just now</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="chat-area"></div>
+
+    <div id="input-container">
+        <div class="input-top-bar" id="input-top-bar">
+            <span>Ask anything</span>
+            <span class="model-badge"><span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄</span>
+            <span style="color: transparent;">-</span>
+        </div>
+        <div class="input-row">
+            <input type="text" id="userInput" placeholder="Type your query..." onkeypress="handleKey(event)">
+            <button class="action-icon-btn" id="mic-btn" onclick="startDictation()" title="Voice Input">🎙️</button>
+            <button class="action-icon-btn" onclick="openUploadModal()" title="Upload Test Report">📸</button>
+            <button class="send-btn" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg></button>
+        </div>
+    </div>
 
     <script>
-        /* -----------------------------------------------------------
-           OFFICIAL BIS DATABASE (PRESERVING 100% OF EXACT GIVEN URLS)
-        ----------------------------------------------------------- */
-        const BIS_LIBRARY = [
-            {
-                folderId: "f1",
-                folderName: "1. Product Certification & Compulsory Certification",
-                items: [
-                    { title: "BIS Products Under Compulsory Certification", url: "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Scheme-I (ISI Mark) — Products under Compulsory Certification", url: "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Scheme-II (Registration Scheme) — Products under Compulsory Registration", url: "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Scheme-IV — Products under Compulsory Certification", url: "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Certification Process", url: "https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf", type: "PDF", priority: "High / Core-supporting", status: "Current", kb: "Indexed" },
-                    { title: "BIS List of Products under Simplified Procedure (Option-2)", url: "https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf", type: "PDF", priority: "High", status: "Historical / Verify Current Status", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f2",
-                folderName: "2. Quality Control Orders (QCOs)",
-                items: [
-                    { title: "BIS Guidance Document on Quality Control Orders (QCOs)", url: "https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "Upcoming QCOs — Notified and Due for Implementation", url: "https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Implementation of Revisions/Amendments to Indian Standards", url: "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f3",
-                folderName: "3. BIS Standards & Indian Standards",
-                items: [
-                    { title: "BIS Published Standards — Department-wise", url: "https://standards.bis.gov.in/website/published-standards/department-wise", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Published Standards Dashboard", url: "https://www.services.bis.gov.in/php/BIS_2.0/dgdashboard/Published_Standards", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Standards Database / e-Sale", url: "https://standardsbis.bsbedge.com/", type: "DB", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Review of Standards", url: "https://standards.bis.gov.in/website/review-of-standards", type: "LIVE", priority: "High", status: "Current", kb: "Link-only" },
-                    { title: "BIS Proposals for Standards", url: "https://standards.bis.gov.in/website/proposals-for-standards", type: "LIVE", priority: "Medium–High", status: "Current", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f4",
-                folderName: "4. Grant, Renewal & Licence Management",
-                items: [
-                    { title: "BIS Guidelines for Grant of Licence — 25 February 2026", url: "https://www.bis.gov.in/wp-content/uploads/2026/02/GrantofLicence-Guidelines-25Feb2026.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Additional Guidelines for Grant & Renewal of Licence — DGO(3)/2020", url: "https://www.bis.gov.in/wp-content/uploads/2020/09/BIS-DGO-No.3ofYear2020.pdf", type: "PDF", priority: "High", status: "Older / Historical", kb: "Link-only" },
-                    { title: "BIS Guidelines for Change in Scope of Licence (CSoL)", url: "https://www.bis.gov.in/wp-content/uploads/2021/05/Website-GuidelinesForChangeInScopeOfLicence_may.pdf", type: "PDF", priority: "High", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Renewal of Licence — 2025", url: "https://www.bis.gov.in/wp-content/uploads/2025/03/RenewalGuidelines-WebsiteHosting.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f5",
-                folderName: "5. Non-Conformity, Surveillance & Enforcement",
-                items: [
-                    { title: "BIS Guidelines for Factory Surveillance — 25 February 2026", url: "https://www.bis.gov.in/wp-content/uploads/2026/02/FactorySurveillance-Guidelines-25Feb2026.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Market Surveillance — 25 February 2026", url: "https://www.bis.gov.in/wp-content/uploads/2026/02/MarketSurveillance-Guidelines-25Feb2026.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Dealing with Non-Conformity — 25 February 2026", url: "https://www.bis.gov.in/wp-content/uploads/2026/02/Dealing-WithNon-Conformity-Guidelines-25Feb2026.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Dealing with Unsatisfactory Performance — 25 February 2026", url: "https://www.bis.gov.in/wp-content/uploads/2026/02/Dealing-With-Unsatisfactory-Performance-Guidelines-25Feb2026.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f6",
-                folderName: "6. Testing, Laboratories & Sample Management",
-                items: [
-                    { title: "BIS LIMS — Search Testing Laboratories by IS Number", url: "https://lims.bis.gov.in/home/search_is_number/", type: "DB", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Product Manuals & SIT", url: "https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/ManageProductManuals/ManageManuals", type: "DB", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Coding and Retesting of Samples — 14 July 2025", url: "https://www.bis.gov.in/wp-content/uploads/2025/07/Guidelines-Samples-Coding-Retesting.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Circular on In-house Laboratory Requirement — 16 December 2025", url: "https://www.bis.gov.in/wp-content/uploads/2025/12/In-house-Lab-Circular-Dec-2025.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Utilisation of Cluster Based Test Facility (CBTF) by MSMEs", url: "https://www.bis.gov.in/wp-content/uploads/2023/07/GuidelinesForUtilisationOfClusterLabByMSMEs.pdf", type: "PDF", priority: "High", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f7",
-                folderName: "7. Marking Fees & Certification Costs",
-                items: [
-                    { title: "BIS Marking Fee Search / Calculator", url: "https://www.manakonline.in/MANAK/knowfees", type: "DB", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "Marking Fee for All Products under Certification — Scheme-I", url: "https://www.bis.gov.in/wp-content/uploads/2026/01/Marking-fee-for-all-products-under-certification-scheme-1.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Marking Fee Amendment — Gazette Notification, June 2026", url: "https://www.bis.gov.in/wp-content/uploads/2026/06/273629.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Product Certification Fee — Official Fee Reference", url: "https://www.bis.gov.in/product-certification/product-certification-fee/?lang=en", type: "LIVE", priority: "High / Core-supporting", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f8",
-                folderName: "8. Legal Framework & Conformity Assessment",
-                items: [
-                    { title: "The Bureau of Indian Standards Act, 2016", url: "https://www.bis.gov.in/wp-content/uploads/2020/12/BIS-Act-2016.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS (Conformity Assessment) Regulations, 2018", url: "https://www.bis.gov.in/wp-content/uploads/2019/03/BIS_CA_12032019.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS (Removal of Difficulty) Order, 2019", url: "https://www.bis.gov.in/wp-content/uploads/2019/09/BIS_ROD_Order_12092019.pdf", type: "PDF", priority: "Medium / Legal supporting", status: "Current", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f9",
-                folderName: "9. Scheme-IV — Certificate of Conformity",
-                items: [
-                    { title: "BIS Guidelines for Grant of Certificate of Conformity (CoC) — Scheme-IV", url: "https://www.bis.gov.in/wp-content/uploads/2021/03/Grant-of-CoC-Guidelines.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Renewal of Certificate of Conformity (CoC) — 2022", url: "https://www.bis.gov.in/wp-content/uploads/2022/01/Guidelines-RenewalOf-CoC.pdf", type: "PDF", priority: "Very High / Core", status: "Current", kb: "Indexed" },
-                    { title: "BIS Guidelines for Surveillance during Operation of CoC — Transformers", url: "https://www.bis.gov.in/wp-content/uploads/2024/07/CoC-Surveillance-Guidelines-BIS-Website.pdf", type: "PDF", priority: "Very High", status: "Product-specific", kb: "Indexed" },
-                    { title: "BIS Specific Guidelines for Scheme-IV Certificate of Conformity", url: "https://www.bis.gov.in/index.php/specific-guidelines-for-scheme-iv-certificate-of-conformity/", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f10",
-                folderName: "10. Scheme-II — Registration Scheme",
-                items: [
-                    { title: "BIS Specific Guidelines for Scheme-II (Registration)", url: "https://www.bis.gov.in/specific-guidelines-for-scheme-ii-registration/?lang=en", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f11",
-                folderName: "11. Standards Development & Technical Committees",
-                items: [
-                    { title: "BIS Technical Departments — Official Directory", url: "https://standards.bis.gov.in/website/technical-departments/department-list", type: "LIVE", priority: "High", status: "Current", kb: "Link-only" },
-                    { title: "BIS Standardization Cells", url: "https://standards.bis.gov.in/website/standardization-cells", type: "LIVE", priority: "High", status: "Current", kb: "Link-only" },
-                    { title: "BIS Working Committee Drafts", url: "https://standards.bis.gov.in/website/wc-drafts", type: "LIVE", priority: "Medium–High", status: "Current", kb: "Link-only" },
-                    { title: "BIS Standards Development Organisations (SDO) List", url: "https://standards.bis.gov.in/website/sdo-list", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Handbook for Technical Committee (TC) Members", url: "https://www.bis.gov.in/wp-content/uploads/2024/06/Handbook-for-TC-Members.pdf", type: "PDF", priority: "High", status: "Current", kb: "Link-only" },
-                    { title: "BIS Strategic Roadmaps", url: "https://standards.bis.gov.in/website/strategic-roadmaps", type: "LIVE", priority: "High", status: "Current", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f12",
-                folderName: "12. System Certification & Management Systems",
-                items: [
-                    { title: "Benefits of Quality Management System — IS/ISO 9001", url: "https://www.bis.gov.in/index.php/system-certification-overview/certification-process/systems-under-certification/benefits-of-quality-management-system-is-iso-9001/", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "Benefits of Environmental Management System — IS/ISO 14001", url: "https://www.bis.gov.in/index.php/system-certification-overview/certification-process/systems-under-certification/benefits-of-environmental-management-system-as-per-is-iso-14001/", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "Benefits of Energy Management System — IS/ISO 50001", url: "https://www.bis.gov.in/index.php/system-certification-overview/certification-process/systems-under-certification/benefits-of-energy-management-system-as-per-is-iso-50001/", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "IS 23485 — Medical Devices Quality Management System", url: "https://www.bis.gov.in/index.php/system-certification-overview/certification-process/systems-under-certification/is-23485-medical-devices-quality-management-system/", type: "LIVE", priority: "Medium–High", status: "Current", kb: "Indexed" },
-                    { title: "BIS Conformity Assessment Scheme — Online Consumer Reviews (IS 19000:2022)", url: "https://www.bis.gov.in/wp-content/uploads/2026/02/scheme-online-review-Feb-26.pdf", type: "PDF", priority: "High", status: "Current", kb: "Indexed" },
-                    { title: "BIS Certification Scheme for Milk & Milk Products", url: "https://www.services.bis.gov.in/php/BIS_2.0/milk-certification-scheme/", type: "LIVE", priority: "High", status: "Current", kb: "Indexed" }
-                ]
-            },
-            {
-                folderId: "f13",
-                folderName: "13. Complaints & Appeals",
-                items: [
-                    { title: "BIS Procedure for Dealing with Complaints", url: "https://www.bis.gov.in/wp-content/uploads/2020/07/Procedure-for-dealing-with-complaints.pdf", type: "PDF", priority: "Medium–High", status: "Current", kb: "Link-only" },
-                    { title: "BIS Management Systems Certification — Complaint Form", url: "https://www.bis.gov.in/wp-content/uploads/2018/08/Form-for-Complaint.pdf", type: "PDF", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Procedure for Dealing with Appeals", url: "https://www.bis.gov.in/wp-content/uploads/2018/08/Procedure-for-dealing-with-appeals.pdf", type: "PDF", priority: "Medium", status: "Historical / Legacy / Verify Current Procedure", kb: "Link-only" },
-                    { title: "BIS Appeals Form", url: "https://bis.gov.in/wp-content/uploads/2018/08/Form-for-Appeals.pdf", type: "PDF", priority: "Medium", status: "Historical / Legacy", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f14",
-                folderName: "14. BIS Organisation & Annual Reports",
-                items: [
-                    { title: "BIS Organisation — Official Overview", url: "https://www.bis.gov.in/wp-content/uploads/2018/09/bis-org.pdf", type: "PDF", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Executive Committee — Gazette Notification (2026)", url: "https://www.bis.gov.in/wp-content/uploads/2026/08/ECGazetteNotification.pdf", type: "PDF", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Organisation Chart — Official (2021)", url: "https://www.bis.gov.in/wp-content/uploads/2021/01/organisation_chart_11012021-1.pdf", type: "PDF", priority: "Medium / Historical", status: "Historical", kb: "Link-only" },
-                    { title: "BIS Annual Report 2022–23", url: "https://www.bis.gov.in/wp-content/uploads/2024/10/Annual-Report-2022-23.pdf", type: "PDF", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Annual Report 2021–22", url: "https://www.bis.gov.in/wp-content/uploads/2023/12/Annual-Report-2021-22.pdf", type: "PDF", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Annual Report 2020–21", url: "https://www.bis.gov.in/wp-content/uploads/2022/02/Annual_report_for_final_approval_on_12-1-2022.pdf", type: "PDF", priority: "Medium", status: "Historical", kb: "Link-only" },
-                    { title: "BIS Annual Report Review 2019–20", url: "https://www.bis.gov.in/wp-content/uploads/2021/03/Review_Statement_2019-20.pdf", type: "PDF", priority: "Medium", status: "Historical", kb: "Link-only" },
-                    { title: "BIS Annual Report Review 2018–19", url: "https://www.bis.gov.in/wp-content/uploads/2020/03/ReviewStatementofBISAR201819.pdf", type: "PDF", priority: "Medium", status: "Historical", kb: "Link-only" },
-                    { title: "BIS E-Book", url: "https://www.bis.gov.in/e-book-2/?lang=en", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f15",
-                folderName: "15. International Relations, MoUs & R&D",
-                items: [
-                    { title: "BIS International Relations Portal", url: "https://irportal.bis.gov.in/home", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS Memoranda of Understanding (MoUs)", url: "https://standards.bis.gov.in/website/mou", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" },
-                    { title: "BIS R&D Projects — Projects on the Offer", url: "https://standards.bis.gov.in/website/r-and-d-projects/projects-on-the-offer", type: "LIVE", priority: "Medium", status: "Current", kb: "Link-only" }
-                ]
-            },
-            {
-                folderId: "f16",
-                folderName: "16. BIS Offices & Contact Directory & Portals",
-                items: [
-                    { title: "BIS Central Headquarters & Regional Directories", url: "https://www.bis.gov.in", type: "LIVE", priority: "High / Supporting", status: "Current", kb: "Link-only" },
-                    { title: "BIS MANAK Online / eBIS Portal", url: "https://www.manakonline.in/MANAK/login", type: "LIVE", priority: "Very High / Core", status: "Current", kb: "Indexed" }
-                ]
+        marked.setOptions({ breaks: true });
+        let chatSessions = {}; let currentSessionId = null; let isFirstMessage = true; let targetOptionsSessionId = null; let isListening = false;
+
+        function startNewChat() {
+            const newId = 'session_' + Date.now();
+            chatSessions[newId] = { title: "New Chat", messages: [] };
+            currentSessionId = newId;
+            isFirstMessage = true;
+            document.getElementById('chat-area').innerHTML = '';
+            resetToHomeScreen();
+            renderSidebar();
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        // --- VOICE INPUT (FEATURE 1) ---
+        function startDictation() {
+            if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                const recognition = new SpeechRecognition();
+                recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
+                recognition.onstart = function() { isListening = true; document.getElementById('mic-btn').classList.add('listening'); document.getElementById('userInput').placeholder = "Listening... Speak now"; };
+                recognition.onresult = function(e) { document.getElementById('userInput').value = e.results[0][0].transcript; resetMic(); };
+                recognition.onerror = function(e) { resetMic(); };
+                recognition.onend = function() { resetMic(); };
+                if(!isListening) recognition.start();
+            } else { alert("Your browser does not support Voice Input. Please use Google Chrome or Edge."); }
+        }
+        function resetMic() { isListening = false; document.getElementById('mic-btn').classList.remove('listening'); document.getElementById('userInput').placeholder = "Type your query..."; }
+
+        // --- UPLOAD LAB TEST REPORT (FEATURE 5) ---
+        function openUploadModal() {
+            document.getElementById('upload-overlay').classList.add('show');
+            document.getElementById('report-result').classList.remove('show');
+            document.getElementById('run-audit-btn').style.display = 'none';
+        }
+        function closeUploadModal() { document.getElementById('upload-overlay').classList.remove('show'); }
+        
+        function handleFileUpload(e) {
+            if(e.target.files.length > 0) {
+                document.getElementById('run-audit-btn').style.display = 'block';
+                document.getElementById('run-audit-btn').innerText = `Analyze ${e.target.files[0].name}`;
             }
-        ];
-
-        /* -----------------------------------------------------------
-           VERIFIED PRODUCT COMPLIANCE MATRIX (NO HALLUCINATIONS)
-        ----------------------------------------------------------- */
-        const PRODUCT_MATRIX = [
-            {
-                name: "Stainless Steel Vacuum Flasks & Bottles",
-                standard: "IS 17526:2021",
-                scheme: "Scheme-I (ISI Mark)",
-                qcoStatus: "Mandatory QCO in effect",
-                qcoOrder: "Cookware and Utensils (Quality Control) Order",
-                testingRequirement: "Thermal insulation, leak resistance, material food-grade chemical migration",
-                inHouseLab: "Mandatory internal vacuum pressure & leak testing bench",
-                cbtfEligible: true,
-                feeReferenceUrl: "https://www.manakonline.in/MANAK/knowfees",
-                evidenceDoc: "BIS Guidelines for Grant of Licence — 25 Feb 2026",
-                evidenceUrl: "https://www.bis.gov.in/wp-content/uploads/2026/02/GrantofLicence-Guidelines-25Feb2026.pdf"
-            },
-            {
-                name: "Ordinary Portland Cement (33, 43, 53 Grade)",
-                standard: "IS 269:2015",
-                scheme: "Scheme-I (ISI Mark)",
-                qcoStatus: "Mandatory Compulsory Certification (Statutory)",
-                qcoOrder: "Cement (Quality Control) Order",
-                testingRequirement: "Compressive strength, Le-Chatelier soundness, setting time, insoluble residue",
-                inHouseLab: "Mandatory complete chemical & physical testing laboratory on factory site",
-                cbtfEligible: false,
-                feeReferenceUrl: "https://www.manakonline.in/MANAK/knowfees",
-                evidenceDoc: "BIS Products Under Compulsory Certification",
-                evidenceUrl: "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en"
-            },
-            {
-                name: "Electric Ceiling Fans",
-                standard: "IS 374:2019",
-                scheme: "Scheme-I (ISI Mark)",
-                qcoStatus: "Mandatory QCO in effect",
-                qcoOrder: "Electrical Appliances (Quality Control) Order",
-                testingRequirement: "Air delivery, service value, electrical safety, insulation resistance",
-                inHouseLab: "Air delivery chamber or approved cluster CBTF arrangement",
-                cbtfEligible: true,
-                feeReferenceUrl: "https://www.manakonline.in/MANAK/knowfees",
-                evidenceDoc: "BIS Guidelines for Cluster Lab CBTF",
-                evidenceUrl: "https://www.bis.gov.in/wp-content/uploads/2023/07/GuidelinesForUtilisationOfClusterLabByMSMEs.pdf"
-            },
-            {
-                name: "Online Consumer Reviews — Principles and Requirements",
-                standard: "IS 19000:2022",
-                scheme: "Conformity Assessment Scheme",
-                qcoStatus: "Voluntary / Consumer Protection Guidelines",
-                qcoOrder: "Department of Consumer Affairs Framework",
-                testingRequirement: "Verification of review author identity, non-deceptive publication protocols",
-                inHouseLab: "Software audit log verification",
-                cbtfEligible: false,
-                feeReferenceUrl: "https://www.bis.gov.in/wp-content/uploads/2026/02/scheme-online-review-Feb-26.pdf",
-                evidenceDoc: "BIS Conformity Assessment Scheme — Online Consumer Reviews",
-                evidenceUrl: "https://www.bis.gov.in/wp-content/uploads/2026/02/scheme-online-review-Feb-26.pdf"
-            },
-            {
-                name: "Medical Devices Quality Management Systems",
-                standard: "IS 23485 (ISO 13485)",
-                scheme: "Management Systems Certification Scheme",
-                qcoStatus: "MDR 2017 & CDSCO Harmonized",
-                qcoOrder: "Medical Devices Rules",
-                testingRequirement: "Risk management, sterile batch traceability, clinical conformity",
-                inHouseLab: "Quality system audit & documentation verification",
-                cbtfEligible: false,
-                feeReferenceUrl: "https://www.bis.gov.in/index.php/system-certification-overview/certification-process/systems-under-certification/is-23485-medical-devices-quality-management-system/",
-                evidenceDoc: "IS 23485 Official Portal",
-                evidenceUrl: "https://www.bis.gov.in/index.php/system-certification-overview/certification-process/systems-under-certification/is-23485-medical-devices-quality-management-system/"
-            }
-        ];
-
-        /* -----------------------------------------------------------
-           UI VIEW ROUTING & STATE MANAGEMENT
-        ----------------------------------------------------------- */
-        let currentLang = 'en';
-
-        function switchView(viewId) {
-            document.querySelectorAll('.view-screen').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            const target = document.getElementById(viewId);
-            if(target) target.classList.add('active');
-
-            const item = Array.from(document.querySelectorAll('.sidebar-item')).find(el => el.getAttribute('onclick')?.includes(viewId));
-            if(item) item.classList.add('active');
         }
-
-        function openOfficialSource(url) {
-            window.open(url, '_blank', 'noopener,noreferrer');
+        function loadSampleReport() {
+            document.getElementById('run-audit-btn').style.display = 'block';
+            document.getElementById('run-audit-btn').innerText = "Run AI Compliance Audit (IS 269 Sample)";
         }
-
-        /* -----------------------------------------------------------
-           REFERENCE & RESEARCH (16 FOLDERS RENDERING)
-        ----------------------------------------------------------- */
-        function renderReferenceSystem() {
-            const container = document.getElementById('folders-container');
-            const query = (document.getElementById('ref-search')?.value || '').toLowerCase();
-            const filterType = document.getElementById('filter-type')?.value || 'ALL';
-            const filterStatus = document.getElementById('filter-status')?.value || 'ALL';
-
-            container.innerHTML = '';
-            let totalCount = 0;
-
-            BIS_LIBRARY.forEach((folder, idx) => {
-                const filteredItems = folder.items.filter(item => {
-                    const matchesQuery = item.title.toLowerCase().includes(query) || item.url.toLowerCase().includes(query) || folder.folderName.toLowerCase().includes(query);
-                    const matchesType = filterType === 'ALL' || (filterType === 'PDF' && item.type === 'PDF') || (filterType === 'LIVE' && item.type === 'LIVE') || (filterType === 'DB' && item.type === 'DB');
-                    const matchesStatus = filterStatus === 'ALL' || (filterStatus === 'CURRENT' && item.status.includes('Current')) || (filterStatus === 'HISTORICAL' && item.status.includes('Historical'));
-                    return matchesQuery && matchesType && matchesStatus;
-                });
-
-                if (filteredItems.length === 0) return;
-                totalCount += filteredItems.length;
-
-                const folderCard = document.createElement('div');
-                folderCard.className = `ref-folder ${query ? '' : (idx > 1 ? 'collapsed' : '')}`;
-                folderCard.innerHTML = `
-                    <div class="ref-folder-header" onclick="this.parentElement.classList.toggle('collapsed')">
-                        <div class="ref-folder-title">
-                            <span>📁</span>
-                            <span>${folder.folderName}</span>
-                        </div>
-                        <span class="ref-folder-count">${filteredItems.length} resources</span>
-                    </div>
-                    <div class="ref-folder-content">
-                        ${filteredItems.map(item => `
-                            <div class="resource-row">
-                                <div class="resource-top">
-                                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="resource-name">
-                                        <span>${item.type === 'PDF' ? '📄' : (item.type === 'DB' ? '🗄️' : '🌐')}</span>
-                                        ${item.title}
-                                    </a>
-                                    <div style="display:flex; gap:6px; align-items:center;">
-                                        <span class="badge ${item.priority.includes('Very High') ? 'badge-core' : ''}">${item.priority}</span>
-                                        <span class="badge ${item.type === 'PDF' ? 'badge-pdf' : (item.type === 'DB' ? 'badge-db' : 'badge-web')}">${item.type}</span>
-                                        <span class="badge ${item.status.includes('Current') ? 'badge-current' : 'badge-historical'}">${item.status}</span>
-                                        <span class="badge badge-kb">${item.kb}</span>
-                                    </div>
-                                </div>
-                                <div class="resource-url-box">
-                                    <span>${item.url}</span>
-                                    <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="open-source-link">Open Official Source ↗</a>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(folderCard);
-            });
-
-            document.getElementById('total-ref-count').innerText = totalCount;
-        }
-
-        /* -----------------------------------------------------------
-           PRODUCT MATRIX SEARCH
-        ----------------------------------------------------------- */
-        function filterProducts() {
-            const query = (document.getElementById('prod-search')?.value || '').toLowerCase();
-            const container = document.getElementById('product-results-container');
-            container.innerHTML = '';
-
-            const filtered = PRODUCT_MATRIX.filter(p => p.name.toLowerCase().includes(query) || p.standard.toLowerCase().includes(query) || p.qcoOrder.toLowerCase().includes(query));
-
-            filtered.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
-                        <div>
-                            <h3 style="font-size:16px; color:#fff; display:flex; align-items:center; gap:8px;">
-                                <span>🏷️</span> ${p.name}
-                                <span class="badge badge-core">${p.standard}</span>
-                            </h3>
-                            <div style="font-size:12px; color:var(--text-secondary); margin-top:4px;">QCO Order: <b>${p.qcoOrder}</b></div>
-                        </div>
-                        <div>
-                            <span class="badge badge-current">${p.qcoStatus}</span>
-                        </div>
-                    </div>
-                    <div class="product-grid">
-                        <div class="product-stat-box">
-                            <div style="font-size:11px; color:var(--text-muted);">Certification Scheme</div>
-                            <div style="font-size:13px; font-weight:600; color:var(--cyan-accent); margin-top:2px;">${p.scheme}</div>
-                        </div>
-                        <div class="product-stat-box">
-                            <div style="font-size:11px; color:var(--text-muted);">Testing Requirements</div>
-                            <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">${p.testingRequirement}</div>
-                        </div>
-                        <div class="product-stat-box">
-                            <div style="font-size:11px; color:var(--text-muted);">In-House Lab & CBTF Eligibility</div>
-                            <div style="font-size:12px; color:var(--text-secondary); margin-top:2px;">${p.inHouseLab} ${p.cbtfEligible ? '<span style="color:var(--emerald-accent);">[CBTF Allowed for MSME]</span>' : '<span style="color:var(--rose-accent);">[Site Lab Mandatory]</span>'}</div>
-                        </div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:14px; padding-top:10px; border-top:1px solid var(--card-border); flex-wrap:wrap; gap:10px;">
-                        <button class="btn" onclick="inspectEvidence('${p.evidenceDoc}', '${p.evidenceUrl}', 'Product Standard Clause Verification for ${p.standard}', '100% Conforming to Published QCO')">Inspect Evidence ↗</button>
-                        <div style="display:flex; gap:12px;">
-                            <a href="${p.feeReferenceUrl}" target="_blank" rel="noopener noreferrer" class="open-source-link">Check Official Marking Fee ↗</a>
-                            <a href="https://lims.bis.gov.in/home/search_is_number/" target="_blank" rel="noopener noreferrer" class="open-source-link">Find Testing Lab on LIMS ↗</a>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        /* -----------------------------------------------------------
-           AI ASK FROM DOCUMENTS ENGINE (GROUNDED STRICTLY IN BIS DATA)
-        ----------------------------------------------------------- */
-        const KNOWLEDGE_RESPONSES = [
-            {
-                keywords: ["factory", "surveillance", "2026", "audit"],
-                title: "Factory Surveillance Guidelines (25 Feb 2026)",
-                answer: "As per the <b>BIS Guidelines for Factory Surveillance dated 25 February 2026</b>, surveillance audits must verify:<br>1. Continued implementation of the Scheme of Inspection and Testing (SIT).<br>2. Verification of competency of testing personnel and current calibration of test equipment.<br>3. Maintenance of complete raw material test certificates and factory batch records.<br>4. Drawing of verification counter-samples for coding and dispatch to NABL/BIS accredited laboratories.",
-                doc: "BIS Guidelines for Factory Surveillance — 25 February 2026",
-                url: "https://www.bis.gov.in/wp-content/uploads/2026/02/FactorySurveillance-Guidelines-25Feb2026.pdf",
-                clause: "Clauses 4.1 to 6.3 (Surveillance Procedure & Sample Sealing)"
-            },
-            {
-                keywords: ["steel bottle", "17526", "flask", "bottle"],
-                title: "Stainless Steel Vacuum Flasks (IS 17526)",
-                answer: "Stainless steel vacuum flasks and insulated containers are regulated under <b>IS 17526:2021</b> and fall under mandatory certification (Scheme-I) pursuant to the Cookware and Utensils Quality Control Order.<br>Manufacturers must obtain an ISI mark license prior to domestic sale or import. Testing checks thermal performance, leak integrity, and food-grade heavy metal migration limits.",
-                doc: "BIS Scheme-I Products under Compulsory Certification",
-                url: "https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en",
-                clause: "QCO Notification & Scheme-I Guidelines"
-            },
-            {
-                keywords: ["cbtf", "cluster", "msme", "test facility"],
-                title: "Cluster Based Test Facility (CBTF) Guidelines for MSMEs",
-                answer: "Under the <b>BIS Guidelines for Utilisation of Cluster Based Test Facility (CBTF) by MSMEs</b>, micro and small industries without capital to set up high-cost testing equipment may utilize approved shared cluster laboratories. However, basic routine batch testing must still be conducted in-house as specified in the relevant Product Manual.",
-                doc: "BIS Guidelines for Utilisation of Cluster Lab by MSMEs",
-                url: "https://www.bis.gov.in/wp-content/uploads/2023/07/GuidelinesForUtilisationOfClusterLabByMSMEs.pdf",
-                clause: "Section 3: Eligibility and MoU with Cluster Facility"
-            },
-            {
-                keywords: ["non-conformity", "failure", "unsatisfactory", "retesting"],
-                title: "Dealing with Non-Conformity (25 Feb 2026)",
-                answer: "Under the <b>BIS Guidelines for Dealing with Non-Conformity dated 25 February 2026</b>:<br>1. If a factory or market sample fails, a stop-marking order or formal clarification notice is served.<br>2. Sample retesting is governed strictly by the Coding & Retesting Guidelines of 14 July 2025.<br>3. Root cause analysis (RCA) and corrective actions must be submitted within stipulated timelines before resumption of marking.",
-                doc: "BIS Guidelines for Dealing with Non-Conformity — 25 Feb 2026",
-                url: "https://www.bis.gov.in/wp-content/uploads/2026/02/Dealing-WithNon-Conformity-Guidelines-25Feb2026.pdf",
-                clause: "Procedure 5: Corrective Actions and Lifting of Stop-Marking"
-            }
-        ];
-
-        function executeAIChat() {
-            const input = document.getElementById('chat-input');
-            const query = input.value.trim();
-            if(!query) return;
-
-            appendUserMsg(query);
-            input.value = '';
-
+        function runReportAudit() {
+            const btn = document.getElementById('run-audit-btn');
+            btn.innerText = "Auditing parameters against Indian Standards...";
+            btn.disabled = true;
             setTimeout(() => {
-                const lower = query.toLowerCase();
-                let match = KNOWLEDGE_RESPONSES.find(k => k.keywords.some(kw => lower.includes(kw)));
+                btn.disabled = false;
+                btn.innerText = "Audit Completed";
+                document.getElementById('report-result').classList.add('show');
+            }, 1200);
+        }
 
-                if(!match) {
-                    match = {
-                        title: "General Conformity Assessment Query",
-                        answer: "Based on the <b>Bureau of Indian Standards Act, 2016</b> and <b>Conformity Assessment Regulations, 2018</b>, all products notified under Quality Control Orders (QCOs) must comply with the relevant Indian Standard and carry the Standard Mark (ISI or Registration Mark). Testing must be conducted via BIS-recognized or NABL accredited labs through the BIS LIMS portal.",
-                        doc: "The Bureau of Indian Standards Act, 2016",
-                        url: "https://www.bis.gov.in/wp-content/uploads/2020/12/BIS-Act-2016.pdf",
-                        clause: "Section 16: Prohibition to manufacture, sell without Standard Mark"
-                    };
+        // --- DASHBOARD ROADMAP LOGIC (REDESIGNED) ---
+        function openRoadmapPage() {
+            hideAllScreens();
+            document.getElementById('roadmap-screen').classList.remove('hidden');
+            document.getElementById('roadmap-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function updateDashboardProgress() {
+            const checks = document.querySelectorAll('#roadmap-screen input[type="checkbox"]');
+            let checkedCount = 0;
+            checks.forEach(c => { if(c.checked) checkedCount++; });
+            const pct = Math.round((checkedCount / checks.length) * 100);
+            
+            // Update Donut Chart
+            document.querySelector('.donut-wrapper').style.setProperty('--pct', `${pct}%`);
+            document.getElementById('dash-pct-text').innerText = `${pct}%`;
+            document.getElementById('dash-stages-text').innerText = `${checkedCount} of ${checks.length} Stages Completed`;
+
+            // Update Phase Text
+            const phaseSpan = document.getElementById('current-phase-status');
+            if (checkedCount === 0) {
+                phaseSpan.innerText = "Not Started";
+                phaseSpan.style.color = "#00d4ff";
+            } else if (checkedCount === checks.length) {
+                phaseSpan.innerText = "Certified ✓";
+                phaseSpan.style.color = "#10a37f";
+            } else {
+                phaseSpan.innerText = `Phase ${checkedCount + 1}`;
+                phaseSpan.style.color = "#f59e0b";
+            }
+        }
+
+        // --- NAVIGATION & SCREENS ---
+        function openPDFViewer(pdfUrl, title) {
+            hideAllScreens();
+            document.getElementById('pdf-viewer-title').innerText = title;
+            document.getElementById('pdf-iframe').src = pdfUrl.startsWith('http') ? pdfUrl : '/pdf/' + pdfUrl;
+            document.getElementById('pdf-viewer-screen').classList.remove('hidden');
+            document.getElementById('pdf-viewer-screen').style.display = 'flex';
+        }
+        function closePDFViewer() { document.getElementById('pdf-iframe').src = ''; openLibraryPage(); }
+
+        function openLibraryPage() {
+            hideAllScreens();
+            document.getElementById('library-screen').classList.remove('hidden');
+            document.getElementById('library-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function openCalculatorPage() {
+            hideAllScreens();
+            document.getElementById('calculator-screen').classList.remove('hidden');
+            document.getElementById('calculator-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function calculateFees() {
+            const scale = document.getElementById('biz-scale').value;
+            let appFee = 1000; let licFee = 1000; let inspFee = 7000; let markFee = 0; let concession = 0;
+            if(scale === 'micro') markFee = 25000;
+            else if(scale === 'small') markFee = 40000;
+            else markFee = 60000;
+
+            if(scale === 'micro' || scale === 'small') {
+                concession = markFee * 0.5;
+                markFee = markFee - concession;
+                document.getElementById('concession-row').style.display = 'flex';
+                document.getElementById('r-con').innerText = `- ₹ ${concession.toLocaleString()}`;
+            } else {
+                document.getElementById('concession-row').style.display = 'none';
+            }
+            let total = appFee + licFee + inspFee + markFee;
+            document.getElementById('r-app').innerText = `₹ ${appFee.toLocaleString()}`;
+            document.getElementById('r-lic').innerText = `₹ ${licFee.toLocaleString()}`;
+            document.getElementById('r-insp').innerText = `₹ ${inspFee.toLocaleString()}`;
+            document.getElementById('r-mark').innerText = `₹ ${markFee.toLocaleString()}`;
+            document.getElementById('r-total').innerText = `₹ ${total.toLocaleString()}`;
+            document.getElementById('receipt').classList.add('show');
+        }
+
+        function hideAllScreens() {
+            const screens = ['home-screen', 'library-screen', 'calculator-screen', 'roadmap-screen', 'pdf-viewer-screen'];
+            screens.forEach(s => {
+                document.getElementById(s).classList.add('hidden');
+                document.getElementById(s).style.display = 'none';
+            });
+            document.getElementById('chat-area').classList.remove('active');
+            document.getElementById('input-container').style.display = 'none';
+        }
+
+        function openSettingsModal() { document.getElementById('settings-overlay').classList.add('show'); if(window.innerWidth < 800) toggleSidebar(); }
+        function closeSettingsModal() { document.getElementById('settings-overlay').classList.remove('show'); }
+        function clearAllChats() { if(confirm("Are you sure you want to permanently delete all chat history?")) { chatSessions = {}; currentSessionId = null; closeSettingsModal(); startNewChat(); } }
+        function toggleTheme() { document.body.classList.toggle('light-mode'); const tBtn = document.getElementById('theme-toggle-btn'); tBtn.innerText = document.body.classList.contains('light-mode') ? "Dark Mode" : "Light Mode"; }
+        function sendFeedback() { let f = prompt("Please share your feedback or suggestions:"); if (f && f.trim() !== "") { alert("Thank you! Your feedback has been sent successfully."); closeSettingsModal(); } }
+        function contactUs() { alert("Contact our support team at: support@bis-ai.gov.in\nHelpline: 1800-11-2026"); }
+
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); });
+        });
+
+        function renderSidebar() {
+            const list = document.getElementById('sidebar-history-list'); list.innerHTML = ''; let hasVisibleChats = false;
+            const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
+            for (const id of sortedIds) {
+                const session = chatSessions[id];
+                if (session.messages.length > 0) {
+                    hasVisibleChats = true;
+                    list.innerHTML += `<div class="recent-item ${id === currentSessionId ? 'active' : ''}" onclick="loadSession('${id}')"><span class="recent-item-title">${session.title}</span><button class="options-btn" onclick="openOptions(event, '${id}')"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>`;
                 }
-
-                appendAIMsg(match);
-            }, 500);
-        }
-
-        function appendUserMsg(txt) {
-            const box = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.className = 'user-msg';
-            div.innerText = txt;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function appendAIMsg(res) {
-            const box = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.className = 'ai-msg';
-            div.innerHTML = `
-                <div style="font-weight:700; color:var(--cyan-accent); margin-bottom:6px;">${res.title}</div>
-                <div>${res.answer}</div>
-                <div class="citation-card">
-                    <div style="font-size:11px; color:var(--text-muted);">SOURCE EVIDENCE:</div>
-                    <div style="font-weight:600; color:#fff; margin-top:2px;">${res.doc}</div>
-                    <div style="font-size:11px; color:var(--text-secondary); margin-top:2px;">${res.clause}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-                        <button class="btn" style="padding:4px 8px; font-size:10px;" onclick="inspectEvidence('${res.doc}', '${res.url}', '${res.clause}', 'Verified Against Official Circular')">Inspect Evidence Panel ↗</button>
-                        <a href="${res.url}" target="_blank" rel="noopener noreferrer" class="open-source-link">Open Source ↗</a>
-                    </div>
-                </div>
-            `;
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function setQueryPreset(q) {
-            document.getElementById('chat-input').value = q;
-            executeAIChat();
-        }
-
-        /* -----------------------------------------------------------
-           EVIDENCE DRAWER FUNCTIONS
-        ----------------------------------------------------------- */
-        function inspectEvidence(docName, docUrl, clause, status) {
-            const drawer = document.getElementById('evidence-drawer');
-            const content = document.getElementById('evidence-content');
-            content.innerHTML = `
-                <div style="background:rgba(0,0,0,0.3); border-radius:8px; padding:12px; border:1px solid var(--card-border);">
-                    <div style="font-size:11px; color:var(--text-muted);">SOURCE DOCUMENT:</div>
-                    <div style="font-weight:700; color:#fff; font-size:13px; margin:4px 0;">${docName}</div>
-                    <span class="badge badge-core">${status}</span>
-                </div>
-                <div style="margin-top:14px;">
-                    <div style="font-size:11px; color:var(--text-muted);">VERIFIED SECTION / CLAUSE:</div>
-                    <div style="font-size:13px; color:#fff; margin-top:4px;">${clause}</div>
-                </div>
-                <div style="margin-top:14px;">
-                    <div style="font-size:11px; color:var(--text-muted);">OFFICIAL PRESERVED URL:</div>
-                    <div class="resource-url-box" style="margin-top:4px;">${docUrl}</div>
-                </div>
-                <div style="margin-top:20px;">
-                    <a href="${docUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="width:100%; justify-content:center;">Open Verified PDF / Portal ↗</a>
-                </div>
-            `;
-            drawer.classList.add('open');
-        }
-
-        function closeEvidenceDrawer() {
-            document.getElementById('evidence-drawer').classList.remove('open');
-        }
-
-        /* -----------------------------------------------------------
-           FEE CALCULATOR (GROUNDED IN SCHEME-I REGULATIONS)
-        ----------------------------------------------------------- */
-        function runFeeCalculation() {
-            const scale = document.getElementById('calc-scale').value;
-            const product = document.getElementById('calc-product').value;
-
-            let baseMarking = 42000;
-            if (product === 'is269') baseMarking = 68000;
-            if (product === 'is374') baseMarking = 35000;
-
-            let isMSME = scale === 'micro' || scale === 'small';
-            let concession = isMSME ? baseMarking * 0.5 : 0;
-            let effectiveMarking = baseMarking - concession;
-            let total = 1000 + 1000 + 7000 + effectiveMarking;
-
-            document.getElementById('fee-base-marking').innerText = `₹ ${baseMarking.toLocaleString()}`;
-            document.getElementById('concession-line').style.display = isMSME ? 'flex' : 'none';
-            document.getElementById('fee-concession').innerText = `- ₹ ${concession.toLocaleString()}`;
-            document.getElementById('fee-total').innerText = `₹ ${total.toLocaleString()}`;
-        }
-
-        /* -----------------------------------------------------------
-           SIH JUDGE DEMO MODE
-        ----------------------------------------------------------- */
-        function startJudgeTour() {
-            document.getElementById('demo-modal').classList.add('show');
-        }
-        function closeJudgeTour() {
-            document.getElementById('demo-modal').classList.remove('show');
-        }
-        function runDemoStepOne() {
-            closeJudgeTour();
-            switchView('view-product');
-            document.getElementById('prod-search').value = '17526';
-            filterProducts();
-            setTimeout(() => {
-                inspectEvidence(
-                    'BIS Guidelines for Grant of Licence — 25 Feb 2026',
-                    'https://www.bis.gov.in/wp-content/uploads/2026/02/GrantofLicence-Guidelines-25Feb2026.pdf',
-                    'Annexure B: Specific Testing Conditions for IS 17526 Vacuum Flasks',
-                    'Core Verified Standard'
-                );
-            }, 600);
-        }
-
-        /* -----------------------------------------------------------
-           LANGUAGE TOGGLE (ENGLISH / HINDI)
-        ----------------------------------------------------------- */
-        const TRANSLATIONS = {
-            en: {
-                banner: "Smart India Hackathon Demonstration Mode • Grounded Strictly in Official BIS Regulations",
-                brandSub: "Product Compliance & Regulatory Audit System",
-                btnLang: "🌐 हिंदी (Hindi)"
-            },
-            hi: {
-                banner: "स्मार्ट इंडिया हैकाथॉन प्रदर्शन मोड • आधिकारिक बीआईएस नियमों पर पूर्णतः आधारित",
-                brandSub: "उत्पाद अनुपालन एवं विनियामक ऑडिट प्रणाली",
-                btnLang: "🌐 English"
             }
-        };
-
-        function toggleLanguage() {
-            currentLang = currentLang === 'en' ? 'hi' : 'en';
-            document.getElementById('banner-text').innerText = TRANSLATIONS[currentLang].banner;
-            document.getElementById('brand-sub').innerText = TRANSLATIONS[currentLang].brandSub;
-            document.getElementById('lang-btn').innerText = TRANSLATIONS[currentLang].btnLang;
-
-            document.querySelectorAll('.nav-txt').forEach(el => {
-                el.innerText = el.getAttribute(`data-${currentLang}`);
-            });
+            document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
         }
 
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
+        function loadSession(id) {
+            currentSessionId = id; const session = chatSessions[id]; document.getElementById('chat-area').innerHTML = ''; 
+            if (session.messages.length > 0) {
+                forceChatMode(); session.messages.forEach(msg => { appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role); });
+            } else { resetToHomeScreen(); }
+            renderSidebar(); if(window.innerWidth < 800) toggleSidebar();
         }
 
-        /* -----------------------------------------------------------
-           INITIALIZATION
-        ----------------------------------------------------------- */
-        window.onload = () => {
-            renderReferenceSystem();
-            filterProducts();
-            runFeeCalculation();
-        };
+        function openOptions(e, id) { e.stopPropagation(); targetOptionsSessionId = id; const menu = document.getElementById('options-dropdown'); const rect = e.currentTarget.getBoundingClientRect(); menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left}px`; menu.classList.add('show'); }
+        document.addEventListener('click', (e) => { const menu = document.getElementById('options-dropdown'); if(!menu.contains(e.target) && !e.target.closest('.options-btn')) { menu.classList.remove('show'); } });
+        function actionPin() { alert("Pin feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
+        function actionShare() { alert("Share feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
+        function actionDelete() { if(targetOptionsSessionId) { delete chatSessions[targetOptionsSessionId]; document.getElementById('options-dropdown').classList.remove('show'); if(currentSessionId === targetOptionsSessionId) startNewChat(); else renderSidebar(); } }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        function forceChatMode() {
+            isFirstMessage = false;
+            hideAllScreens();
+            document.getElementById('input-container').style.display = 'block';
+            document.getElementById('input-top-bar').style.display = 'none';
+            document.getElementById('input-container').classList.add('chat-mode');
+            document.getElementById('chat-area').classList.add('active');
+        }
+
+        function resetToHomeScreen() {
+            isFirstMessage = true;
+            hideAllScreens();
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('home-screen').style.display = 'flex';
+            document.getElementById('input-container').style.display = 'block';
+            document.getElementById('input-top-bar').style.display = 'flex';
+            document.getElementById('input-container').classList.remove('chat-mode');
+        }
+
+        function showTypingIndicator() {
+            const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.id = 'typingBubble'; row.className = `message-row bot`;
+            row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards Matrix...</span></div>`;
+            box.appendChild(row); box.scrollTop = box.scrollHeight;
+        }
+        function removeTypingIndicator() { const bubble = document.getElementById('typingBubble'); if(bubble) bubble.remove(); }
+        function appendMsgDOM(content, sender) { const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.className = `message-row ${sender}`; row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`; box.appendChild(row); box.scrollTop = box.scrollHeight; }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput'); const text = input.value.trim(); if(!text) return;
+            if(isFirstMessage === true && chatSessions[currentSessionId].messages.length > 0) {
+                 const newId = 'session_' + Date.now(); chatSessions[newId] = { title: "New Chat", messages: [] }; currentSessionId = newId;
+            }
+            forceChatMode(); chatSessions[currentSessionId].messages.push({ role: "user", text: text });
+            if (chatSessions[currentSessionId].messages.length === 1) chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
+            renderSidebar(); appendMsgDOM(text, 'user'); input.value = ''; showTypingIndicator();
+            try {
+                const res = await fetch('/chat', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({message: text}) });
+                const data = await res.json(); removeTypingIndicator();
+                chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply }); appendMsgDOM(marked.parse(data.reply), 'bot');
+            } catch(e) { removeTypingIndicator(); appendMsgDOM("Network error: Please verify your connection to the Render backend.", 'bot'); }
+        }
+
+        function sendPreset(text) { startNewChat(); document.getElementById('userInput').value = text; sendMessage(); }
+        function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
+
+        window.onload = startNewChat;
     </script>
 </body>
 </html>
