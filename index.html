@@ -48,7 +48,7 @@
         }
         .menu-item:hover { background: rgba(255,255,255,0.08); }
         
-        .recent-heading { margin: 25px 0 10px 15px; font-size: 12px; color: #a1a6b0; font-weight: 500; }
+        .recent-heading { margin: 25px 0 10px 15px; font-size: 12px; color: #a1a6b0; font-weight: 500; display: none; }
         .recent-list { overflow-y: auto; flex: 1; padding: 0 5px;}
         .recent-list::-webkit-scrollbar { width: 4px; }
         .recent-list::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
@@ -184,7 +184,7 @@
             Search chats
         </div>
 
-        <div class="recent-heading">Recent</div>
+        <div class="recent-heading" id="recent-heading">Recent</div>
         <!-- CHAT HISTORY RENDERED HERE -->
         <div class="recent-list" id="sidebar-history-list"></div>
     </div>
@@ -252,70 +252,68 @@
     <script>
         marked.setOptions({ breaks: true });
         
-        // --- CHAT SESSION MEMORY SYSTEM ---
-        // Pre-filled dummy data for Hackathon demo presentation
-        let chatSessions = {
-            "session_1": { title: "AI Assistant for BIS Standards", messages: [] }, // Fresh empty chat
-            "session_2": { 
-                title: "Hallmark Rate of Silver", 
-                messages: [
-                    { role: "user", text: "What is the standard for silver hallmarking?" },
-                    { role: "bot", text: "In India, silver hallmarking is governed by **IS 2112**. The recognized grades for silver hallmarking are **9999, 999, 925, 900, 835, and 800**. Hallmarked silver jewelry provides third-party assurance of purity." }
-                ] 
-            },
-            "session_3": { 
-                title: "LMPC Compliance System", 
-                messages: [
-                    { role: "user", text: "Do I need LMPC certificate for importing electronics?" },
-                    { role: "bot", text: "Yes, under the **Legal Metrology (Packaged Commodities) Rules, 2011**, any pre-packaged commodity imported into India requires an LMPC registration before customs clearance. This ensures standard weights and measures declarations." }
-                ] 
-            },
-            "session_4": { title: "Cement IS 269 Quality Rules", messages: [{ role: "user", text: "Tell me about IS 269 for cement." }, { role: "bot", text: "**IS 269** is the Indian Standard specification for **Ordinary Portland Cement (OPC)**. It covers the chemical and physical requirements, including compressive strength, setting time, and soundness to ensure construction safety." }] },
-            "session_5": { title: "Toy Safety IS 9873", messages: [] },
-            "session_6": { title: "Hackathon Presentation Strategy", messages: [] }
-        };
-        
-        let currentSessionId = "session_1";
+        // --- DYNAMIC CHAT SESSION MEMORY SYSTEM ---
+        let chatSessions = {};
+        let currentSessionId = null;
+        let isFirstMessage = true;
 
-        // Sidebar Render Logic
+        // Start a brand new, clean chat instantly
+        function startNewChat() {
+            const newId = 'session_' + Date.now();
+            chatSessions[newId] = { title: "New Chat", messages: [] };
+            currentSessionId = newId;
+
+            // Reset UI instantly to Home Screen
+            isFirstMessage = true;
+            document.getElementById('chat-area').innerHTML = '';
+            resetToHomeScreen();
+            renderSidebar();
+            
+            // Auto-close sidebar on mobile after clicking
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        // Sidebar Render Logic - Only shows chats with messages
         function renderSidebar() {
             const list = document.getElementById('sidebar-history-list');
             list.innerHTML = '';
-            for (const [id, session] of Object.entries(chatSessions)) {
-                const isActive = id === currentSessionId ? 'active' : '';
-                list.innerHTML += `<div class="recent-item ${isActive}" onclick="loadSession('${id}')">${session.title}</div>`;
+            let hasVisibleChats = false;
+
+            // Sort newest first based on timestamp ID
+            const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
+
+            for (const id of sortedIds) {
+                const session = chatSessions[id];
+                // Hide empty chats from sidebar
+                if (session.messages.length > 0) {
+                    hasVisibleChats = true;
+                    const isActive = id === currentSessionId ? 'active' : '';
+                    list.innerHTML += `<div class="recent-item ${isActive}" onclick="loadSession('${id}')">${session.title}</div>`;
+                }
             }
+
+            // Show "Recent" heading only if there is history
+            document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
         }
 
-        // Switch to a different chat
+        // Switch to an existing chat history
         function loadSession(id) {
             currentSessionId = id;
-            renderSidebar();
-            
-            const chatArea = document.getElementById('chat-area');
-            chatArea.innerHTML = ''; // Clear current screen
-
             const session = chatSessions[id];
             
-            if (session.messages.length === 0) {
-                // If chat is empty, go back to home screen
-                resetToHomeScreen();
-            } else {
-                // If chat has history, switch to chat mode and load messages
+            document.getElementById('chat-area').innerHTML = ''; // Clear chat area
+
+            if (session.messages.length > 0) {
                 forceChatMode();
                 session.messages.forEach(msg => {
                     appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role);
                 });
+            } else {
+                resetToHomeScreen();
             }
-        }
-
-        // Start a brand new chat
-        function startNewChat() {
-            const newId = 'session_' + Date.now();
-            chatSessions[newId] = { title: "New Chat", messages: [] };
-            loadSession(newId);
             
-            // Auto-close sidebar on mobile/small screens after clicking
+            renderSidebar();
+            
             if(window.innerWidth < 800) toggleSidebar();
         }
 
@@ -325,6 +323,7 @@
 
         // --- UI TRANSITION LOGIC ---
         function forceChatMode() {
+            isFirstMessage = false;
             document.getElementById('home-screen').classList.add('hidden');
             document.getElementById('input-top-bar').style.display = 'none';
             document.getElementById('input-container').classList.add('chat-mode');
@@ -332,6 +331,7 @@
         }
 
         function resetToHomeScreen() {
+            isFirstMessage = true;
             document.getElementById('home-screen').classList.remove('hidden');
             document.getElementById('input-top-bar').style.display = 'flex';
             document.getElementById('input-container').classList.remove('chat-mode');
@@ -353,7 +353,6 @@
             if(bubble) bubble.remove();
         }
 
-        // Only appends to DOM, doesn't save to memory
         function appendMsgDOM(content, sender) {
             const box = document.getElementById('chat-area');
             const row = document.createElement('div');
@@ -368,17 +367,16 @@
             const text = input.value.trim();
             if(!text) return;
 
-            // Transition UI if on home screen
             forceChatMode();
             
-            // Save User Message to Memory & DOM
+            // Save User Message to Memory
             chatSessions[currentSessionId].messages.push({ role: "user", text: text });
             
-            // Auto-update "New Chat" title based on first message
-            if(chatSessions[currentSessionId].title === "New Chat" || chatSessions[currentSessionId].title === "AI Assistant for BIS Standards") {
+            // Auto-generate title on FIRST message of a new session
+            if (chatSessions[currentSessionId].messages.length === 1) {
                 chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
-                renderSidebar();
             }
+            renderSidebar();
 
             appendMsgDOM(text, 'user');
             input.value = '';
@@ -394,7 +392,7 @@
 
                 removeTypingIndicator();
                 
-                // Save Bot Message to Memory & DOM
+                // Save Bot Message to Memory
                 chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply });
                 appendMsgDOM(marked.parse(data.reply), 'bot');
 
@@ -411,8 +409,8 @@
 
         function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
 
-        // Initialize Sidebar on Load
-        window.onload = renderSidebar;
+        // Start first empty chat when page loads
+        window.onload = startNewChat;
 
     </script>
 </body>
