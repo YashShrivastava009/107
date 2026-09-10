@@ -140,6 +140,7 @@
         .message h1, .message h2, .message h3 { margin-top: 5px; margin-bottom: 8px; color: #fff; font-size: 15px; }
         .message p { margin: 0 0 10px 0; }
         .message p:last-child { margin: 0; }
+        .message a { color: #00d4ff; }
 
         .bot-message { background: rgba(30, 34, 43, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
         .user-message { background: rgba(45, 50, 62, 0.8); border: 1px solid rgba(255, 255, 255, 0.08); }
@@ -173,7 +174,8 @@
             </button>
         </div>
         
-        <div class="menu-item">
+        <!-- NEW CHAT TRIGGER -->
+        <div class="menu-item" onclick="startNewChat()">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
             New chat
         </div>
@@ -183,14 +185,8 @@
         </div>
 
         <div class="recent-heading">Recent</div>
-        <div class="recent-list">
-            <div class="recent-item active">AI Assistant for BIS Standards</div>
-            <div class="recent-item">Hallmark Rate of Silver</div>
-            <div class="recent-item">LMPC Compliance System Architecture</div>
-            <div class="recent-item">Cement IS 269 Quality Rules</div>
-            <div class="recent-item">Toy Safety IS 9873 Certification</div>
-            <div class="recent-item">Hackathon Presentation Strategy</div>
-        </div>
+        <!-- CHAT HISTORY RENDERED HERE -->
+        <div class="recent-list" id="sidebar-history-list"></div>
     </div>
 
     <!-- HOME SCREEN -->
@@ -255,21 +251,91 @@
 
     <script>
         marked.setOptions({ breaks: true });
-        let isFirstMessage = true;
+        
+        // --- CHAT SESSION MEMORY SYSTEM ---
+        // Pre-filled dummy data for Hackathon demo presentation
+        let chatSessions = {
+            "session_1": { title: "AI Assistant for BIS Standards", messages: [] }, // Fresh empty chat
+            "session_2": { 
+                title: "Hallmark Rate of Silver", 
+                messages: [
+                    { role: "user", text: "What is the standard for silver hallmarking?" },
+                    { role: "bot", text: "In India, silver hallmarking is governed by **IS 2112**. The recognized grades for silver hallmarking are **9999, 999, 925, 900, 835, and 800**. Hallmarked silver jewelry provides third-party assurance of purity." }
+                ] 
+            },
+            "session_3": { 
+                title: "LMPC Compliance System", 
+                messages: [
+                    { role: "user", text: "Do I need LMPC certificate for importing electronics?" },
+                    { role: "bot", text: "Yes, under the **Legal Metrology (Packaged Commodities) Rules, 2011**, any pre-packaged commodity imported into India requires an LMPC registration before customs clearance. This ensures standard weights and measures declarations." }
+                ] 
+            },
+            "session_4": { title: "Cement IS 269 Quality Rules", messages: [{ role: "user", text: "Tell me about IS 269 for cement." }, { role: "bot", text: "**IS 269** is the Indian Standard specification for **Ordinary Portland Cement (OPC)**. It covers the chemical and physical requirements, including compressive strength, setting time, and soundness to ensure construction safety." }] },
+            "session_5": { title: "Toy Safety IS 9873", messages: [] },
+            "session_6": { title: "Hackathon Presentation Strategy", messages: [] }
+        };
+        
+        let currentSessionId = "session_1";
 
-        // --- SIDEBAR LOGIC ---
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('open');
+        // Sidebar Render Logic
+        function renderSidebar() {
+            const list = document.getElementById('sidebar-history-list');
+            list.innerHTML = '';
+            for (const [id, session] of Object.entries(chatSessions)) {
+                const isActive = id === currentSessionId ? 'active' : '';
+                list.innerHTML += `<div class="recent-item ${isActive}" onclick="loadSession('${id}')">${session.title}</div>`;
+            }
         }
 
-        function transitionToChatMode() {
-            if (!isFirstMessage) return;
-            isFirstMessage = false;
+        // Switch to a different chat
+        function loadSession(id) {
+            currentSessionId = id;
+            renderSidebar();
+            
+            const chatArea = document.getElementById('chat-area');
+            chatArea.innerHTML = ''; // Clear current screen
+
+            const session = chatSessions[id];
+            
+            if (session.messages.length === 0) {
+                // If chat is empty, go back to home screen
+                resetToHomeScreen();
+            } else {
+                // If chat has history, switch to chat mode and load messages
+                forceChatMode();
+                session.messages.forEach(msg => {
+                    appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role);
+                });
+            }
+        }
+
+        // Start a brand new chat
+        function startNewChat() {
+            const newId = 'session_' + Date.now();
+            chatSessions[newId] = { title: "New Chat", messages: [] };
+            loadSession(newId);
+            
+            // Auto-close sidebar on mobile/small screens after clicking
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // --- UI TRANSITION LOGIC ---
+        function forceChatMode() {
             document.getElementById('home-screen').classList.add('hidden');
             document.getElementById('input-top-bar').style.display = 'none';
             document.getElementById('input-container').classList.add('chat-mode');
             document.getElementById('chat-area').classList.add('active');
+        }
+
+        function resetToHomeScreen() {
+            document.getElementById('home-screen').classList.remove('hidden');
+            document.getElementById('input-top-bar').style.display = 'flex';
+            document.getElementById('input-container').classList.remove('chat-mode');
+            document.getElementById('chat-area').classList.remove('active');
         }
 
         function showTypingIndicator() {
@@ -287,13 +353,34 @@
             if(bubble) bubble.remove();
         }
 
+        // Only appends to DOM, doesn't save to memory
+        function appendMsgDOM(content, sender) {
+            const box = document.getElementById('chat-area');
+            const row = document.createElement('div');
+            row.className = `message-row ${sender}`;
+            row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`;
+            box.appendChild(row);
+            box.scrollTop = box.scrollHeight;
+        }
+
         async function sendMessage() {
             const input = document.getElementById('userInput');
             const text = input.value.trim();
             if(!text) return;
 
-            transitionToChatMode();
-            appendMsg(text, 'user');
+            // Transition UI if on home screen
+            forceChatMode();
+            
+            // Save User Message to Memory & DOM
+            chatSessions[currentSessionId].messages.push({ role: "user", text: text });
+            
+            // Auto-update "New Chat" title based on first message
+            if(chatSessions[currentSessionId].title === "New Chat" || chatSessions[currentSessionId].title === "AI Assistant for BIS Standards") {
+                chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
+                renderSidebar();
+            }
+
+            appendMsgDOM(text, 'user');
             input.value = '';
             showTypingIndicator();
 
@@ -306,11 +393,14 @@
                 const data = await res.json();
 
                 removeTypingIndicator();
-                appendMsg(marked.parse(data.reply), 'bot');
+                
+                // Save Bot Message to Memory & DOM
+                chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply });
+                appendMsgDOM(marked.parse(data.reply), 'bot');
 
             } catch(e) {
                 removeTypingIndicator();
-                appendMsg("Network error: Please verify your connection to the Render backend.", 'bot');
+                appendMsgDOM("Network error: Please verify your connection to the Render backend.", 'bot');
             }
         }
 
@@ -319,21 +409,11 @@
             sendMessage();
         }
 
-        function appendMsg(content, sender) {
-            const box = document.getElementById('chat-area');
-            const row = document.createElement('div');
-            row.className = `message-row ${sender}`;
-
-            row.innerHTML = `
-                <div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div>
-                <div class="message ${sender}-message">${content}</div>
-            `;
-
-            box.appendChild(row);
-            box.scrollTop = box.scrollHeight;
-        }
-
         function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
+
+        // Initialize Sidebar on Load
+        window.onload = renderSidebar;
+
     </script>
 </body>
 </html>
