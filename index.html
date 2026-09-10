@@ -106,6 +106,29 @@
         .setting-btn.danger { background: rgba(255, 92, 92, 0.15); color: #ff5c5c; }
         .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
+        /* --- PDF VIEWER OVERLAY --- */
+        #pdf-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            z-index: 4000; display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.3s;
+        }
+        #pdf-overlay.show { display: flex; opacity: 1; }
+        .pdf-container {
+            width: 85vw; height: 85vh; background: #1e222b;
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: translateY(20px); transition: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        #pdf-overlay.show .pdf-container { transform: translateY(0); }
+        .pdf-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .pdf-title { font-size: 14px; font-weight: 500; color: #e2e4e9; display: flex; align-items: center; gap: 10px;}
+        .pdf-iframe { flex: 1; width: 100%; height: 100%; border: none; background: #fff; }
+
         /* --- HOME SCREEN ELEMENTS --- */
         #home-screen {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -203,407 +226,74 @@
         <svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
     </div>
 
-    <!-- SETTINGS MODAL -->
-    <div id="settings-overlay">
-        <div class="settings-modal">
-            <div class="settings-header">
-                <h3>Settings</h3>
-                <button class="settings-close" onclick="closeSettingsModal()">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                </button>
-            </div>
-            
-            <div class="setting-row">
-                <div class="setting-label">
-                    <span>Clear all chats</span>
-                    <span class="setting-sub">Permanently delete local chat history</span>
-                </div>
-                <button class="setting-btn danger" onclick="clearAllChats()">Clear All</button>
-            </div>
-            <div class="setting-row">
-                <div class="setting-label">Theme</div>
-                <button class="setting-btn">Dark Mode</button>
-            </div>
-            <div class="setting-row">
-                <div class="setting-label">
-                    <span>AI Engine</span>
-                    <span class="setting-sub">Current connected model</span>
-                </div>
-                <div style="font-size: 13px; color: #00d4ff;">Gemini 1.5 Flash</div>
-            </div>
-        </div>
-    </div>
+    <!-- IN-APP PDF VIEWER MODAL -->
+    <div id="pdf-overlay">
+        <div class="pdf-container">
+            <div class="pdf-header">
+                <div class="pdf-title">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="#0284c7"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4Bhai, yeh ekdum enterprise-level feature hai! Website se bahar bheje bina directly wahi par in-app PDF viewer dikhana judges ko bahut impress karega. 
 
-    <!-- GLOBAL OPTIONS MENU (3-dots dropdown) -->
-    <div id="options-dropdown">
-        <div class="dropdown-item" onclick="actionPin()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg> Pin
-        </div>
-        <div class="dropdown-item" onclick="actionShare()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg> Share
-        </div>
-        <div class="dropdown-item delete" onclick="actionDelete()">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete
-        </div>
-    </div>
+Kyunki tumhara backend ab FastAPI par chal raha hai, humein pehle usko batana hoga ki PDF files ko frontend tak kaise bhejte hain, uske baad hum `index.html` mein ek premium PDF Viewer UI add karenge.
 
-    <!-- SIDEBAR (SLIDER) -->
-    <div id="sidebar">
-        <div class="sidebar-header">
-            <span class="title">
-                <span style="font-size:18px;">✨</span> BIS AI Portal
-            </span>
-            <button class="close-btn" onclick="toggleSidebar()">
-                <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
-        
-        <div class="menu-item" onclick="startNewChat()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-            New chat
-        </div>
-        <div class="menu-item">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            Search chats
-        </div>
-        <div class="menu-item" onclick="openLibraryPage()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg>
-            Library
-        </div>
+**Step 1: Backend (`main.py`) ko PDF serve karne ke liye update karo**
+Apne GitHub mein `main.py` kholo aur is naye code se replace kar do. Isme maine ek naya `/pdf/{filename}` route add kiya hai jo tumhari PDFs ko securely dikhayega.
 
-        <div class="recent-heading" id="recent-heading">Recent</div>
-        <div class="recent-list" id="sidebar-history-list"></div>
+```python
+import os
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+import google.generativeai as genai
 
-        <!-- NEW SETTINGS BUTTON -->
-        <div class="sidebar-bottom">
-            <div class="menu-item" onclick="openSettingsModal()">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
-                Settings
-            </div>
-        </div>
-    </div>
+# Setup Gemini API Key
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
 
-    <!-- LIBRARY SCREEN (Hidden by default) -->
-    <div id="library-screen" class="hidden">
-        <h2 class="library-title">Compliance Standard Library</h2>
-        <div class="library-list">
-            <div class="lib-card" onclick="sendPreset('Provide detailed BIS standards, compliance rules, and IS code for Stainless Steel Water Bottles.')">
-                <div class="lib-icon icon-blue">💧</div>
-                <div class="lib-content">
-                    <div class="lib-title">Steel Bottle</div>
-                    <div class="lib-desc">IS 17526 standards for stainless steel vacuum flasks.</div>
-                </div>
-            </div>
-            <div class="lib-card" onclick="sendPreset('Provide detailed BIS standards, compliance rules, and IS code for Ordinary Portland Cement.')">
-                <div class="lib-icon icon-green">🏗️</div>
-                <div class="lib-content">
-                    <div class="lib-title">Cement</div>
-                    <div class="lib-desc">IS 269 quality rules and packaging standards.</div>
-                </div>
-            </div>
-            <div class="lib-card" onclick="sendPreset('Provide detailed BIS standards, compliance rules, and IS code for Electric Ceiling Fans.')">
-                <div class="lib-icon icon-yellow">🌀</div>
-                <div class="lib-content">
-                    <div class="lib-title">Ceiling Fan</div>
-                    <div class="lib-desc">IS 374 safety and performance specifications.</div>
-                </div>
-            </div>
-        </div>
-    </div>
+# Use standard, stable model name
+MODEL_NAME = 'gemini-1.5-flash'
+model = genai.GenerativeModel(MODEL_NAME)
 
-    <!-- HOME SCREEN -->
-    <div id="home-screen">
-        <div class="greeting">
-            <h1>Good afternoon</h1>
-            <h2>What can I help you with today?</h2>
-        </div>
-        <div class="suggestion-pills">
-            <button class="pill" onclick="sendPreset('Write a summary of BIS Mark')">Write a summary</button>
-            <button class="pill" onclick="sendPreset('Get advice on MSME compliance')">Get advice</button>
-            <button class="pill" onclick="sendPreset('Learn something new about ISI standards')">Learn something new</button>
-            <button class="pill" onclick="sendPreset('Make a plan for factory testing')">Make a plan</button>
-        </div>
-        <div class="bottom-widgets">
-            <div class="widget-card">
-                <div class="widget-header"><span>🔗 Jump back in to your files</span><span>ⓘ</span></div>
-                <div class="widget-content">
-                    <div class="widget-icon" style="background: url('https://img.icons8.com/color/48/000000/pdf.png') center/cover;"></div>
-                    <div style="font-size:13px;">BIS_Standards.pdf<br><span style="font-size:11px; color:#888;">2h ago</span></div>
-                </div>
-            </div>
-            <div class="widget-card">
-                <div class="widget-header"><span>👓 Get guided help with your apps</span><span>ⓘ</span></div>
-                <div class="widget-content">
-                    <div style="display:flex; gap:10px;">
-                        <img src="https://img.icons8.com/color/48/000000/microsoft-word-2019--v2.png" width="24">
-                        <img src="https://img.icons8.com/color/48/000000/microsoft-excel-2019--v1.png" width="24">
-                        <img src="https://img.icons8.com/color/48/000000/microsoft-powerpoint-2019--v1.png" width="24">
-                    </div>
-                </div>
-            </div>
-            <div class="widget-card">
-                <div class="widget-header"><span>💬 Keep talking to AI Engine</span></div>
-                <div class="widget-content">
-                    <div class="widget-icon" style="background: #2d323e; display:flex; align-items:center; justify-content:center; font-size:18px;">🏛️</div>
-                    <div style="font-size:13px;">How can AI help me?<br><span style="font-size:11px; color:#888;">Just now</span></div>
-                </div>
-            </div>
-        </div>
-    </div>
+app = FastAPI()
 
-    <div id="chat-area"></div>
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-    <div id="input-container">
-        <div class="input-top-bar" id="input-top-bar">
-            <span>Ask anything</span>
-            <span class="model-badge">
-                <span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄
-            </span>
-            <span>+ 🎙️ 📸</span>
-        </div>
-        <div class="input-row">
-            <input type="text" id="userInput" placeholder="Type your query..." onkeypress="handleKey(event)">
-            <button class="send-btn" onclick="sendMessage()">
-                <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
-        </div>
-    </div>
+@app.get("/", response_class=HTMLResponse)
+async def get_index():
+    try:
+        with open("index.html", "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return "<h1>Error: index.html not found in repository!</h1>"
 
-    <script>
-        marked.setOptions({ breaks: true });
-        
-        let chatSessions = {};
-        let currentSessionId = null;
-        let isFirstMessage = true;
-        let targetOptionsSessionId = null;
+# Naya route PDF files serve karne ke liye
+@app.get("/pdf/{filename}")
+async def get_pdf(filename: str):
+    file_path = f"{filename}"
+    if os.path.exists(file_path):
+        return FileResponse(file_path, media_type="application/pdf")
+    return JSONResponse(status_code=404, content={"message": "PDF document not found."})
 
-        function startNewChat() {
-            const newId = 'session_' + Date.now();
-            chatSessions[newId] = { title: "New Chat", messages: [] };
-            currentSessionId = newId;
-
-            isFirstMessage = true;
-            document.getElementById('chat-area').innerHTML = '';
-            resetToHomeScreen();
-            renderSidebar();
-            
-            if(window.innerWidth < 800) toggleSidebar();
-        }
-
-        function openLibraryPage() {
-            document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('home-screen').style.display = 'none';
-            document.getElementById('chat-area').classList.remove('active');
-            document.getElementById('input-container').style.display = 'none';
-            
-            document.getElementById('library-screen').classList.remove('hidden');
-            document.getElementById('library-screen').style.display = 'flex';
-            
-            if(window.innerWidth < 800) toggleSidebar();
-        }
-
-        // --- SETTINGS MODAL LOGIC ---
-        function openSettingsModal() {
-            document.getElementById('settings-overlay').classList.add('show');
-            if(window.innerWidth < 800) toggleSidebar();
-        }
-
-        function closeSettingsModal() {
-            document.getElementById('settings-overlay').classList.remove('show');
-        }
-
-        function clearAllChats() {
-            if(confirm("Are you sure you want to permanently delete all chat history?")) {
-                chatSessions = {};
-                closeSettingsModal();
-                startNewChat();
-            }
-        }
-        
-        // Close modal if clicked outside
-        document.getElementById('settings-overlay').addEventListener('click', function(e) {
-            if (e.target === this) closeSettingsModal();
-        });
-
-
-        function renderSidebar() {
-            const list = document.getElementById('sidebar-history-list');
-            list.innerHTML = '';
-            let hasVisibleChats = false;
-
-            const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
-
-            for (const id of sortedIds) {
-                const session = chatSessions[id];
-                if (session.messages.length > 0) {
-                    hasVisibleChats = true;
-                    const isActive = id === currentSessionId ? 'active' : '';
-                    
-                    list.innerHTML += `
-                        <div class="recent-item ${isActive}" onclick="loadSession('${id}')">
-                            <span class="recent-item-title">${session.title}</span>
-                            <button class="options-btn" onclick="openOptions(event, '${id}')">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                            </button>
-                        </div>
-                    `;
-                }
-            }
-
-            document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
-        }
-
-        function loadSession(id) {
-            currentSessionId = id;
-            const session = chatSessions[id];
-            
-            document.getElementById('chat-area').innerHTML = ''; 
-
-            if (session.messages.length > 0) {
-                forceChatMode();
-                session.messages.forEach(msg => {
-                    appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role);
-                });
-            } else {
-                resetToHomeScreen();
-            }
-            
-            renderSidebar();
-            if(window.innerWidth < 800) toggleSidebar();
-        }
-
-        function openOptions(e, id) {
-            e.stopPropagation();
-            targetOptionsSessionId = id;
-            
-            const menu = document.getElementById('options-dropdown');
-            const rect = e.currentTarget.getBoundingClientRect();
-            menu.style.top = `${rect.bottom + 5}px`;
-            menu.style.left = `${rect.left}px`;
-            menu.classList.add('show');
-        }
-
-        document.addEventListener('click', (e) => {
-            const menu = document.getElementById('options-dropdown');
-            if(!menu.contains(e.target) && !e.target.closest('.options-btn')) {
-                menu.classList.remove('show');
-            }
-        });
-
-        function actionPin() { alert("Pin feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
-        function actionShare() { alert("Share feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
-        function actionDelete() {
-            if(targetOptionsSessionId) {
-                delete chatSessions[targetOptionsSessionId];
-                document.getElementById('options-dropdown').classList.remove('show');
-                if(currentSessionId === targetOptionsSessionId) startNewChat();
-                else renderSidebar();
-            }
-        }
-
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-
-        function forceChatMode() {
-            isFirstMessage = false;
-            document.getElementById('library-screen').classList.add('hidden');
-            document.getElementById('library-screen').style.display = 'none';
-            document.getElementById('home-screen').classList.add('hidden');
-            document.getElementById('home-screen').style.display = 'none';
-            
-            document.getElementById('input-container').style.display = 'block';
-            document.getElementById('input-top-bar').style.display = 'none';
-            document.getElementById('input-container').classList.add('chat-mode');
-            document.getElementById('chat-area').classList.add('active');
-        }
-
-        function resetToHomeScreen() {
-            isFirstMessage = true;
-            document.getElementById('library-screen').classList.add('hidden');
-            document.getElementById('library-screen').style.display = 'none';
-            document.getElementById('chat-area').classList.remove('active');
-            
-            document.getElementById('home-screen').classList.remove('hidden');
-            document.getElementById('home-screen').style.display = 'flex';
-            document.getElementById('input-container').style.display = 'block';
-            document.getElementById('input-top-bar').style.display = 'flex';
-            document.getElementById('input-container').classList.remove('chat-mode');
-        }
-
-        function showTypingIndicator() {
-            const box = document.getElementById('chat-area');
-            const row = document.createElement('div');
-            row.id = 'typingBubble';
-            row.className = `message-row bot`;
-            row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards...</span></div>`;
-            box.appendChild(row);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const bubble = document.getElementById('typingBubble');
-            if(bubble) bubble.remove();
-        }
-
-        function appendMsgDOM(content, sender) {
-            const box = document.getElementById('chat-area');
-            const row = document.createElement('div');
-            row.className = `message-row ${sender}`;
-            row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`;
-            box.appendChild(row);
-            box.scrollTop = box.scrollHeight;
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if(!text) return;
-
-            if(isFirstMessage === true && chatSessions[currentSessionId].messages.length > 0) {
-                 const newId = 'session_' + Date.now();
-                 chatSessions[newId] = { title: "New Chat", messages: [] };
-                 currentSessionId = newId;
-            }
-
-            forceChatMode();
-            chatSessions[currentSessionId].messages.push({ role: "user", text: text });
-            
-            if (chatSessions[currentSessionId].messages.length === 1) {
-                chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
-            }
-            renderSidebar();
-
-            appendMsgDOM(text, 'user');
-            input.value = '';
-            showTypingIndicator();
-
-            try {
-                const res = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({message: text})
-                });
-                const data = await res.json();
-
-                removeTypingIndicator();
-                chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply });
-                appendMsgDOM(marked.parse(data.reply), 'bot');
-
-            } catch(e) {
-                removeTypingIndicator();
-                appendMsgDOM("Network error: Please verify your connection to the Render backend.", 'bot');
-            }
-        }
-
-        function sendPreset(text) {
-            startNewChat();
-            document.getElementById('userInput').value = text;
-            sendMessage();
-        }
-
-        function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
-
-        window.onload = startNewChat;
-
-    </script>
-</body>
-</html>
+@app.post("/chat")
+async def chat_endpoint(request: Request):
+    data = await request.json()
+    user_message = data.get("message", "")
+    
+    system_instruction = (
+        "You are the National BIS Assistant for SIH 2026, an official AI for Indian compliance. "
+        "Keep answers professional, accurate, and format them beautifully using Markdown. "
+        "If a user asks about standards (like cement, gold, toys), provide the relevant IS rules. "
+        "Do not hallucinate fake laws."
+    )
+    
+    try:
+        full_prompt = f"{system_instruction}\n\nUser Query: {user_message}"
+        response = model.generate_content(full_prompt)
+        return JSONResponse({"reply": response.text})
+    except Exception as e:
+        return JSONResponse({"reply": f"**Backend Error:** {str(e)}"})
