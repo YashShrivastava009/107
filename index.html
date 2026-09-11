@@ -6,7 +6,7 @@
     <title>BIS AI - Copilot Theme</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Poppins:wght@300;400;500;600;700&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -64,7 +64,7 @@
         .dropdown-item.delete { color: #ff5c5c; }
         .dropdown-item.delete:hover { background: rgba(255, 92, 92, 0.15); }
 
-        /* --- MODALS (SETTINGS & UPLOAD) --- */
+        /* --- MODALS --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
         .modal-overlay.show { display: flex; opacity: 1; }
         .modal-box { background: rgba(30, 34, 43, 0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 440px; max-width: 90%; padding: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s; }
@@ -84,14 +84,14 @@
         .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
         /* --- SCREENS BASE & SCROLLING FIX --- */
-        #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #documents-screen, #pdf-viewer-screen { 
+        #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #documents-screen, #pricing-screen, #pdf-viewer-screen { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; 
             transition: opacity 0.4s ease, transform 0.5s ease; 
             overflow-y: auto; 
         }
         
-        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #documents-screen.hidden, #pdf-viewer-screen.hidden { 
+        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #documents-screen.hidden, #pricing-screen.hidden, #pdf-viewer-screen.hidden { 
             opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; 
         }
 
@@ -100,8 +100,9 @@
         #documents-screen { justify-content: flex-start; padding: 100px 20px 60px 20px; }
         #library-screen { justify-content: flex-start; padding: 100px 20px 60px 20px; }
         #roadmap-screen { justify-content: flex-start; padding: 100px 20px 60px 20px; }
+        #pricing-screen { justify-content: flex-start; padding: 80px 20px 80px 20px; }
         
-        /* FIXED HOME SCREEN OVERLAP */
+        /* HOME SCREEN LAYOUT */
         .greeting { margin-top: 15vh; text-align: center; }
         .greeting h1 { font-size: 28px; font-weight: 500; margin-bottom: 5px; }
         .greeting h2 { font-size: 32px; font-weight: 600; margin-bottom: 25px; }
@@ -145,6 +146,58 @@
         .doc-btn { align-self: flex-start; margin-top: 8px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; text-decoration: none; display: flex; align-items: center; gap: 6px;}
         .doc-btn:hover { background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3); color: #00d4ff; }
         .sih-disclaimer { margin-top: 40px; font-size: 11px; color: #64748b; text-align: center; max-width: 600px; padding: 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
+
+        /* --- NEW: PRICING SCREEN STYLES (MATCHING IMAGE) --- */
+        .pricing-hero { text-align: center; max-width: 650px; margin-bottom: 35px; }
+        .pricing-badge { background: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px;}
+        .pricing-hero h1 { font-size: 34px; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 10px; }
+        .pricing-hero p { font-size: 13px; color: #a1a6b0; }
+        
+        .billing-toggle-wrap { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 40px; font-size: 13px; color: #e2e4e9; }
+        .discount-pill { background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+        
+        .pricing-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; width: 100%; max-width: 1000px; margin-bottom: 60px; }
+        .pricing-card { background: rgba(18, 22, 33, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 30px 25px; width: 300px; display: flex; flex-direction: column; position: relative; transition: 0.3s; }
+        .pricing-card:hover { transform: translateY(-5px); border-color: rgba(255, 255, 255, 0.2); }
+        
+        /* Highlighted Pro Plan Glow */
+        .pricing-card.featured {
+            background: linear-gradient(180deg, rgba(35, 25, 60, 0.95) 0%, rgba(18, 22, 33, 0.95) 100%);
+            border: 1px solid #8b5cf6;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.25);
+            transform: scale(1.03);
+        }
+        .pricing-card.featured:hover { transform: scale(1.05) translateY(-5px); }
+
+        .card-plan-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(255, 255, 255, 0.08); display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 15px;}
+        .card-plan-name { font-size: 20px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+        .card-plan-desc { font-size: 12px; color: #94a3b8; line-height: 1.4; min-height: 34px; margin-bottom: 20px; }
+        .card-price-box { display: flex; align-items: baseline; gap: 4px; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .card-price { font-size: 36px; font-weight: 700; color: #fff; }
+        .card-period { font-size: 12px; color: #64748b; }
+        
+        .card-features-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; flex: 1; }
+        .card-feature-item { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #cbd5e1; }
+        .check-circle { width: 16px; height: 16px; border-radius: 50%; background: rgba(139, 92, 246, 0.2); color: #c084fc; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; flex-shrink: 0;}
+        .featured .check-circle { background: #8b5cf6; color: #fff; }
+        
+        .pricing-btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06); color: #fff; transition: 0.2s; text-align: center; }
+        .pricing-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+        .featured .pricing-btn { background: #8b5cf6; border-color: #8b5cf6; color: #fff; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4); }
+        .featured .pricing-btn:hover { background: #7c3aed; }
+
+        /* FAQ SECTION */
+        .faq-wrap { width: 100%; max-width: 800px; margin-top: 10px; }
+        .faq-badge { background: rgba(0, 212, 255, 0.15); color: #38bdf8; border: 1px solid rgba(0, 212, 255, 0.3); padding: 3px 10px; border-radius: 16px; font-size: 10px; font-weight: 600; text-transform: uppercase; margin: 0 auto 10px auto; display: table;}
+        .faq-title { text-align: center; font-size: 24px; font-weight: 600; margin-bottom: 25px; }
+        .faq-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+        .faq-card { background: rgba(18, 22, 33, 0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 16px; cursor: pointer; transition: 0.2s; }
+        .faq-card:hover { border-color: rgba(255,255,255,0.15); }
+        .faq-question { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; color: #e2e4e9; }
+        .faq-answer { display: none; margin-top: 10px; font-size: 11px; color: #94a3b8; line-height: 1.5; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
+        .faq-card.open .faq-answer { display: block; animation: popIn 0.3s ease; }
+        .faq-card.open .faq-toggle-icon { transform: rotate(45deg); color: #8b5cf6; }
+        .faq-toggle-icon { transition: transform 0.2s; font-size: 16px; color: #64748b;}
 
         /* --- LIBRARY SCREEN CSS --- */
         .library-list { display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 500px; flex-shrink: 0; }
@@ -204,7 +257,7 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
-        @media (max-width: 900px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } .info-widget { grid-column: span 1; } }
+        @media (max-width: 900px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } .info-widget { grid-column: span 1; } .faq-grid { grid-template-columns: 1fr; } }
         @media (max-width: 600px) { .dash-grid { grid-template-columns: 1fr; } .progress-widget, .info-widget, .stage-card { grid-column: span 1; } .info-stats { flex-direction: column; gap: 10px; } }
 
         /* --- LAB REPORT ANALYZER MODAL UI --- */
@@ -270,53 +323,6 @@
         .pulse-bar:nth-child(3) { animation-delay: 0.4s; background: #00d4ff; }
         .pulse-bar:nth-child(4) { animation-delay: 0.6s; background: #ffffff; }
         @keyframes pulseWave { 0%, 100% { transform: scaleY(0.4); opacity: 0.3; } 50% { transform: scaleY(1.2); opacity: 1; box-shadow: 0 0 10px rgba(0,212,255,0.6); } }
-
-        /* --- LIGHT MODE --- */
-        body.light-mode { background: linear-gradient(165deg, #e2e8f0 0%, #f8fafc 30%, #f1f5f9 60%, #e2e8f0 100%); color: #0f172a; }
-        body.light-mode #top-alert-bar { background: rgba(2, 132, 199, 0.1); border-bottom-color: rgba(2, 132, 199, 0.2); color: #0284c7; }
-        body.light-mode .pulse-dot { background: #0284c7; }
-        body.light-mode #sidebar { background: rgba(255, 255, 255, 0.95); border-right: 1px solid rgba(0,0,0,0.1); box-shadow: 10px 0 40px rgba(0,0,0,0.05); }
-        body.light-mode .menu-item { color: #334155; }
-        body.light-mode .menu-item:hover { background: rgba(0,0,0,0.05); }
-        body.light-mode .recent-item { color: #475569; }
-        body.light-mode .recent-item.active { background: rgba(0,0,0,0.08); color: #0f172a; }
-        body.light-mode .sidebar-header .title { color: #0f172a; }
-        body.light-mode #menu-btn { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0,0,0,0.1); color: #0f172a;}
-        body.light-mode .widget-card { background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.1); }
-        body.light-mode .pill { background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1); color: #334155; }
-        body.light-mode #input-container { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
-        body.light-mode input { color: #0f172a; }
-        body.light-mode input::placeholder { color: #64748b; }
-        body.light-mode .action-icon-btn:hover { background: rgba(0,0,0,0.05); }
-        body.light-mode .send-btn { background: rgba(0,0,0,0.05); color: #0f172a; }
-        body.light-mode .bot-message { background: rgba(255, 255, 255, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
-        body.light-mode .user-message { background: rgba(226, 232, 240, 0.9); color: #1e293b; border: 1px solid rgba(0,0,0,0.1); }
-        body.light-mode .modal-box { background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(0,0,0,0.1); }
-        body.light-mode .modal-header h3, body.light-mode .setting-label { color: #0f172a; }
-        body.light-mode .lib-card, body.light-mode .calc-wrapper { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); }
-        body.light-mode .lib-title, body.light-mode .library-title { color: #0f172a; }
-        body.light-mode .calc-select { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.1); color: #0f172a; }
-        body.light-mode .calc-select option { background: #fff; color: #0f172a; }
-        body.light-mode .receipt-card, body.light-mode .drop-zone, body.light-mode .report-result-box { background: rgba(0,0,0,0.02); border-color: rgba(0,0,0,0.1); }
-        body.light-mode .receipt-row, body.light-mode .calc-group label { color: #475569; }
-        body.light-mode .dash-card { background: rgba(255, 255, 255, 0.95); border-color: rgba(0,0,0,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        body.light-mode .dash-card h4, body.light-mode .stage-title, body.light-mode .stat-val { color: #0f172a; }
-        body.light-mode .stage-num { color: rgba(0,0,0,0.1); }
-        body.light-mode .stage-desc, body.light-mode .stat-name, body.light-mode .dash-stat-label { color: #64748b; }
-        body.light-mode .donut-inner { background: #fff; color: #0f172a; box-shadow: inset 0 4px 10px rgba(0,0,0,0.1); }
-        body.light-mode .stat-box { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.05); }
-        body.light-mode .slider { background-color: rgba(0,0,0,0.1); }
-        body.light-mode .slider:before { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        body.light-mode .doc-search-bar input { background: #fff; border-color: rgba(0,0,0,0.1); color: #0f172a; }
-        body.light-mode .doc-folder { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
-        body.light-mode .doc-folder-header { background: rgba(0,0,0,0.02); }
-        body.light-mode .doc-folder-title { color: #0f172a; }
-        body.light-mode .doc-folder.open .doc-folder-header { background: rgba(0, 212, 255, 0.05); border-bottom-color: rgba(0,0,0,0.05); }
-        body.light-mode .doc-card { background: #fff; border-color: rgba(0,0,0,0.1); }
-        body.light-mode .doc-card-title { color: #0f172a; }
-        body.light-mode .doc-btn { background: rgba(0,0,0,0.02); color: #334155; border-color: rgba(0,0,0,0.1); }
-        body.light-mode .doc-btn:hover { background: rgba(0, 212, 255, 0.1); color: #0284c7; }
-        body.light-mode .sih-disclaimer { border-top-color: rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
@@ -436,8 +442,8 @@
         <div class="recent-list" id="sidebar-history-list"></div>
 
         <div class="sidebar-bottom">
-            <!-- NEW: UPGRADE PLAN BUTTON -->
-            <div class="menu-item" onclick="alert('Upgrade to Pro plan is coming soon! 💎')">
+            <!-- UPGRADE PLAN ITEM OPENS PRICING SCREEN -->
+            <div class="menu-item" onclick="openPricingPage()">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> Upgrade Plan
             </div>
             <div class="menu-item" onclick="openSettingsModal()">
@@ -446,259 +452,186 @@
         </div>
     </div>
 
+    <!-- NEW: PRICING PLANS SCREEN -->
+    <div id="pricing-screen" class="hidden">
+        <div style="width: 100%; max-width: 1000px; display: flex; justify-content: flex-start; margin-bottom: 15px;">
+            <button class="doc-btn" onclick="resetToHomeScreen()">← Back to Home</button>
+        </div>
+        
+        <div class="pricing-hero">
+            <div class="pricing-badge">💎 Pricing Plans</div>
+            <h1>Flexible Pricing Plans<br>for Every Need</h1>
+            <p>Choose the plan that best fits your industrial certification requirements and start streamlining your BIS compliance today.</p>
+        </div>
+
+        <div class="billing-toggle-wrap">
+            <span>Monthly</span>
+            <label class="switch" style="width: 44px; height: 24px;">
+                <input type="checkbox" id="pricing-billing-toggle" onchange="toggleBillingCycle()">
+                <span class="slider"></span>
+            </label>
+            <span>Annually <span class="discount-pill">20% Off</span></span>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- Plan 1: $12 -->
+            <div class="pricing-card">
+                <div class="card-plan-icon">📦</div>
+                <div class="card-plan-name">Basic / MSME</div>
+                <div class="card-plan-desc">Ideal for small workshops & startups beginning standard compliance.</div>
+                <div class="card-price-box">
+                    <span class="card-price" id="price-basic">$12</span>
+                    <span class="card-period">/month</span>
+                </div>
+                <ul class="card-features-list">
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Automated Standard Search (IS Database)</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Fee Estimator & Concession Calculator</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Up to 5 Factory Test Report Audits /mo</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Essential QCO Notification Alerts</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Email Customer Support</li>
+                </ul>
+                <button class="pricing-btn" onclick="alert('Basic Plan selected! 🚀')">Get Started</button>
+            </div>
+
+            <!-- Plan 2: $100 (Featured / Popular Glow Card) -->
+            <div class="pricing-card featured">
+                <div class="card-plan-icon" style="background: rgba(139, 92, 246, 0.3);">⚡</div>
+                <div class="card-plan-name" style="color: #c084fc;">Pro Compliance</div>
+                <div class="card-plan-desc">Designed for active manufacturers managing multiple QCO deadlines.</div>
+                <div class="card-price-box">
+                    <span class="card-price" id="price-pro" style="color: #c084fc;">$100</span>
+                    <span class="card-period">/month</span>
+                </div>
+                <ul class="card-features-list">
+                    <li class="card-feature-item"><span class="check-circle">✓</span> <b>All Basic Plan Features</b></li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Unlimited AI Factory Lab Report Auditing</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Scheme-I & Scheme-IV Interactive Roadmap</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Real-Time Gazette Circulars Push Notifications</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Priority AI Server Engine Queue</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Export Compliance Briefs to Formatted PDF</li>
+                </ul>
+                <button class="pricing-btn" onclick="alert('Pro Compliance Plan selected! 🌟')">Get Started</button>
+            </div>
+
+            <!-- Plan 3: $300 -->
+            <div class="pricing-card">
+                <div class="card-plan-icon">🏢</div>
+                <div class="card-plan-name">Industrial Enterprise</div>
+                <div class="card-plan-desc">Full governance suite for large manufacturing units & test laboratories.</div>
+                <div class="card-price-box">
+                    <span class="card-price" id="price-enterprise">$300</span>
+                    <span class="card-period">/month</span>
+                </div>
+                <ul class="card-features-list">
+                    <li class="card-feature-item"><span class="check-circle">✓</span> <b>All Pro Plan Features</b></li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Multi-Factory License & CSoL Tracker</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Dedicated BIS Regulatory Consultant Desk</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> NABL & BIS LIMS Direct Lab Sync API</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> Custom AI Rules Engine Fine-tuning</li>
+                    <li class="card-feature-item"><span class="check-circle">✓</span> 24/7 Dedicated Support & Onboarding</li>
+                </ul>
+                <button class="pricing-btn" onclick="alert('Contacting Enterprise Sales Team! 💼')">Contact Sales</button>
+            </div>
+        </div>
+
+        <!-- FREQUENTLY ASKED QUESTIONS -->
+        <div class="faq-wrap">
+            <span class="faq-badge">FAQ</span>
+            <h3 class="faq-title">Frequently Asked Questions</h3>
+            
+            <div class="faq-grid">
+                <div class="faq-card" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>What is included in the BIS AI Assistant?</span>
+                        <span class="faq-toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        It includes instant regulatory lookups, scheme recommendations, fee estimation, and automated factory lab test report auditing conforming to Indian Standards.
+                    </div>
+                </div>
+
+                <div class="faq-card" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>How secure is our factory test data?</span>
+                        <span class="faq-toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        All uploaded test reports and parameter checks are processed locally within your authenticated secure session and are never shared publicly.
+                    </div>
+                </div>
+
+                <div class="faq-card" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>Can I change plans or cancel anytime?</span>
+                        <span class="faq-toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        Yes, you can upgrade, downgrade, or cancel your subscription plan at any time through your company's settings portal.
+                    </div>
+                </div>
+
+                <div class="faq-card" onclick="toggleFAQ(this)">
+                    <div class="faq-question">
+                        <span>Does this guarantee BIS license grant?</span>
+                        <span class="faq-toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        This AI portal assists you in preparing and checking compliance against official guidelines. Final licensing authority rests solely with the Bureau of Indian Standards (BIS).
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- OFFICIAL DOCUMENTS SCREEN -->
     <div id="documents-screen" class="hidden">
         <h2 class="library-title" style="margin-bottom: 20px;">Reference & Research Knowledge Base</h2>
-        
         <div class="doc-search-bar">
             <input type="text" id="docSearch" placeholder="Search official sources by name, IS number, QCO, or keyword..." onkeyup="filterDocs()">
         </div>
 
-        <div id="doc-accordion-container" style="width: 100%; max-width: 800px; padding-bottom: 50px;">
-            
+        <div id="doc-accordion-container">
             <!-- Category 1: FILLED -->
             <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 1. Product Certification & Compulsory Certification</div>
-                    <span>▼</span>
-                </div>
+                <div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 1. Product Certification & Compulsory Certification</div><span>▼</span></div>
                 <div class="doc-content">
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Products Under Compulsory Certification</div>
-                        <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en</div>
-                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Scheme-I (ISI Mark)</div>
-                        <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en</div>
-                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Scheme-II (Registration Scheme)</div>
-                        <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en</div>
-                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Scheme-IV</div>
-                        <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en</div>
-                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Certification Process</div>
-                        <div class="doc-badges"><span class="doc-badge b-pdf">Official PDF</span><span class="doc-badge b-pri">Priority: High / Core-supporting</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf</div>
-                        <a href="https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Products under Simplified Procedure (Option-2)</div>
-                        <div class="doc-badges"><span class="doc-badge b-hist">Historical PDF</span><span class="doc-badge b-pri">High Priority</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf</div>
-                        <a href="https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-                    
+                    <div class="doc-card"><div class="doc-card-title">BIS Products Under Compulsory Certification</div><div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en</div><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">BIS Scheme-I (ISI Mark)</div><div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en</div><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">BIS Scheme-II (Registration Scheme)</div><div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en</div><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">BIS Scheme-IV</div><div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en</div><a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">BIS Certification Process</div><div class="doc-badges"><span class="doc-badge b-pdf">Official PDF</span><span class="doc-badge b-pri">Priority: High / Core-supporting</span></div><div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf</div><a href="https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">BIS Products under Simplified Procedure (Option-2)</div><div class="doc-badges"><span class="doc-badge b-hist">Historical PDF</span><span class="doc-badge b-pri">High Priority</span></div><div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf</div><a href="https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
                 </div>
             </div>
 
             <!-- Category 2: QCOs (FILLED) -->
             <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 2. Quality Control Orders (QCOs)</div>
-                    <span>▼</span>
-                </div>
+                <div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 2. Quality Control Orders (QCOs)</div><span>▼</span></div>
                 <div class="doc-content">
-                    
-                    <div class="doc-card">
-                        <div class="doc-card-title">BIS Guidance Document on Quality Control Orders (QCOs)</div>
-                        <div class="doc-badges"><span class="doc-badge b-pdf">Official PDF</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf</div>
-                        <a href="https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-
-                    <div class="doc-card">
-                        <div class="doc-card-title">Upcoming QCOs — Notified and Due for Implementation</div>
-                        <div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en</div>
-                        <a href="https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-
-                    <div class="doc-card">
-                        <div class="doc-card-title">Guidelines for Implementation of Revisions/Amendments to IS</div>
-                        <div class="doc-badges"><span class="doc-badge b-web">Live Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
-                        <div class="doc-url">https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular</div>
-                        <a href="https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular" target="_blank" class="doc-btn">Open Official Source ↗</a>
-                    </div>
-
+                    <div class="doc-card"><div class="doc-card-title">BIS Guidance Document on Quality Control Orders (QCOs)</div><div class="doc-badges"><span class="doc-badge b-pdf">Official PDF</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf</div><a href="https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">Upcoming QCOs — Notified and Due for Implementation</div><div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en</div><a href="https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
+                    <div class="doc-card"><div class="doc-card-title">Guidelines for Implementation of Revisions/Amendments to IS</div><div class="doc-badges"><span class="doc-badge b-web">Live Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div><div class="doc-url">https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular</div><a href="https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular" target="_blank" class="doc-btn">Open Official Source ↗</a></div>
                 </div>
             </div>
 
-            <!-- Category 3: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 3. BIS Standards & Indian Standards</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
+            <!-- Categories 3 to 16 -->
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 3. BIS Standards & Indian Standards</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 4. Grant, Renewal & Licence Management</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 5. Non-Conformity, Surveillance & Enforcement</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 6. Testing, Laboratories & Sample Management</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 7. Marking Fees & Certification Costs</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 8. Legal Framework & Conformity Assessment</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 9. Scheme-IV — Certificate of Conformity</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 10. Scheme-II — Registration Scheme</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 11. Standards Development & Technical Committees</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 12. System Certification & Management Systems</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 13. Complaints & Appeals</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 14. BIS Organisation & Annual Reports</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 15. International Relations, MoUs & R&D</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
+            <div class="doc-folder"><div class="doc-folder-header" onclick="toggleFolder(this)"><div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 16. BIS Offices & Contact Directory</div><span>▼</span></div><div class="doc-content"><div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div></div></div>
 
-            <!-- Category 4: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 4. Grant, Renewal & Licence Management</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 5: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 5. Non-Conformity, Surveillance & Enforcement</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 6: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 6. Testing, Laboratories & Sample Management</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 7: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 7. Marking Fees & Certification Costs</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 8: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 8. Legal Framework & Conformity Assessment</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 9: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 9. Scheme-IV — Certificate of Conformity</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 10: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 10. Scheme-II — Registration Scheme</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 11: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 11. Standards Development & Technical Committees</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 12: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 12. System Certification & Management Systems</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 13: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 13. Complaints & Appeals</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 14: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 14. BIS Organisation & Annual Reports</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 15: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 15. International Relations, MoUs & R&D</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <!-- Category 16: EMPTY -->
-            <div class="doc-folder">
-                <div class="doc-folder-header" onclick="toggleFolder(this)">
-                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 16. BIS Offices & Contact Directory</div>
-                    <span>▼</span>
-                </div>
-                <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
-                </div>
-            </div>
-
-            <div class="sih-disclaimer">
-                Prototype for Smart India Hackathon. Not an official BIS application. Always verify compliance requirements on the latest official BIS source.
-            </div>
-
+            <div class="sih-disclaimer">Prototype for Smart India Hackathon. Not an official BIS application. Always verify compliance requirements on the latest official BIS source.</div>
         </div>
     </div>
 
@@ -709,10 +642,7 @@
             <div class="lib-card" style="cursor: default;">
                 <div style="display: flex; align-items: center; gap: 18px; width: 100%;">
                     <div class="lib-icon icon-blue">💧</div>
-                    <div class="lib-content" style="flex: 1;">
-                        <div class="lib-title">Steel Bottle</div>
-                        <div class="lib-desc">IS 17526 standards for stainless steel vacuum flasks.</div>
-                    </div>
+                    <div class="lib-content" style="flex: 1;"><div class="lib-title">Steel Bottle</div><div class="lib-desc">IS 17526 standards for stainless steel vacuum flasks.</div></div>
                 </div>
                 <div class="lib-actions">
                     <button class="lib-action-btn" onclick="openPDFViewer('https://drive.google.com/file/d/1yfr9iWu2B-by5vYJOKoE0XavkErtigu2/preview', 'Print Book - Steel Bottle')">Print book</button>
@@ -721,12 +651,10 @@
                 </div>
             </div>
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1D7hPesm_d_ynfskIPesN0KLuNxqNWEjk/preview', 'IS 269: Ordinary Portland Cement')">
-                <div class="lib-icon icon-green">🏗️</div>
-                <div class="lib-content"><div class="lib-title">Cement</div><div class="lib-desc">IS 269 quality rules and packaging standards.</div></div>
+                <div class="lib-icon icon-green">🏗️</div><div class="lib-content"><div class="lib-title">Cement</div><div class="lib-desc">IS 269 quality rules and packaging standards.</div></div>
             </div>
             <div class="lib-card" onclick="openPDFViewer('https://drive.google.com/file/d/1VzdIMPoc_IFHCect1kIf04lVi6aN--m6/preview', 'IS 374: Electric Ceiling Fans')">
-                <div class="lib-icon icon-yellow">🌀</div>
-                <div class="lib-content"><div class="lib-title">Ceiling Fan</div><div class="lib-desc">IS 374 safety and performance specifications.</div></div>
+                <div class="lib-icon icon-yellow">🌀</div><div class="lib-content"><div class="lib-title">Ceiling Fan</div><div class="lib-desc">IS 374 safety and performance specifications.</div></div>
             </div>
         </div>
     </div>
@@ -735,32 +663,15 @@
     <div id="calculator-screen" class="hidden">
         <h2 class="library-title" style="margin-bottom: 25px;">BIS Fee Estimator</h2>
         <div class="calc-wrapper">
-            <div class="calc-group">
-                <label>Select Scale of Industry</label>
-                <select id="biz-scale" class="calc-select">
-                    <option value="micro">Micro Enterprise / Women Entrepreneur</option>
-                    <option value="small">Small Enterprise</option>
-                    <option value="medium">Medium / Large Industry</option>
-                </select>
-            </div>
-            <div class="calc-group">
-                <label>Select Product Category</label>
-                <select id="prod-cat" class="calc-select">
-                    <option value="general">General Standard (e.g., Cement, Steel Bottles)</option>
-                    <option value="electronics">Electronics & IT Goods</option>
-                    <option value="toys">Toys & Safety Equipments</option>
-                </select>
-            </div>
+            <div class="calc-group"><label>Select Scale of Industry</label><select id="biz-scale" class="calc-select"><option value="micro">Micro Enterprise / Women Entrepreneur</option><option value="small">Small Enterprise</option><option value="medium">Medium / Large Industry</option></select></div>
+            <div class="calc-group"><label>Select Product Category</label><select id="prod-cat" class="calc-select"><option value="general">General Standard (e.g., Cement, Steel Bottles)</option><option value="electronics">Electronics & IT Goods</option><option value="toys">Toys & Safety Equipments</option></select></div>
             <button class="calc-btn" onclick="calculateFees()">Calculate Estimate</button>
-
             <div id="receipt" class="receipt-card">
                 <div class="receipt-row"><span>Application Fee:</span> <span id="r-app">₹ 0</span></div>
                 <div class="receipt-row"><span>Annual License Fee:</span> <span id="r-lic">₹ 0</span></div>
                 <div class="receipt-row"><span>Inspection Fee (Per Manday):</span> <span id="r-insp">₹ 0</span></div>
                 <div class="receipt-row"><span>Advance Minimum Marking Fee:</span> <span id="r-mark">₹ 0</span></div>
-                <div id="concession-row" class="receipt-row concession" style="display:none;">
-                    <span>MSME/Women Concession (50% on Marking):</span> <span id="r-con">- ₹ 0</span>
-                </div>
+                <div id="concession-row" class="receipt-row concession" style="display:none;"><span>MSME/Women Concession (50% on Marking):</span> <span id="r-con">- ₹ 0</span></div>
                 <div class="receipt-row total"><span>Estimated Total (Excl. Tax):</span> <span id="r-total">₹ 0</span></div>
                 <div style="font-size: 10px; color: #888; margin-top: 15px; text-align: center;">*This is a provisional estimate based on BIS Scheme-I guidelines. Actual testing charges by laboratories are extra.</div>
             </div>
@@ -770,117 +681,26 @@
     <!-- DASHBOARD ROADMAP SCREEN -->
     <div id="roadmap-screen" class="hidden">
         <h2 class="library-title" style="margin-bottom: 20px;">Certification Dashboard</h2>
-        
         <div class="dash-grid">
-            
-            <!-- Top Donut Widget -->
-            <div class="dash-card progress-widget">
-                <h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">OVERALL COMPLIANCE</h4>
-                <div class="donut-wrapper" style="--pct: 0%;">
-                    <div class="donut-inner" id="dash-pct-text">0%</div>
-                </div>
-                <div class="dash-stat-label" id="dash-stages-text">0 of 5 Stages Completed</div>
-            </div>
-
-            <!-- Top Info Widget -->
-            <div class="dash-card info-widget">
-                <h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">BIS SCHEME-1 STATUS</h4>
-                <div class="info-stats">
-                    <div class="stat-box">
-                        <span class="stat-val" id="current-phase-status" style="color: #00d4ff;">Not Started</span>
-                        <span class="stat-name">Current Phase</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-val" style="color: #10a37f;">IS 17526</span>
-                        <span class="stat-name">Target Standard</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Stage 1 -->
-            <div class="dash-card stage-card" style="--accent: #00d4ff;">
-                <div class="stage-header">
-                    <span class="stage-num">01</span>
-                    <label class="switch">
-                        <input type="checkbox" onchange="updateDashboardProgress()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="stage-title">Testing Setup</div>
-                <div class="stage-desc">Establish required in-house equipment or cluster tie-ups.</div>
-            </div>
-
-            <!-- Stage 2 -->
-            <div class="dash-card stage-card" style="--accent: #10a37f;">
-                <div class="stage-header">
-                    <span class="stage-num">02</span>
-                    <label class="switch">
-                        <input type="checkbox" onchange="updateDashboardProgress()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="stage-title">Online Application</div>
-                <div class="stage-desc">Submit Form V on e-BIS with factory layout and test reports.</div>
-            </div>
-
-            <!-- Stage 3 -->
-            <div class="dash-card stage-card" style="--accent: #f59e0b;">
-                <div class="stage-header">
-                    <span class="stage-num">03</span>
-                    <label class="switch">
-                        <input type="checkbox" onchange="updateDashboardProgress()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="stage-title">Factory Inspection</div>
-                <div class="stage-desc">BIS officer verifies SIT, raw material quality, and calibration records.</div>
-            </div>
-
-            <!-- Stage 4 -->
-            <div class="dash-card stage-card" style="--accent: #ec4899;">
-                <div class="stage-header">
-                    <span class="stage-num">04</span>
-                    <label class="switch">
-                        <input type="checkbox" onchange="updateDashboardProgress()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="stage-title">Lab Testing</div>
-                <div class="stage-desc">Independent sample sent to NABL lab for complete verification.</div>
-            </div>
-
-            <!-- Stage 5 -->
-            <div class="dash-card stage-card" style="--accent: #8b5cf6;">
-                <div class="stage-header">
-                    <span class="stage-num">05</span>
-                    <label class="switch">
-                        <input type="checkbox" onchange="updateDashboardProgress()">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="stage-title">Grant of License</div>
-                <div class="stage-desc">Scrutiny clearance and issuance of BIS Mark with CM/L code.</div>
-            </div>
-
+            <div class="dash-card progress-widget"><h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">OVERALL COMPLIANCE</h4><div class="donut-wrapper" style="--pct: 0%;"><div class="donut-inner" id="dash-pct-text">0%</div></div><div class="dash-stat-label" id="dash-stages-text">0 of 5 Stages Completed</div></div>
+            <div class="dash-card info-widget"><h4 style="margin:0; color:#a1a6b0; font-size:13px; font-weight:500;">BIS SCHEME-1 STATUS</h4><div class="info-stats"><div class="stat-box"><span class="stat-val" id="current-phase-status" style="color: #00d4ff;">Not Started</span><span class="stat-name">Current Phase</span></div><div class="stat-box"><span class="stat-val" style="color: #10a37f;">IS 17526</span><span class="stat-name">Target Standard</span></div></div></div>
+            <div class="dash-card stage-card" style="--accent: #00d4ff;"><div class="stage-header"><span class="stage-num">01</span><label class="switch"><input type="checkbox" onchange="updateDashboardProgress()"><span class="slider"></span></label></div><div class="stage-title">Testing Setup</div><div class="stage-desc">Establish required in-house equipment or cluster tie-ups.</div></div>
+            <div class="dash-card stage-card" style="--accent: #10a37f;"><div class="stage-header"><span class="stage-num">02</span><label class="switch"><input type="checkbox" onchange="updateDashboardProgress()"><span class="slider"></span></label></div><div class="stage-title">Online Application</div><div class="stage-desc">Submit Form V on e-BIS with factory layout and test reports.</div></div>
+            <div class="dash-card stage-card" style="--accent: #f59e0b;"><div class="stage-header"><span class="stage-num">03</span><label class="switch"><input type="checkbox" onchange="updateDashboardProgress()"><span class="slider"></span></label></div><div class="stage-title">Factory Inspection</div><div class="stage-desc">BIS officer verifies SIT, raw material quality, and calibration records.</div></div>
+            <div class="dash-card stage-card" style="--accent: #ec4899;"><div class="stage-header"><span class="stage-num">04</span><label class="switch"><input type="checkbox" onchange="updateDashboardProgress()"><span class="slider"></span></label></div><div class="stage-title">Lab Testing</div><div class="stage-desc">Independent sample sent to NABL lab for complete verification.</div></div>
+            <div class="dash-card stage-card" style="--accent: #8b5cf6;"><div class="stage-header"><span class="stage-num">05</span><label class="switch"><input type="checkbox" onchange="updateDashboardProgress()"><span class="slider"></span></label></div><div class="stage-title">Grant of License</div><div class="stage-desc">Scrutiny clearance and issuance of BIS Mark with CM/L code.</div></div>
         </div>
     </div>
 
     <!-- FULL-SCREEN PDF VIEWER -->
     <div id="pdf-viewer-screen" class="hidden">
-        <div class="pdf-header">
-            <button class="back-btn" onclick="closePDFViewer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button>
-            <div class="pdf-title" id="pdf-viewer-title">Document</div>
-            <div style="width: 120px;"></div>
-        </div>
+        <div class="pdf-header"><button class="back-btn" onclick="closePDFViewer()"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> Back</button><div class="pdf-title" id="pdf-viewer-title">Document</div><div style="width: 120px;"></div></div>
         <div class="pdf-container"><iframe id="pdf-iframe" src=""></iframe></div>
     </div>
 
     <!-- HOME SCREEN -->
     <div id="home-screen">
-        <div class="greeting">
-            <h1>Good afternoon</h1>
-            <h2>What can I help you with today?</h2>
-        </div>
+        <div class="greeting"><h1>Good afternoon</h1><h2>What can I help you with today?</h2></div>
         <div class="suggestion-pills">
             <button class="pill" onclick="sendPreset('Write a summary of BIS Mark')">Write a summary</button>
             <button class="pill" onclick="sendPreset('Get advice on MSME compliance')">Get advice</button>
@@ -888,41 +708,17 @@
             <button class="pill" onclick="sendPreset('Make a plan for factory testing')">Make a plan</button>
         </div>
         <div class="bottom-widgets">
-            <div class="widget-card">
-                <div class="widget-header"><span>🔗 Jump back in to your files</span><span>ⓘ</span></div>
-                <div class="widget-content">
-                    <div class="widget-icon" style="background: url('https://img.icons8.com/color/48/000000/pdf.png') center/cover;"></div>
-                    <div style="font-size:13px;">BIS_Standards.pdf<br><span style="font-size:11px; color:#888;">2h ago</span></div>
-                </div>
-            </div>
-            <div class="widget-card">
-                <div class="widget-header"><span>👓 Get guided help with your apps</span><span>ⓘ</span></div>
-                <div class="widget-content">
-                    <div style="display:flex; gap:10px;">
-                        <img src="https://img.icons8.com/color/48/000000/microsoft-word-2019--v2.png" width="24">
-                        <img src="https://img.icons8.com/color/48/000000/microsoft-excel-2019--v1.png" width="24">
-                        <img src="https://img.icons8.com/color/48/000000/microsoft-powerpoint-2019--v1.png" width="24">
-                    </div>
-                </div>
-            </div>
-            <div class="widget-card">
-                <div class="widget-header"><span>💬 Keep talking to AI Engine</span></div>
-                <div class="widget-content">
-                    <div class="widget-icon" style="background: #2d323e; display:flex; align-items:center; justify-content:center; font-size:18px;">🏛️</div>
-                    <div style="font-size:13px;">How can AI help me?<br><span style="font-size:11px; color:#888;">Just now</span></div>
-                </div>
-            </div>
+            <div class="widget-card"><div class="widget-header"><span>🔗 Jump back in to your files</span><span>ⓘ</span></div><div class="widget-content"><div class="widget-icon" style="background: url('https://img.icons8.com/color/48/000000/pdf.png') center/cover;"></div><div style="font-size:13px;">BIS_Standards.pdf<br><span style="font-size:11px; color:#888;">2h ago</span></div></div></div>
+            <div class="widget-card"><div class="widget-header"><span>👓 Get guided help with your apps</span><span>ⓘ</span></div><div class="widget-content"><div style="display:flex; gap:10px;"><img src="https://img.icons8.com/color/48/000000/microsoft-word-2019--v2.png" width="24"><img src="https://img.icons8.com/color/48/000000/microsoft-excel-2019--v1.png" width="24"><img src="https://img.icons8.com/color/48/000000/microsoft-powerpoint-2019--v1.png" width="24"></div></div></div>
+            <div class="widget-card"><div class="widget-header"><span>💬 Keep talking to AI Engine</span></div><div class="widget-content"><div class="widget-icon" style="background: #2d323e; display:flex; align-items:center; justify-content:center; font-size:18px;">🏛️</div><div style="font-size:13px;">How can AI help me?<br><span style="font-size:11px; color:#888;">Just now</span></div></div></div>
         </div>
     </div>
 
+    <!-- CHAT AREA & INPUT -->
     <div id="chat-area"></div>
 
     <div id="input-container">
-        <div class="input-top-bar" id="input-top-bar">
-            <span>Ask anything</span>
-            <span class="model-badge"><span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄</span>
-            <span style="color: transparent;">-</span>
-        </div>
+        <div class="input-top-bar" id="input-top-bar"><span>Ask anything</span><span class="model-badge"><span style="font-size:14px;">⚡</span> BIS AI Engine (Verified) ⌄</span><span style="color: transparent;">-</span></div>
         <div class="input-row">
             <input type="text" id="userInput" placeholder="Type your query..." onkeypress="handleKey(event)">
             <button class="action-icon-btn" id="mic-btn" onclick="startDictation()" title="Voice Input">🎙️</button>
@@ -935,101 +731,58 @@
         marked.setOptions({ breaks: true });
         let chatSessions = {}; let currentSessionId = null; let isFirstMessage = true; let targetOptionsSessionId = null; let isListening = false;
 
-        function startNewChat() {
-            const newId = 'session_' + Date.now();
-            chatSessions[newId] = { title: "New Chat", messages: [] };
-            currentSessionId = newId;
-            isFirstMessage = true;
-            document.getElementById('chat-area').innerHTML = '';
-            resetToHomeScreen();
-            renderSidebar();
-            if(window.innerWidth < 800) toggleSidebar();
-        }
+        function startNewChat() { const newId = 'session_' + Date.now(); chatSessions[newId] = { title: "New Chat", messages: [] }; currentSessionId = newId; isFirstMessage = true; document.getElementById('chat-area').innerHTML = ''; resetToHomeScreen(); renderSidebar(); if(window.innerWidth < 800) toggleSidebar(); }
 
-        // --- VOICE INPUT ---
-        function startDictation() {
-            if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                const recognition = new SpeechRecognition();
-                recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN';
-                recognition.onstart = function() { isListening = true; document.getElementById('mic-btn').classList.add('listening'); document.getElementById('userInput').placeholder = "Listening... Speak now"; };
-                recognition.onresult = function(e) { document.getElementById('userInput').value = e.results[0][0].transcript; resetMic(); };
-                recognition.onerror = function(e) { resetMic(); };
-                recognition.onend = function() { resetMic(); };
-                if(!isListening) recognition.start();
-            } else { alert("Your browser does not support Voice Input. Please use Google Chrome or Edge."); }
-        }
+        function startDictation() { if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) { const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition; const recognition = new SpeechRecognition(); recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-IN'; recognition.onstart = function() { isListening = true; document.getElementById('mic-btn').classList.add('listening'); document.getElementById('userInput').placeholder = "Listening... Speak now"; }; recognition.onresult = function(e) { document.getElementById('userInput').value = e.results[0][0].transcript; resetMic(); }; recognition.onerror = function(e) { resetMic(); }; recognition.onend = function() { resetMic(); }; if(!isListening) recognition.start(); } else { alert("Your browser does not support Voice Input. Please use Google Chrome or Edge."); } }
         function resetMic() { isListening = false; document.getElementById('mic-btn').classList.remove('listening'); document.getElementById('userInput').placeholder = "Type your query..."; }
 
-        // --- UPLOAD LAB TEST REPORT ---
         function openUploadModal() { document.getElementById('upload-overlay').classList.add('show'); document.getElementById('report-result').classList.remove('show'); document.getElementById('run-audit-btn').style.display = 'none'; }
         function closeUploadModal() { document.getElementById('upload-overlay').classList.remove('show'); }
         function handleFileUpload(e) { if(e.target.files.length > 0) { document.getElementById('run-audit-btn').style.display = 'block'; document.getElementById('run-audit-btn').innerText = `Analyze ${e.target.files[0].name}`; } }
         function loadSampleReport() { document.getElementById('run-audit-btn').style.display = 'block'; document.getElementById('run-audit-btn').innerText = "Run AI Compliance Audit (IS 269 Sample)"; }
         function runReportAudit() { const btn = document.getElementById('run-audit-btn'); btn.innerText = "Auditing parameters against Indian Standards..."; btn.disabled = true; setTimeout(() => { btn.disabled = false; btn.innerText = "Audit Completed"; document.getElementById('report-result').classList.add('show'); }, 1200); }
 
-        // --- DASHBOARD ROADMAP LOGIC ---
         function openRoadmapPage() { hideAllScreens(); document.getElementById('roadmap-screen').classList.remove('hidden'); document.getElementById('roadmap-screen').style.display = 'flex'; if(window.innerWidth < 800) toggleSidebar(); }
-        function updateDashboardProgress() {
-            const checks = document.querySelectorAll('#roadmap-screen input[type="checkbox"]');
-            let checkedCount = 0; checks.forEach(c => { if(c.checked) checkedCount++; });
-            const pct = Math.round((checkedCount / checks.length) * 100);
-            document.querySelector('.donut-wrapper').style.setProperty('--pct', `${pct}%`);
-            document.getElementById('dash-pct-text').innerText = `${pct}%`;
-            document.getElementById('dash-stages-text').innerText = `${checkedCount} of ${checks.length} Stages Completed`;
-            const phaseSpan = document.getElementById('current-phase-status');
-            if (checkedCount === 0) { phaseSpan.innerText = "Not Started"; phaseSpan.style.color = "#00d4ff"; } else if (checkedCount === checks.length) { phaseSpan.innerText = "Certified ✓"; phaseSpan.style.color = "#10a37f"; } else { phaseSpan.innerText = `Phase ${checkedCount + 1}`; phaseSpan.style.color = "#f59e0b"; }
-        }
+        function updateDashboardProgress() { const checks = document.querySelectorAll('#roadmap-screen input[type="checkbox"]'); let checkedCount = 0; checks.forEach(c => { if(c.checked) checkedCount++; }); const pct = Math.round((checkedCount / checks.length) * 100); document.querySelector('.donut-wrapper').style.setProperty('--pct', `${pct}%`); document.getElementById('dash-pct-text').innerText = `${pct}%`; document.getElementById('dash-stages-text').innerText = `${checkedCount} of ${checks.length} Stages Completed`; const phaseSpan = document.getElementById('current-phase-status'); if (checkedCount === 0) { phaseSpan.innerText = "Not Started"; phaseSpan.style.color = "#00d4ff"; } else if (checkedCount === checks.length) { phaseSpan.innerText = "Certified ✓"; phaseSpan.style.color = "#10a37f"; } else { phaseSpan.innerText = `Phase ${checkedCount + 1}`; phaseSpan.style.color = "#f59e0b"; } }
 
-        // --- NAVIGATION & SCREENS ---
         function openPDFViewer(pdfUrl, title) { hideAllScreens(); document.getElementById('pdf-viewer-title').innerText = title; document.getElementById('pdf-iframe').src = pdfUrl.startsWith('http') ? pdfUrl : '/pdf/' + pdfUrl; document.getElementById('pdf-viewer-screen').classList.remove('hidden'); document.getElementById('pdf-viewer-screen').style.display = 'flex'; }
         function closePDFViewer() { document.getElementById('pdf-iframe').src = ''; openLibraryPage(); }
         function openLibraryPage() { hideAllScreens(); document.getElementById('library-screen').classList.remove('hidden'); document.getElementById('library-screen').style.display = 'flex'; if(window.innerWidth < 800) toggleSidebar(); }
         function openCalculatorPage() { hideAllScreens(); document.getElementById('calculator-screen').classList.remove('hidden'); document.getElementById('calculator-screen').style.display = 'flex'; if(window.innerWidth < 800) toggleSidebar(); }
-        
-        function calculateFees() {
-            const scale = document.getElementById('biz-scale').value;
-            let appFee = 1000; let licFee = 1000; let inspFee = 7000; let markFee = 0; let concession = 0;
-            if(scale === 'micro') markFee = 25000; else if(scale === 'small') markFee = 40000; else markFee = 60000;
-            if(scale === 'micro' || scale === 'small') { concession = markFee * 0.5; markFee = markFee - concession; document.getElementById('concession-row').style.display = 'flex'; document.getElementById('r-con').innerText = `- ₹ ${concession.toLocaleString()}`; } else { document.getElementById('concession-row').style.display = 'none'; }
-            let total = appFee + licFee + inspFee + markFee;
-            document.getElementById('r-app').innerText = `₹ ${appFee.toLocaleString()}`; document.getElementById('r-lic').innerText = `₹ ${licFee.toLocaleString()}`; document.getElementById('r-insp').innerText = `₹ ${inspFee.toLocaleString()}`; document.getElementById('r-mark').innerText = `₹ ${markFee.toLocaleString()}`; document.getElementById('r-total').innerText = `₹ ${total.toLocaleString()}`; document.getElementById('receipt').classList.add('show');
+
+        /* --- PRICING PAGE FUNCTIONS --- */
+        function openPricingPage() {
+            hideAllScreens();
+            document.getElementById('pricing-screen').classList.remove('hidden');
+            document.getElementById('pricing-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
         }
 
-        function hideAllScreens() {
-            const screens = ['home-screen', 'library-screen', 'calculator-screen', 'roadmap-screen', 'documents-screen', 'pdf-viewer-screen'];
-            screens.forEach(s => { document.getElementById(s).classList.add('hidden'); document.getElementById(s).style.display = 'none'; });
-            document.getElementById('chat-area').classList.remove('active'); document.getElementById('input-container').style.display = 'none';
+        function toggleBillingCycle() {
+            const isAnnual = document.getElementById('pricing-billing-toggle').checked;
+            document.getElementById('price-basic').innerText = isAnnual ? "$115" : "$12";
+            document.getElementById('price-pro').innerText = isAnnual ? "$960" : "$100";
+            document.getElementById('price-enterprise').innerText = isAnnual ? "$2,880" : "$300";
+            document.querySelectorAll('.card-period').forEach(p => p.innerText = isAnnual ? "/year" : "/month");
         }
 
+        function toggleFAQ(card) {
+            card.classList.toggle('open');
+        }
+
+        function calculateFees() { const scale = document.getElementById('biz-scale').value; let appFee = 1000; let licFee = 1000; let inspFee = 7000; let markFee = 0; let concession = 0; if(scale === 'micro') markFee = 25000; else if(scale === 'small') markFee = 40000; else markFee = 60000; if(scale === 'micro' || scale === 'small') { concession = markFee * 0.5; markFee = markFee - concession; document.getElementById('concession-row').style.display = 'flex'; document.getElementById('r-con').innerText = `- ₹ ${concession.toLocaleString()}`; } else { document.getElementById('concession-row').style.display = 'none'; } let total = appFee + licFee + inspFee + markFee; document.getElementById('r-app').innerText = `₹ ${appFee.toLocaleString()}`; document.getElementById('r-lic').innerText = `₹ ${licFee.toLocaleString()}`; document.getElementById('r-insp').innerText = `₹ ${inspFee.toLocaleString()}`; document.getElementById('r-mark').innerText = `₹ ${markFee.toLocaleString()}`; document.getElementById('r-total').innerText = `₹ ${total.toLocaleString()}`; document.getElementById('receipt').classList.add('show'); }
+
+        function hideAllScreens() { const screens = ['home-screen', 'library-screen', 'calculator-screen', 'roadmap-screen', 'documents-screen', 'pricing-screen', 'pdf-viewer-screen']; screens.forEach(s => { document.getElementById(s).classList.add('hidden'); document.getElementById(s).style.display = 'none'; }); document.getElementById('chat-area').classList.remove('active'); document.getElementById('input-container').style.display = 'none'; }
         function openSettingsModal() { document.getElementById('settings-overlay').classList.add('show'); if(window.innerWidth < 800) toggleSidebar(); }
         function closeSettingsModal() { document.getElementById('settings-overlay').classList.remove('show'); }
         function clearAllChats() { if(confirm("Are you sure you want to permanently delete all chat history?")) { chatSessions = {}; currentSessionId = null; closeSettingsModal(); startNewChat(); } }
         function toggleTheme() { document.body.classList.toggle('light-mode'); const tBtn = document.getElementById('theme-toggle-btn'); tBtn.innerText = document.body.classList.contains('light-mode') ? "Dark Mode" : "Light Mode"; }
         function sendFeedback() { let f = prompt("Please share your feedback or suggestions:"); if (f && f.trim() !== "") { alert("Thank you! Your feedback has been sent successfully."); closeSettingsModal(); } }
         function contactUs() { alert("Contact our support team at: support@bis-ai.gov.in\nHelpline: 1800-11-2026"); }
-
         document.querySelectorAll('.modal-overlay').forEach(overlay => { overlay.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('show'); }); });
 
-        function renderSidebar() {
-            const list = document.getElementById('sidebar-history-list'); list.innerHTML = ''; let hasVisibleChats = false;
-            const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1]));
-            for (const id of sortedIds) {
-                const session = chatSessions[id];
-                if (session.messages.length > 0) {
-                    hasVisibleChats = true;
-                    list.innerHTML += `<div class="recent-item ${id === currentSessionId ? 'active' : ''}" onclick="loadSession('${id}')"><span class="recent-item-title">${session.title}</span><button class="options-btn" onclick="openOptions(event, '${id}')"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>`;
-                }
-            }
-            document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none';
-        }
-
-        function loadSession(id) {
-            currentSessionId = id; const session = chatSessions[id]; document.getElementById('chat-area').innerHTML = ''; 
-            if (session.messages.length > 0) { forceChatMode(); session.messages.forEach(msg => { appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role); }); } else { resetToHomeScreen(); }
-            renderSidebar(); if(window.innerWidth < 800) toggleSidebar();
-        }
-
+        function renderSidebar() { const list = document.getElementById('sidebar-history-list'); list.innerHTML = ''; let hasVisibleChats = false; const sortedIds = Object.keys(chatSessions).sort((a,b) => parseInt(b.split('_')[1]) - parseInt(a.split('_')[1])); for (const id of sortedIds) { const session = chatSessions[id]; if (session.messages.length > 0) { hasVisibleChats = true; list.innerHTML += `<div class="recent-item ${id === currentSessionId ? 'active' : ''}" onclick="loadSession('${id}')"><span class="recent-item-title">${session.title}</span><button class="options-btn" onclick="openOptions(event, '${id}')"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button></div>`; } } document.getElementById('recent-heading').style.display = hasVisibleChats ? 'block' : 'none'; }
+        function loadSession(id) { currentSessionId = id; const session = chatSessions[id]; document.getElementById('chat-area').innerHTML = ''; if (session.messages.length > 0) { forceChatMode(); session.messages.forEach(msg => { appendMsgDOM(msg.role === 'bot' ? marked.parse(msg.text) : msg.text, msg.role); }); } else { resetToHomeScreen(); } renderSidebar(); if(window.innerWidth < 800) toggleSidebar(); }
         function openOptions(e, id) { e.stopPropagation(); targetOptionsSessionId = id; const menu = document.getElementById('options-dropdown'); const rect = e.currentTarget.getBoundingClientRect(); menu.style.top = `${rect.bottom + 5}px`; menu.style.left = `${rect.left}px`; menu.classList.add('show'); }
         document.addEventListener('click', (e) => { const menu = document.getElementById('options-dropdown'); if(!menu.contains(e.target) && !e.target.closest('.options-btn')) { menu.classList.remove('show'); } });
         function actionPin() { alert("Pin feature reserved for later upgrade!"); document.getElementById('options-dropdown').classList.remove('show'); }
@@ -1037,38 +790,19 @@
         function actionDelete() { if(targetOptionsSessionId) { delete chatSessions[targetOptionsSessionId]; document.getElementById('options-dropdown').classList.remove('show'); if(currentSessionId === targetOptionsSessionId) startNewChat(); else renderSidebar(); } }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        function forceChatMode() {
-            isFirstMessage = false; hideAllScreens(); document.getElementById('input-container').style.display = 'block'; document.getElementById('input-top-bar').style.display = 'none'; document.getElementById('input-container').classList.add('chat-mode'); document.getElementById('chat-area').classList.add('active');
-        }
-
-        function resetToHomeScreen() {
-            isFirstMessage = true; hideAllScreens(); document.getElementById('home-screen').classList.remove('hidden'); document.getElementById('home-screen').style.display = 'flex'; document.getElementById('input-container').style.display = 'block'; document.getElementById('input-top-bar').style.display = 'flex'; document.getElementById('input-container').classList.remove('chat-mode');
-        }
-
-        function showTypingIndicator() {
-            const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.id = 'typingBubble'; row.className = `message-row bot`;
-            row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards Matrix...</span></div>`;
-            box.appendChild(row); box.scrollTop = box.scrollHeight;
-        }
+        function forceChatMode() { isFirstMessage = false; hideAllScreens(); document.getElementById('input-container').style.display = 'block'; document.getElementById('input-top-bar').style.display = 'none'; document.getElementById('input-container').classList.add('chat-mode'); document.getElementById('chat-area').classList.add('active'); }
+        function resetToHomeScreen() { isFirstMessage = true; hideAllScreens(); document.getElementById('home-screen').classList.remove('hidden'); document.getElementById('home-screen').style.display = 'flex'; document.getElementById('input-container').style.display = 'block'; document.getElementById('input-top-bar').style.display = 'flex'; document.getElementById('input-container').classList.remove('chat-mode'); }
+        function showTypingIndicator() { const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.id = 'typingBubble'; row.className = `message-row bot`; row.innerHTML = `<div class="avatar bot-avatar">🏛️</div><div class="message bot-message typing-bubble"><div class="pulse-scanner"><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div><div class="pulse-bar"></div></div><span style="font-size: 13px; color: #00d4ff; font-weight: 500; letter-spacing: 0.5px;">Scanning IS Standards Matrix...</span></div>`; box.appendChild(row); box.scrollTop = box.scrollHeight; }
         function removeTypingIndicator() { const bubble = document.getElementById('typingBubble'); if(bubble) bubble.remove(); }
-        
-        function appendMsgDOM(content, sender) { 
-            const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.className = `message-row ${sender}`; 
-            row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`; 
-            box.appendChild(row); box.scrollTop = box.scrollHeight; 
-        }
+        function appendMsgDOM(content, sender) { const box = document.getElementById('chat-area'); const row = document.createElement('div'); row.className = `message-row ${sender}`; row.innerHTML = `<div class="avatar ${sender}-avatar">${sender === 'bot' ? '🏛️' : '👤'}</div><div class="message ${sender}-message">${content}</div>`; box.appendChild(row); box.scrollTop = box.scrollHeight; }
 
         async function sendMessage() {
             const input = document.getElementById('userInput'); const text = input.value.trim(); if(!text) return;
-
-            const sendBtn = document.querySelector('.send-btn');
-            input.disabled = true; sendBtn.style.pointerEvents = 'none'; sendBtn.style.opacity = '0.5';
+            const sendBtn = document.querySelector('.send-btn'); input.disabled = true; sendBtn.style.pointerEvents = 'none'; sendBtn.style.opacity = '0.5';
 
             if(isFirstMessage === true && chatSessions[currentSessionId].messages.length > 0) { const newId = 'session_' + Date.now(); chatSessions[newId] = { title: "New Chat", messages: [] }; currentSessionId = newId; }
-            
             forceChatMode(); chatSessions[currentSessionId].messages.push({ role: "user", text: text });
             if (chatSessions[currentSessionId].messages.length === 1) chatSessions[currentSessionId].title = text.length > 25 ? text.substring(0, 25) + '...' : text;
-            
             renderSidebar(); appendMsgDOM(text, 'user'); input.value = ''; showTypingIndicator();
 
             const hiddenFormatInstruction = "\n\n[SYSTEM RULE: Provide your answer structured EXACTLY with these headings in this order: \n- Application\n- Qco\n- Certificate scheme\n- Testing requirements\n- Laboratory requirements\n- Fee\n- Licence requirment\n- Surveillance\n- Renewal\nIf a specific heading is not applicable, simply write 'Not specified' under it. Maintain your normal BIA intro before the headings.]";
@@ -1079,26 +813,18 @@
                 const data = await res.json(); removeTypingIndicator(); chatSessions[currentSessionId].messages.push({ role: "bot", text: data.reply }); appendMsgDOM(marked.parse(data.reply), 'bot');
             } catch(e) { 
                 removeTypingIndicator(); appendMsgDOM("Network error: Backend took too long or is asleep. Please refresh and try again.", 'bot'); 
-            } finally {
-                input.disabled = false; sendBtn.style.pointerEvents = 'auto'; sendBtn.style.opacity = '1'; input.focus();
-                setTimeout(() => { const box = document.getElementById('chat-area'); box.scrollTop = box.scrollHeight; }, 100);
+            } finally { 
+                input.disabled = false; sendBtn.style.pointerEvents = 'auto'; sendBtn.style.opacity = '1'; input.focus(); 
+                setTimeout(() => { const box = document.getElementById('chat-area'); box.scrollTop = box.scrollHeight; }, 100); 
             }
         }
 
         function sendPreset(text) { startNewChat(); document.getElementById('userInput').value = text; sendMessage(); }
         function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
 
-        // --- DOCUMENTS LOGIC ---
         function openDocumentsPage() { hideAllScreens(); document.getElementById('documents-screen').classList.remove('hidden'); document.getElementById('documents-screen').style.display = 'flex'; if(window.innerWidth < 800) toggleSidebar(); }
         function toggleFolder(headerElement) { const folder = headerElement.parentElement; folder.classList.toggle('open'); }
-        function filterDocs() {
-            const input = document.getElementById('docSearch').value.toLowerCase(); const folders = document.querySelectorAll('.doc-folder');
-            folders.forEach(folder => {
-                const cards = folder.querySelectorAll('.doc-card'); let folderHasMatch = false;
-                cards.forEach(card => { if (card.innerText.toLowerCase().includes(input)) { card.style.display = 'flex'; folderHasMatch = true; } else { card.style.display = 'none'; } });
-                if (folderHasMatch || folder.querySelector('.doc-folder-title').innerText.toLowerCase().includes(input)) { folder.style.display = 'block'; if(input !== "") folder.classList.add('open'); } else { folder.style.display = 'none'; }
-            });
-        }
+        function filterDocs() { const input = document.getElementById('docSearch').value.toLowerCase(); const folders = document.querySelectorAll('.doc-folder'); folders.forEach(folder => { const cards = folder.querySelectorAll('.doc-card'); let folderHasMatch = false; cards.forEach(card => { if (card.innerText.toLowerCase().includes(input)) { card.style.display = 'flex'; folderHasMatch = true; } else { card.style.display = 'none'; } }); if (folderHasMatch || folder.querySelector('.doc-folder-title').innerText.toLowerCase().includes(input)) { folder.style.display = 'block'; if(input !== "") folder.classList.add('open'); } else { folder.style.display = 'none'; } }); }
 
         window.onload = startNewChat;
     </script>
