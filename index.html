@@ -69,22 +69,19 @@
         .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
         /* --- SCREENS BASE & SCROLLING FIX --- */
-        /* Adding #documents-screen here to ensure vertical flex and full size */
         #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #documents-screen, #pdf-viewer-screen { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
             display: flex; flex-direction: column; align-items: center; 
             transition: opacity 0.4s ease, transform 0.5s ease; 
-            overflow-y: auto; /* Ensure overflow triggers scroll */
+            overflow-y: auto; 
         }
         
         #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #documents-screen.hidden, #pdf-viewer-screen.hidden { 
             opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; 
         }
 
-        /* Center short screens, Flex-start tall screens for scrolling */
         #home-screen { justify-content: center; }
         #calculator-screen { justify-content: center; }
-        
         #documents-screen { justify-content: flex-start; padding: 80px 20px 60px 20px; }
         #library-screen { justify-content: flex-start; padding: 80px 20px 60px 20px; }
         #roadmap-screen { justify-content: flex-start; padding: 80px 20px 60px 20px; }
@@ -202,6 +199,7 @@
         .param-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500; }
         .badge-pass { background: rgba(16, 163, 127, 0.15); color: #10a37f; }
 
+        #pdf-viewer-screen { background: #1e222b; z-index: 500; }
         .pdf-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .pdf-header .back-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 8px 16px; border-radius: 20px; transition: 0.2s; }
         .pdf-header .back-btn:hover { background: rgba(255,255,255,0.2); }
@@ -417,7 +415,7 @@
         </div>
     </div>
 
-    <!-- NEW: OFFICIAL DOCUMENTS SCREEN -->
+    <!-- NEW: OFFICIAL DOCUMENTS SCREEN (FOLDERS 1-16) -->
     <div id="documents-screen" class="hidden">
         <h2 class="library-title" style="margin-bottom: 20px;">Reference & Research Knowledge Base</h2>
         
@@ -425,7 +423,7 @@
             <input type="text" id="docSearch" placeholder="Search official sources by name, IS number, QCO, or keyword..." onkeyup="filterDocs()">
         </div>
 
-        <div id="doc-accordion-container">
+        <div id="doc-accordion-container" style="width: 100%; max-width: 800px; padding-bottom: 50px;">
             
             <!-- Category 1: FILLED -->
             <div class="doc-folder">
@@ -434,42 +432,49 @@
                     <span>▼</span>
                 </div>
                 <div class="doc-content">
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Products Under Compulsory Certification</div>
                         <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en</div>
                         <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Scheme-I (ISI Mark)</div>
                         <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en</div>
                         <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Scheme-II (Registration Scheme)</div>
                         <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en</div>
                         <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Scheme-IV</div>
                         <div class="doc-badges"><span class="doc-badge b-web">Official Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en</div>
                         <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Certification Process</div>
                         <div class="doc-badges"><span class="doc-badge b-pdf">Official PDF</span><span class="doc-badge b-pri">Priority: High / Core-supporting</span></div>
                         <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf</div>
                         <a href="https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Products under Simplified Procedure (Option-2)</div>
                         <div class="doc-badges"><span class="doc-badge b-hist">Historical PDF</span><span class="doc-badge b-pri">High Priority</span></div>
                         <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf</div>
                         <a href="https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+                    
                 </div>
             </div>
 
@@ -480,24 +485,28 @@
                     <span>▼</span>
                 </div>
                 <div class="doc-content">
+                    
                     <div class="doc-card">
                         <div class="doc-card-title">BIS Guidance Document on Quality Control Orders (QCOs)</div>
                         <div class="doc-badges"><span class="doc-badge b-pdf">Official PDF</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf</div>
                         <a href="https://www.bis.gov.in/wp-content/uploads/2021/07/Guidance-document-on-QCOs-Revised-1.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+
                     <div class="doc-card">
                         <div class="doc-card-title">Upcoming QCOs — Notified and Due for Implementation</div>
                         <div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en</div>
                         <a href="https://www.bis.gov.in/upcoming-qcos-notified-and-due-for-implementation/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+
                     <div class="doc-card">
                         <div class="doc-card-title">Guidelines for Implementation of Revisions/Amendments to IS</div>
                         <div class="doc-badges"><span class="doc-badge b-web">Live Web Resource</span><span class="doc-badge b-pri">Priority: Very High / Core</span></div>
                         <div class="doc-url">https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular</div>
                         <a href="https://www.services.bis.gov.in/php/BIS_2.0/bisconnect/Circular/circular/cmd_circular" target="_blank" class="doc-btn">Open Official Source ↗</a>
                     </div>
+
                 </div>
             </div>
 
@@ -516,6 +525,138 @@
             <div class="doc-folder">
                 <div class="doc-folder-header" onclick="toggleFolder(this)">
                     <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 4. Grant, Renewal & Licence Management</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 5: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 5. Non-Conformity, Surveillance & Enforcement</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 6: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 6. Testing, Laboratories & Sample Management</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 7: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 7. Marking Fees & Certification Costs</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 8: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 8. Legal Framework & Conformity Assessment</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 9: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 9. Scheme-IV — Certificate of Conformity</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 10: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 10. Scheme-II — Registration Scheme</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 11: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 11. Standards Development & Technical Committees</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 12: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 12. System Certification & Management Systems</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 13: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 13. Complaints & Appeals</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 14: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 14. BIS Organisation & Annual Reports</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 15: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 15. International Relations, MoUs & R&D</div>
+                    <span>▼</span>
+                </div>
+                <div class="doc-content">
+                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                </div>
+            </div>
+
+            <!-- Category 16: EMPTY -->
+            <div class="doc-folder">
+                <div class="doc-folder-header" onclick="toggleFolder(this)">
+                    <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 16. BIS Offices & Contact Directory</div>
                     <span>▼</span>
                 </div>
                 <div class="doc-content">
