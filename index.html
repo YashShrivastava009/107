@@ -68,9 +68,43 @@
         .setting-btn.danger { background: rgba(255, 92, 92, 0.15); color: #ff5c5c; }
         .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
+        /* --- OFFICIAL DOCUMENTS SCREEN CSS --- */
+        #documents-screen { align-items: center; overflow-y: auto; padding: 40px 20px; }
+        .doc-search-bar { width: 100%; max-width: 800px; margin-bottom: 30px; position: relative; }
+        .doc-search-bar input { width: 100%; background: rgba(30, 34, 43, 0.85); border: 1px solid rgba(255,255,255,0.1); padding: 14px 20px; border-radius: 12px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); outline: none; transition: 0.3s; }
+        .doc-search-bar input:focus { border-color: #00d4ff; background: rgba(30, 34, 43, 0.95); }
+        
+        .doc-folder { width: 100%; max-width: 800px; background: rgba(30, 34, 43, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
+        .doc-folder-header { padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); transition: 0.3s; }
+        .doc-folder-header:hover { background: rgba(255,255,255,0.05); }
+        .doc-folder-title { font-size: 15px; font-weight: 500; color: #fff; display: flex; align-items: center; gap: 10px; }
+        .doc-folder-icon { font-size: 18px; }
+        .doc-content { display: none; padding: 0 20px 20px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .doc-folder.open .doc-content { display: block; animation: popIn 0.3s ease; }
+        .doc-folder.open .doc-folder-header { background: rgba(0, 212, 255, 0.05); border-bottom: 1px solid rgba(0,212,255,0.1); }
+        
+        /* THE MISSING CSS SECTION THAT CAUSED THE BUG IS BACK BELOW */
+        .doc-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; transition: 0.2s; }
+        .doc-card:hover { border-color: rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); }
+        .doc-card-title { font-size: 14px; font-weight: 500; color: #e2e4e9; }
+        
+        .doc-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+        .doc-badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+        .b-web { background: rgba(0, 212, 255, 0.1); color: #00d4ff; border: 1px solid rgba(0, 212, 255, 0.2); }
+        .b-pdf { background: rgba(236, 72, 153, 0.1); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.2); }
+        .b-pri { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .b-ai { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.2); }
+        .b-hist { background: rgba(161, 166, 176, 0.1); color: #a1a6b0; border: 1px solid rgba(161, 166, 176, 0.2); }
+        
+        .doc-url { font-size: 11px; color: #64748b; word-break: break-all; margin-top: 4px; font-family: monospace; }
+        .doc-btn { align-self: flex-start; margin-top: 8px; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s; text-decoration: none; display: flex; align-items: center; gap: 6px;}
+        .doc-btn:hover { background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3); color: #00d4ff; }
+        
+        .sih-disclaimer { margin-top: 40px; font-size: 11px; color: #64748b; text-align: center; max-width: 600px; padding: 15px; border-top: 1px dashed rgba(255,255,255,0.1); }
+
         /* --- SCREENS --- */
-        #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #documents-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
-        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #documents-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
+        #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
+        #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
         
         .greeting { margin-top: 15vh; text-align: center; }
         .greeting h1 { font-size: 28px; font-weight: 500; margin-bottom: 5px; }
@@ -122,33 +156,15 @@
 
         /* --- DASHBOARD ROADMAP UI --- */
         #roadmap-screen { align-items: center; overflow-y: auto; padding: 60px 0 30px 0; }
-        .dash-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
-            width: 100%; max-width: 950px; margin: 0 auto; padding: 0 20px;
-        }
-        .dash-card {
-            background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border-radius: 16px;
-            padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+        .dash-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; width: 100%; max-width: 950px; margin: 0 auto; padding: 0 20px; }
+        .dash-card { background: rgba(30, 34, 43, 0.85); backdrop-filter: blur(25px); border-radius: 16px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; }
         .dash-card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
         
         .progress-widget { grid-column: span 1; align-items: center; justify-content: center; }
         .info-widget { grid-column: span 2; justify-content: center; }
         
-        .donut-wrapper {
-            position: relative; width: 110px; height: 110px; border-radius: 50%;
-            background: conic-gradient(#00d4ff var(--pct, 0%), rgba(255,255,255,0.05) 0);
-            display: flex; align-items: center; justify-content: center; margin: 15px 0;
-            transition: background 0.5s ease;
-        }
-        .donut-inner {
-            width: 86px; height: 86px; background: #1e222b; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 22px; font-weight: 600; color: #fff;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);
-        }
+        .donut-wrapper { position: relative; width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(#00d4ff var(--pct, 0%), rgba(255,255,255,0.05) 0); display: flex; align-items: center; justify-content: center; margin: 15px 0; transition: background 0.5s ease; }
+        .donut-inner { width: 86px; height: 86px; background: #1e222b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 600; color: #fff; box-shadow: inset 0 4px 10px rgba(0,0,0,0.5); }
         .dash-stat-label { font-size: 12px; color: #a1a6b0; text-align: center;}
 
         .info-stats { display: flex; gap: 30px; margin-top: 15px; width: 100%; }
@@ -157,10 +173,7 @@
         .stat-name { font-size: 12px; color: #a1a6b0; text-transform: uppercase; letter-spacing: 1px;}
 
         .stage-card { grid-column: span 1; position: relative; overflow: hidden; }
-        .stage-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: var(--accent);
-        }
+        .stage-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent); }
         .stage-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .stage-num { font-size: 28px; font-weight: 600; color: rgba(255,255,255,0.2); }
         .stage-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 8px; }
@@ -173,15 +186,8 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
-        @media (max-width: 900px) {
-            .dash-grid { grid-template-columns: repeat(2, 1fr); }
-            .info-widget { grid-column: span 1; }
-        }
-        @media (max-width: 600px) {
-            .dash-grid { grid-template-columns: 1fr; }
-            .progress-widget, .info-widget, .stage-card { grid-column: span 1; }
-            .info-stats { flex-direction: column; gap: 10px; }
-        }
+        @media (max-width: 900px) { .dash-grid { grid-template-columns: repeat(2, 1fr); } .info-widget { grid-column: span 1; } }
+        @media (max-width: 600px) { .dash-grid { grid-template-columns: 1fr; } .progress-widget, .info-widget, .stage-card { grid-column: span 1; } .info-stats { flex-direction: column; gap: 10px; } }
 
         /* --- LAB REPORT ANALYZER MODAL UI --- */
         .drop-zone { border: 2px dashed rgba(0, 212, 255, 0.3); border-radius: 16px; padding: 30px 20px; text-align: center; cursor: pointer; transition: 0.3s; background: rgba(0,0,0,0.15); margin-bottom: 15px; }
