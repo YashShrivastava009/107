@@ -68,25 +68,6 @@
         .setting-btn.danger { background: rgba(255, 92, 92, 0.15); color: #ff5c5c; }
         .setting-btn.danger:hover { background: rgba(255, 92, 92, 0.3); }
 
-        /* --- OFFICIAL DOCUMENTS SCREEN CSS --- */
-        #documents-screen { align-items: center; overflow-y: auto; padding: 40px 20px; }
-        .doc-search-bar { width: 100%; max-width: 800px; margin-bottom: 30px; position: relative; }
-        .doc-search-bar input { width: 100%; background: rgba(30, 34, 43, 0.85); border: 1px solid rgba(255,255,255,0.1); padding: 14px 20px; border-radius: 12px; color: #fff; font-family: 'Poppins', sans-serif; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); outline: none; transition: 0.3s; }
-        .doc-search-bar input:focus { border-color: #00d4ff; background: rgba(30, 34, 43, 0.95); }
-        
-        .doc-folder { width: 100%; max-width: 800px; background: rgba(30, 34, 43, 0.6); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 15px; overflow: hidden; transition: 0.3s; }
-        .doc-folder-header { padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); transition: 0.3s; }
-        .doc-folder-header:hover { background: rgba(255,255,255,0.05); }
-        .doc-folder-title { font-size: 15px; font-weight: 500; color: #fff; display: flex; align-items: center; gap: 10px; }
-        .doc-folder-icon { font-size: 18px; }
-        .doc-content { display: none; padding: 0 20px 20px 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-        .doc-folder.open .doc-content { display: block; animation: popIn 0.3s ease; }
-        .doc-folder.open .doc-folder-header { background: rgba(0, 212, 255, 0.05); border-bottom: 1px solid rgba(0,212,255,0.1); }
-        
-        .doc-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 15px; margin-top: 15px; display: flex; flex-direction: column; gap: 8px; transition: 0.2s; }
-        .doc-card:hover { border-color: rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); }
-        .doc-card-title { font-size: 14px; font-weight: 500; color: #e2e4e9; }
-
         /* --- SCREENS --- */
         #home-screen, #library-screen, #calculator-screen, #roadmap-screen, #documents-screen, #pdf-viewer-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; transition: opacity 0.4s ease, transform 0.5s ease; }
         #home-screen.hidden, #library-screen.hidden, #calculator-screen.hidden, #roadmap-screen.hidden, #documents-screen.hidden, #pdf-viewer-screen.hidden { opacity: 0; transform: translateY(-30px); pointer-events: none; display: none; }
@@ -153,9 +134,11 @@
         }
         .dash-card:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
         
+        /* Top Headers spanning */
         .progress-widget { grid-column: span 1; align-items: center; justify-content: center; }
         .info-widget { grid-column: span 2; justify-content: center; }
         
+        /* Donut Chart CSS */
         .donut-wrapper {
             position: relative; width: 110px; height: 110px; border-radius: 50%;
             background: conic-gradient(#00d4ff var(--pct, 0%), rgba(255,255,255,0.05) 0);
@@ -170,11 +153,13 @@
         }
         .dash-stat-label { font-size: 12px; color: #a1a6b0; text-align: center;}
 
+        /* Info Widget Stats */
         .info-stats { display: flex; gap: 30px; margin-top: 15px; width: 100%; }
         .stat-box { flex: 1; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.02); }
         .stat-val { display: block; font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 4px; }
         .stat-name { font-size: 12px; color: #a1a6b0; text-transform: uppercase; letter-spacing: 1px;}
 
+        /* Stage Cards Grid (Bottom) */
         .stage-card { grid-column: span 1; position: relative; overflow: hidden; }
         .stage-card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
@@ -185,6 +170,7 @@
         .stage-title { font-size: 15px; font-weight: 500; color: #fff; margin-bottom: 8px; }
         .stage-desc { font-size: 12px; color: #888; line-height: 1.5; flex: 1; }
 
+        /* Custom Dashboard Toggle Switch */
         .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 22px; }
@@ -192,6 +178,7 @@
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(20px); background-color: #fff; }
 
+        /* Media Query for Dashboard Responsiveness */
         @media (max-width: 900px) {
             .dash-grid { grid-template-columns: repeat(2, 1fr); }
             .info-widget { grid-column: span 1; }
@@ -295,7 +282,7 @@
         body.light-mode .stat-box { background: rgba(0,0,0,0.03); border-color: rgba(0,0,0,0.05); }
         body.light-mode .slider { background-color: rgba(0,0,0,0.1); }
         body.light-mode .slider:before { background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
-        
+
         /* Documents Page Light Mode Overrides */
         body.light-mode .doc-search-bar input { background: #fff; border-color: rgba(0,0,0,0.1); color: #0f172a; }
         body.light-mode .doc-folder { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.1); }
@@ -400,8 +387,8 @@
         <div class="menu-item" onclick="startNewChat()">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> New chat
         </div>
-        <div class="menu-item" onclick="openDocumentsPage()">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg> Official Documents
+        <div class="menu-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg> Search chats
         </div>
         <div class="menu-item" onclick="openLibraryPage()">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4 4h6v6H4V4zm10 0h6v6h-6V4zM4 14h6v6H4v-6zm10 0h6v6h-6v-6z"/></svg> Library
@@ -411,6 +398,10 @@
         </div>
         <div class="menu-item" onclick="openRoadmapPage()">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg> Certification Dashboard
+        </div>
+        <!-- NEW: OFFICIAL DOCUMENTS MENU ITEM -->
+        <div class="menu-item" onclick="openDocumentsPage()">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg> Official Documents
         </div>
 
         <div class="recent-heading" id="recent-heading">Recent</div>
@@ -423,7 +414,7 @@
         </div>
     </div>
 
-    <!-- NEW: OFFICIAL DOCUMENTS SCREEN (ONLY FIRST 4 FOLDERS - EMPTY FOR NOW) -->
+    <!-- NEW: OFFICIAL DOCUMENTS SCREEN (FIRST FOLDER FILLED) -->
     <div id="documents-screen" class="hidden">
         <h2 class="library-title" style="margin-bottom: 20px;">Reference & Research Knowledge Base</h2>
         
@@ -433,18 +424,60 @@
 
         <div id="doc-accordion-container" style="width: 100%; max-width: 800px; padding-bottom: 50px;">
             
-            <!-- Category 1 -->
+            <!-- Category 1: FILLED -->
             <div class="doc-folder">
                 <div class="doc-folder-header" onclick="toggleFolder(this)">
                     <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 1. Product Certification & Compulsory Certification</div>
                     <span>▼</span>
                 </div>
                 <div class="doc-content">
-                    <div style="padding: 15px; color: #a1a6b0; font-size: 13px; text-align: center;">Items will be added here soon...</div>
+                    
+                    <div class="doc-card">
+                        <div class="doc-card-title">BIS Products Under Compulsory Certification</div>
+                        <div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Very High / Core</span></div>
+                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en</div>
+                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
+                    </div>
+                    
+                    <div class="doc-card">
+                        <div class="doc-card-title">BIS Scheme-I (ISI Mark)</div>
+                        <div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Very High / Core</span></div>
+                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en</div>
+                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-i-mark-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
+                    </div>
+                    
+                    <div class="doc-card">
+                        <div class="doc-card-title">BIS Scheme-II (Registration Scheme)</div>
+                        <div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Very High / Core</span></div>
+                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en</div>
+                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-ii-registration-scheme/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
+                    </div>
+                    
+                    <div class="doc-card">
+                        <div class="doc-card-title">BIS Scheme-IV</div>
+                        <div class="doc-badges"><span class="doc-badge b-web">Web Resource</span><span class="doc-badge b-pri">Very High / Core</span></div>
+                        <div class="doc-url">https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en</div>
+                        <a href="https://www.bis.gov.in/product-certification/products-under-compulsory-certification/scheme-4/?lang=en" target="_blank" class="doc-btn">Open Official Source ↗</a>
+                    </div>
+                    
+                    <div class="doc-card">
+                        <div class="doc-card-title">BIS Certification Process</div>
+                        <div class="doc-badges"><span class="doc-badge b-pdf">PDF</span><span class="doc-badge b-pri">High / Core-supporting</span></div>
+                        <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf</div>
+                        <a href="https://www.bis.gov.in/wp-content/uploads/2018/08/certification-process.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
+                    </div>
+                    
+                    <div class="doc-card">
+                        <div class="doc-card-title">BIS Products under Simplified Procedure (Option-2)</div>
+                        <div class="doc-badges"><span class="doc-badge b-pdf">Historical PDF</span><span class="doc-badge b-pri">High Priority</span></div>
+                        <div class="doc-url">https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf</div>
+                        <a href="https://www.bis.gov.in/wp-content/uploads/2021/04/List-of-Products-Under-Simplified-Procedure.pdf" target="_blank" class="doc-btn">Open Official Source ↗</a>
+                    </div>
+                    
                 </div>
             </div>
 
-            <!-- Category 2 -->
+            <!-- Category 2: EMPTY -->
             <div class="doc-folder">
                 <div class="doc-folder-header" onclick="toggleFolder(this)">
                     <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 2. Quality Control Orders (QCOs)</div>
@@ -455,7 +488,7 @@
                 </div>
             </div>
 
-            <!-- Category 3 -->
+            <!-- Category 3: EMPTY -->
             <div class="doc-folder">
                 <div class="doc-folder-header" onclick="toggleFolder(this)">
                     <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 3. BIS Standards & Indian Standards</div>
@@ -466,7 +499,7 @@
                 </div>
             </div>
 
-            <!-- Category 4 -->
+            <!-- Category 4: EMPTY -->
             <div class="doc-folder">
                 <div class="doc-folder-header" onclick="toggleFolder(this)">
                     <div class="doc-folder-title"><span class="doc-folder-icon">📂</span> 4. Grant, Renewal & Licence Management</div>
@@ -549,7 +582,7 @@
         </div>
     </div>
 
-    <!-- DASHBOARD ROADMAP SCREEN -->
+    <!-- NEW: DASHBOARD ROADMAP SCREEN -->
     <div id="roadmap-screen" class="hidden">
         <h2 class="library-title" style="margin-bottom: 20px;">Certification Dashboard</h2>
         
@@ -728,46 +761,7 @@
             if(window.innerWidth < 800) toggleSidebar();
         }
 
-        // --- NEW: DOCUMENTS LOGIC (STEP 1) ---
-        function openDocumentsPage() {
-            hideAllScreens();
-            document.getElementById('documents-screen').classList.remove('hidden');
-            document.getElementById('documents-screen').style.display = 'flex';
-            if(window.innerWidth < 800) toggleSidebar();
-        }
-
-        function toggleFolder(headerElement) {
-            const folder = headerElement.parentElement;
-            folder.classList.toggle('open');
-        }
-
-        function filterDocs() {
-            const input = document.getElementById('docSearch').value.toLowerCase();
-            const folders = document.querySelectorAll('.doc-folder');
-            
-            folders.forEach(folder => {
-                const cards = folder.querySelectorAll('.doc-card');
-                let folderHasMatch = false;
-                
-                cards.forEach(card => {
-                    if (card.innerText.toLowerCase().includes(input)) {
-                        card.style.display = 'flex';
-                        folderHasMatch = true;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-                
-                if (folderHasMatch || folder.querySelector('.doc-folder-title').innerText.toLowerCase().includes(input)) {
-                    folder.style.display = 'block';
-                    if(input !== "") folder.classList.add('open');
-                } else {
-                    folder.style.display = 'none';
-                }
-            });
-        }
-
-        // --- EXISTING LOGIC ---
+        // --- VOICE INPUT (FEATURE 1) ---
         function startDictation() {
             if (window.hasOwnProperty('webkitSpeechRecognition') || window.hasOwnProperty('SpeechRecognition')) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -782,6 +776,7 @@
         }
         function resetMic() { isListening = false; document.getElementById('mic-btn').classList.remove('listening'); document.getElementById('userInput').placeholder = "Type your query..."; }
 
+        // --- UPLOAD LAB TEST REPORT (FEATURE 5) ---
         function openUploadModal() {
             document.getElementById('upload-overlay').classList.add('show');
             document.getElementById('report-result').classList.remove('show');
@@ -810,6 +805,7 @@
             }, 1200);
         }
 
+        // --- DASHBOARD ROADMAP LOGIC (REDESIGNED) ---
         function openRoadmapPage() {
             hideAllScreens();
             document.getElementById('roadmap-screen').classList.remove('hidden');
@@ -823,10 +819,12 @@
             checks.forEach(c => { if(c.checked) checkedCount++; });
             const pct = Math.round((checkedCount / checks.length) * 100);
             
+            // Update Donut Chart
             document.querySelector('.donut-wrapper').style.setProperty('--pct', `${pct}%`);
             document.getElementById('dash-pct-text').innerText = `${pct}%`;
             document.getElementById('dash-stages-text').innerText = `${checkedCount} of ${checks.length} Stages Completed`;
 
+            // Update Phase Text
             const phaseSpan = document.getElementById('current-phase-status');
             if (checkedCount === 0) {
                 phaseSpan.innerText = "Not Started";
@@ -840,6 +838,7 @@
             }
         }
 
+        // --- NAVIGATION & SCREENS ---
         function openPDFViewer(pdfUrl, title) {
             hideAllScreens();
             document.getElementById('pdf-viewer-title').innerText = title;
@@ -980,6 +979,45 @@
 
         function sendPreset(text) { startNewChat(); document.getElementById('userInput').value = text; sendMessage(); }
         function handleKey(e) { if(e.key === 'Enter') sendMessage(); }
+
+        // --- NEW: DOCUMENTS LOGIC (STEP 1) ---
+        function openDocumentsPage() {
+            hideAllScreens();
+            document.getElementById('documents-screen').classList.remove('hidden');
+            document.getElementById('documents-screen').style.display = 'flex';
+            if(window.innerWidth < 800) toggleSidebar();
+        }
+
+        function toggleFolder(headerElement) {
+            const folder = headerElement.parentElement;
+            folder.classList.toggle('open');
+        }
+
+        function filterDocs() {
+            const input = document.getElementById('docSearch').value.toLowerCase();
+            const folders = document.querySelectorAll('.doc-folder');
+            
+            folders.forEach(folder => {
+                const cards = folder.querySelectorAll('.doc-card');
+                let folderHasMatch = false;
+                
+                cards.forEach(card => {
+                    if (card.innerText.toLowerCase().includes(input)) {
+                        card.style.display = 'flex';
+                        folderHasMatch = true;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                if (folderHasMatch || folder.querySelector('.doc-folder-title').innerText.toLowerCase().includes(input)) {
+                    folder.style.display = 'block';
+                    if(input !== "") folder.classList.add('open');
+                } else {
+                    folder.style.display = 'none';
+                }
+            });
+        }
 
         window.onload = startNewChat;
     </script>
